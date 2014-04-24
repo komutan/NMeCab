@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PerformanceTestMMF.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TargetFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">kokoro.txt</Value>
+    </Setting>
+    <Setting Name="TargetEncoding" Type="System.String" Scope="User">
+      <Value Profile="(Default)">UTF-8</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
