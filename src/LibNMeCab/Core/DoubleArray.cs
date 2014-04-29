@@ -24,10 +24,10 @@ namespace NMeCab.Core
             public readonly int Base;
             public readonly uint Check;
 
-            public Unit(BinaryReader reader)
+            public Unit(int b, uint c)
             {
-                this.Base = reader.ReadInt32();
-                this.Check = reader.ReadUInt32();
+                this.Base = b;
+                this.Check = c;
             }
         }
 
@@ -82,7 +82,7 @@ namespace NMeCab.Core
 
             for (int i = 0; i < array.Length; i++)
             {
-                this.array[i] = new Unit(reader);
+                this.array[i] = new Unit(reader.ReadInt32(), reader.ReadUInt32());
             }
         }
 
