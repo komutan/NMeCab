@@ -3,11 +3,13 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 
 namespace NMeCab
 {
+    [Serializable]
     public class MeCabFileFormatException : MeCabInvalidFileException
     {
         public int LineNo { get; private set; }
@@ -31,6 +33,21 @@ namespace NMeCab
         {
             this.LineNo = lineNo;
             this.Line = line;
+        }
+
+        public MeCabFileFormatException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+            this.LineNo = info.GetInt32("LineNo");
+            this.Line = info.GetString("Line");
+        }
+
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("LineNo", this.LineNo);
+            info.AddValue("Line", this.Line);
         }
     }
 }
