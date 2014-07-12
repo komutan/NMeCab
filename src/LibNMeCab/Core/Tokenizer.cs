@@ -179,7 +179,7 @@ namespace NMeCab.Core
             node.PosId = token.PosId;
             node.WCost = token.WCost;
             //node.Token = token;
-            //node.Feature = dic.GetFuture(token); //この段階では素性情報を取得しない
+            //node.Feature = dic.GetFeature(token); //この段階では素性情報を取得しない
             node.SetFeature(token.Feature, dic); //そのかわり遅延取得を可能にする
         }
 
