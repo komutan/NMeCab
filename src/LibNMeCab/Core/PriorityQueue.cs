@@ -20,7 +20,7 @@ namespace NMeCab.Core
         }
 
 #if BinaryHeapPriorityQueue
-        
+
         public void Push(T item)
         {
             int currentPos = this.list.Count;
@@ -52,48 +52,35 @@ namespace NMeCab.Core
         private void DeleteTop()
         {
             int tailPos = this.list.Count - 1;
-            this.list[0] = this.list[tailPos];
+            if (tailPos == -1) return;
+            T current = this.list[tailPos];
             this.list.RemoveAt(tailPos);
             if (tailPos == 0) return;
             tailPos--;
-            
+
             int currentPos = 0;
-            T current = this.list[0];
             while (true)
             {
-                int leftPos = currentPos * 2 + 1;
-                if (leftPos > tailPos) break;
-                int rightPos = leftPos + 1;
+                int chiledPos = currentPos * 2 + 1;
+                if (chiledPos > tailPos) break;
+                T chiled = this.list[chiledPos];
 
-                int chiledPos;
-                T chiled;
-                if (rightPos > tailPos)
+                int wrkPos = chiledPos + 1;
+                if (wrkPos <= tailPos)
                 {
-                    chiledPos = leftPos;
-                    chiled = this.list[chiledPos];
-                }
-                else
-                {
-                    T left = this.list[leftPos];
-                    T right = this.list[rightPos];
-                    if (left.CompareTo(right) < 0)
+                    T wrk = this.list[wrkPos];
+                    if (chiled.CompareTo(wrk) > 0)
                     {
-                        chiledPos = leftPos;
-                        chiled = left;
-                    }
-                    else
-                    {
-                        chiledPos = rightPos;
-                        chiled = right;
+                        chiledPos = wrkPos;
+                        chiled = wrk;
                     }
                 }
 
                 if (current.CompareTo(chiled) < 0) break;
                 this.list[currentPos] = chiled;
-                this.list[chiledPos] = current;
-                current = chiled;
                 currentPos = chiledPos;
             }
+            this.list[currentPos] = current;
         }
 
 #else
