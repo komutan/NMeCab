@@ -22,7 +22,7 @@ namespace NMeCab.Core
         public void Push(T item)
         {
             int currentPos = this.list.Count;
-            this.list.Add(item); // dummy
+            this.list.Add(default(T));
 
             while (currentPos != 0)
             {
@@ -30,6 +30,7 @@ namespace NMeCab.Core
                 T parent = this.list[parentPos];
 
                 if (parent.CompareTo(item) <= 0) break;
+
                 this.list[currentPos] = parent;
                 currentPos = parentPos;
             }
@@ -48,7 +49,7 @@ namespace NMeCab.Core
         private void DeleteRoot()
         {
             int tailPos = this.list.Count - 1;
-            T current = this.list[tailPos];
+            T current = this.list[tailPos]; // final
             this.list.RemoveAt(tailPos);
             if (tailPos == 0) return; // empty
             tailPos--;
@@ -72,6 +73,7 @@ namespace NMeCab.Core
                 }
 
                 if (current.CompareTo(child) < 0) break;
+
                 this.list[currentPos] = child;
                 currentPos = childPos;
             }
