@@ -122,6 +122,7 @@
     <Compile Include="..\LibNMeCab\Settings.cs">
       <Link>Settings.cs</Link>
     </Compile>
+    <Compile Include="Extension\MeCabNodeExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
