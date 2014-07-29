@@ -54,7 +54,7 @@ namespace NMeCab
         {
             get
             {
-                if (this.feature == null)
+                if (this.feature == null && this.Dictionary != null)
                     this.feature = this.Dictionary.GetFeature(this.featurePos);
                 return this.feature;
             }
