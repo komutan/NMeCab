@@ -20,14 +20,14 @@ namespace PerformanceTest
             Console.WriteLine("Press Enter key to start.");
             Console.ReadLine();
 
-            Console.WriteLine("\t\tProcessTime\tTotalMemory");
+            Console.WriteLine("\t\t\tProcessTime\tTotalMemory");
 
             //解析準備処理
             GC.Collect();
             sw.Start();
             MeCabTagger tagger = MeCabTagger.Create();
             sw.Stop();
-            Console.WriteLine("OpenTagger:\t{0:0.000}sec\t{1:#,000}byte",
+            Console.WriteLine("OpenTagger:\t\t{0:0.000}sec\t{1:#,000}byte",
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //ファイル読込だけの場合
@@ -41,7 +41,7 @@ namespace PerformanceTest
                 }
                 sw.Stop();
             }
-            Console.WriteLine("ReadLine:\t{0:0.000}sec\t{1:#,000}byte",
+            Console.WriteLine("ReadLine:\t\t{0:0.000}sec\t{1:#,000}byte",
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //解析処理（Nodeの出力）
@@ -56,7 +56,7 @@ namespace PerformanceTest
                 }
                 sw.Stop();
             }
-            Console.WriteLine("ParseToNode:\t{0:0.000}sec\t{1:#,000}byte",
+            Console.WriteLine("ParseToNode:\t\t{0:0.000}sec\t{1:#,000}byte",
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //解析処理（latticeモードの文字列出力）
@@ -72,7 +72,7 @@ namespace PerformanceTest
                 }
                 sw.Stop();
             }
-            Console.WriteLine("Parse(lattice):\t{0:0.000}sec\t{1:#,000}byte",
+            Console.WriteLine("Parse(lattice):\t\t{0:0.000}sec\t{1:#,000}byte",
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
 
@@ -110,7 +110,7 @@ namespace PerformanceTest
                     for (node = node.Next; node.Next != null; node = node.Next) wordCount++;
                 }
                 Console.WriteLine();
-                Console.WriteLine("Target: {0} {1:#,000}byte {2:#,000}char {3:#,000}line {4:#,000}word",
+                Console.WriteLine("Target: {0} {1:#,000}byte {2:#,000}char {3:#,000}line ({4:#,000}word)",
                                   targetFile, reader.BaseStream.Position, charCount, lineCount, wordCount);
             }
 
