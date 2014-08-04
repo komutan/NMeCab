@@ -23,7 +23,7 @@ namespace NMeCab.Core
         {
             if (item == null) throw new ArgumentNullException("item");
 
-            int currentPos = this.list.Count;
+            int currentPos = this.list.Count; //tail
             this.list.Add(default(T));
 
             while (currentPos != 0)
@@ -41,24 +41,24 @@ namespace NMeCab.Core
 
         public T Pop()
         {
-            if (this.Count == 0) throw new InvalidOperationException("Empty");
+            if (this.list.Count == 0) throw new InvalidOperationException("Empty");
 
-            T ret = this.list[0];
+            T ret = this.list[0]; //root
 
             int tailPos = this.list.Count - 1;
-            T current = this.list[tailPos]; // final
+            T current = this.list[tailPos];
             this.list.RemoveAt(tailPos);
-            if (tailPos == 0) return ret; // empty
+            if (tailPos == 0) return ret; //empty
             tailPos--;
 
             int currentPos = 0;
             while (true)
             {
-                int childPos = currentPos * 2 + 1; // left child
+                int childPos = currentPos * 2 + 1; //left child
                 if (childPos > tailPos) break;
                 T child = this.list[childPos];
 
-                int wrkPos = childPos + 1; // right child
+                int wrkPos = childPos + 1; //right child
                 if (wrkPos <= tailPos)
                 {
                     T wrk = this.list[wrkPos];

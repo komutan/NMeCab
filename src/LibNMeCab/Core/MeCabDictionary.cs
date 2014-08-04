@@ -220,7 +220,7 @@ namespace NMeCab.Core
 
         public unsafe Token[] GetToken(DoubleArray.ResultPair n)
         {
-            Token[] dist = new Token[this.GetTokenSize(n)];
+            Token[] dist = new Token[0xFF & n.Value];
             int tokenPos = n.Value >> 8;
 #if MMF_DIC
             this.tokens.ReadArray<Token>(tokenPos * sizeof(Token), dist, 0, dist.Length);
@@ -228,11 +228,6 @@ namespace NMeCab.Core
             Array.Copy(this.tokens, tokenPos, dist, 0, dist.Length);
 #endif
             return dist;
-        }
-
-        public int GetTokenSize(DoubleArray.ResultPair n)
-        {
-            return 0xFF & n.Value;
         }
 
         public string GetFeature(uint featurePos)
