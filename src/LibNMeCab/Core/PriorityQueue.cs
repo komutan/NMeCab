@@ -7,76 +7,77 @@ namespace NMeCab.Core
     public class PriorityQueue<T>
         where T : IComparable<T>
     {
-        private readonly List<T> list = new List<T>();
+        private readonly List<T> heapList = new List<T>();
 
         public int Count
         {
-            get { return this.list.Count; }
+            get { return this.heapList.Count; }
         }
 
         public void Clear()
         {
-            this.list.Clear();
+            this.heapList.Clear();
         }
 
         public void Push(T item)
         {
             if (item == null) throw new ArgumentNullException("item");
 
-            int currentPos = this.list.Count; //tail
-            this.list.Add(default(T));
-
+            //up heap
+            int currentPos = this.heapList.Count; //tail
+            this.heapList.Add(default(T));
             while (currentPos != 0)
             {
                 int parentPos = (currentPos - 1) / 2;
-                T parent = this.list[parentPos];
+                T parent = this.heapList[parentPos];
 
                 if (parent.CompareTo(item) <= 0) break;
 
-                this.list[currentPos] = parent;
+                this.heapList[currentPos] = parent; //down
                 currentPos = parentPos;
             }
-            this.list[currentPos] = item;
+            this.heapList[currentPos] = item; //commit
         }
 
         public T Pop()
         {
-            if (this.list.Count == 0) throw new InvalidOperationException("Empty");
+            if (this.heapList.Count == 0) throw new InvalidOperationException("Empty");
 
-            T ret = this.list[0]; //root
+            T root = this.heapList[0];
 
-            int tailPos = this.list.Count - 1;
-            T current = this.list[tailPos];
-            this.list.RemoveAt(tailPos);
-            if (tailPos == 0) return ret; //empty
-            tailPos--;
-
-            int currentPos = 0;
-            while (true)
+            int tailPos = this.heapList.Count - 1;
+            if (tailPos != 0)
             {
-                int childPos = currentPos * 2 + 1; //left child
-                if (childPos > tailPos) break;
-                T child = this.list[childPos];
-
-                int wrkPos = childPos + 1; //right child
-                if (wrkPos <= tailPos)
+                //down heap
+                T tail = this.heapList[tailPos];
+                int currentPos = 0;
+                while (true) 
                 {
-                    T wrk = this.list[wrkPos];
-                    if (child.CompareTo(wrk) > 0)
+                    int childPos = currentPos * 2 + 1; //left child
+                    if (childPos >= tailPos) break;
+                    T child = this.heapList[childPos];
+
+                    int rChiledPos = childPos + 1; //right child
+                    if (rChiledPos < tailPos)
                     {
-                        childPos = wrkPos;
-                        child = wrk;
+                        T rChiled = this.heapList[rChiledPos];
+                        if (child.CompareTo(rChiled) > 0)
+                        {
+                            child = rChiled;
+                            childPos = rChiledPos;
+                        }
                     }
+
+                    if (tail.CompareTo(child) < 0) break;
+
+                    this.heapList[currentPos] = child; //up
+                    currentPos = childPos;
                 }
-
-                if (current.CompareTo(child) < 0) break;
-
-                this.list[currentPos] = child;
-                currentPos = childPos;
+                this.heapList[currentPos] = tail; //commit
             }
-            this.list[currentPos] = current;
+            this.heapList.RemoveAt(tailPos);
 
-            return ret;
+            return root;
         }
     }
 }
