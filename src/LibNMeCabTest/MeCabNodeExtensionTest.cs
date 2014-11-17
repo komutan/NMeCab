@@ -14,15 +14,15 @@ namespace LibNMeCabTest
             {
                 Feature = "品詞,品詞細分類1,品詞細分類2,品詞細分類3,活用形,活用型,原形,読み,発音"
             };
-            Assert.AreEqual(node.GetPartsOfSpeech(), "品詞");
-            Assert.AreEqual(node.GetPartsOfSpeechSection1(), "品詞細分類1");
-            Assert.AreEqual(node.GetPartsOfSpeechSection2(), "品詞細分類2");
-            Assert.AreEqual(node.GetPartsOfSpeechSection3(), "品詞細分類3");
-            Assert.AreEqual(node.GetConjugatedForm(), "活用形");
-            Assert.AreEqual(node.GetInflection(), "活用型");
-            Assert.AreEqual(node.GetOriginalForm(), "原形");
-            Assert.AreEqual(node.GetReading(), "読み");
-            Assert.AreEqual(node.GetPronounciation(), "発音");
+            Assert.AreEqual("品詞", node.GetPartsOfSpeech());
+            Assert.AreEqual("品詞細分類1", node.GetPartsOfSpeechSection1());
+            Assert.AreEqual("品詞細分類2", node.GetPartsOfSpeechSection2());
+            Assert.AreEqual("品詞細分類3", node.GetPartsOfSpeechSection3());
+            Assert.AreEqual("活用形", node.GetConjugatedForm());
+            Assert.AreEqual("活用型", node.GetInflection());
+            Assert.AreEqual("原形", node.GetOriginalForm());
+            Assert.AreEqual("読み", node.GetReading());
+            Assert.AreEqual("発音", node.GetPronounciation());
         }
 
         [TestMethod]
@@ -30,17 +30,17 @@ namespace LibNMeCabTest
         {
             var node = new NMeCab.MeCabNode()
             {
-                Feature = "品詞"
+                Feature = ",,,,,,,,"
             };
-            Assert.AreEqual(node.GetPartsOfSpeech(), "品詞");
-            Assert.IsNull(node.GetPartsOfSpeechSection1());
-            Assert.IsNull(node.GetPartsOfSpeechSection2());
-            Assert.IsNull(node.GetPartsOfSpeechSection3());
-            Assert.IsNull(node.GetConjugatedForm());
-            Assert.IsNull(node.GetInflection());
-            Assert.IsNull(node.GetOriginalForm());
-            Assert.IsNull(node.GetReading());
-            Assert.IsNull(node.GetPronounciation());
+            Assert.AreEqual("", node.GetPartsOfSpeech());
+            Assert.AreEqual("", node.GetPartsOfSpeechSection1());
+            Assert.AreEqual("", node.GetPartsOfSpeechSection2());
+            Assert.AreEqual("", node.GetPartsOfSpeechSection3());
+            Assert.AreEqual("", node.GetConjugatedForm());
+            Assert.AreEqual("", node.GetInflection());
+            Assert.AreEqual("", node.GetOriginalForm());
+            Assert.AreEqual("", node.GetReading());
+            Assert.AreEqual("", node.GetPronounciation());
         }
 
         [TestMethod]
@@ -53,6 +53,78 @@ namespace LibNMeCabTest
             Assert.IsNull(node.GetPartsOfSpeech());
             Assert.IsNull(node.GetPartsOfSpeechSection1());
             Assert.IsNull(node.GetPartsOfSpeechSection2());
+            Assert.IsNull(node.GetPartsOfSpeechSection3());
+            Assert.IsNull(node.GetConjugatedForm());
+            Assert.IsNull(node.GetInflection());
+            Assert.IsNull(node.GetOriginalForm());
+            Assert.IsNull(node.GetReading());
+            Assert.IsNull(node.GetPronounciation());
+        }
+
+        [TestMethod]
+        public void TestMethod4()
+        {
+            var node = new NMeCab.MeCabNode()
+            {
+                Feature = ""
+            };
+            Assert.IsNull(node.GetPartsOfSpeech());
+            Assert.IsNull(node.GetPartsOfSpeechSection1());
+            Assert.IsNull(node.GetPartsOfSpeechSection2());
+            Assert.IsNull(node.GetPartsOfSpeechSection3());
+            Assert.IsNull(node.GetConjugatedForm());
+            Assert.IsNull(node.GetInflection());
+            Assert.IsNull(node.GetOriginalForm());
+            Assert.IsNull(node.GetReading());
+            Assert.IsNull(node.GetPronounciation());
+        }
+
+        [TestMethod]
+        public void TestMethod5()
+        {
+            var node = new NMeCab.MeCabNode()
+            {
+                Feature = "品詞"
+            };
+            Assert.AreEqual("品詞", node.GetPartsOfSpeech());
+            Assert.IsNull(node.GetPartsOfSpeechSection1());
+            Assert.IsNull(node.GetPartsOfSpeechSection2());
+            Assert.IsNull(node.GetPartsOfSpeechSection3());
+            Assert.IsNull(node.GetConjugatedForm());
+            Assert.IsNull(node.GetInflection());
+            Assert.IsNull(node.GetOriginalForm());
+            Assert.IsNull(node.GetReading());
+            Assert.IsNull(node.GetPronounciation());
+        }
+
+        [TestMethod]
+        public void TestMethod6()
+        {
+            var node = new NMeCab.MeCabNode()
+            {
+                Feature = "品詞,品詞細分類1"
+            };
+            Assert.AreEqual("品詞", node.GetPartsOfSpeech());
+            Assert.AreEqual("品詞細分類1", node.GetPartsOfSpeechSection1());
+            Assert.IsNull(node.GetPartsOfSpeechSection2());
+            Assert.IsNull(node.GetPartsOfSpeechSection3());
+            Assert.IsNull(node.GetConjugatedForm());
+            Assert.IsNull(node.GetInflection());
+            Assert.IsNull(node.GetOriginalForm());
+            Assert.IsNull(node.GetReading());
+            Assert.IsNull(node.GetPronounciation());
+        }
+
+        [TestMethod]
+        public void TestMethod7()
+        {
+            var node = new NMeCab.MeCabNode()
+            {
+                Feature = "品詞,品詞細分類1,"
+            };
+            Assert.AreEqual("品詞", node.GetPartsOfSpeech());
+            Assert.AreEqual("品詞細分類1", node.GetPartsOfSpeechSection1());
+            Assert.AreEqual("", node.GetPartsOfSpeechSection2());
             Assert.IsNull(node.GetPartsOfSpeechSection3());
             Assert.IsNull(node.GetConjugatedForm());
             Assert.IsNull(node.GetInflection());

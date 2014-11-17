@@ -78,14 +78,42 @@ namespace NMeCab.Extension
             return GetCsvElement(node.Feature, 8);
         }
 
-        private static string GetCsvElement(string csvRow, int index)
+
+        private unsafe static string GetCsvElement(string csvRow, int index)
         {
             if (string.IsNullOrEmpty(csvRow)) return null;
 
-            string[] items = csvRow.Split(',');
-            if (items.Length <= index) return null;
+            fixed (char* pCsvRow = csvRow)
+                return GetCsvElement(pCsvRow, csvRow.Length, index);
 
-            return items[index];
+            //string[] items = csvRow.Split(',');
+            //if (items.Length <= index) return null;
+
+            //return items[index];
+        }
+
+        private unsafe static string GetCsvElement(char* csvRow, int rowLength, int index)
+        {
+            char* end = csvRow + rowLength;
+
+            for (int i = 0; i < index; i++)
+            {
+                while (*csvRow != ',')
+                {
+                    if (csvRow == end) return null;
+                    csvRow++;
+                }
+                csvRow++;
+            }
+
+            int len = 0;
+            while (csvRow != end && *csvRow != ',')
+            {
+                len++;
+                csvRow++;
+            }
+
+            return new string(csvRow - len, 0, len);
         }
     }
 }
