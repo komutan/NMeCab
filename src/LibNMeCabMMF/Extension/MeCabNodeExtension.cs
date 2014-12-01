@@ -106,7 +106,10 @@ namespace NMeCab.Extension
                     count++;
                     len = 0;
                 }
-                len++;
+                else
+                {
+                    len++;
+                }
                 csvRow++;
             }
 
