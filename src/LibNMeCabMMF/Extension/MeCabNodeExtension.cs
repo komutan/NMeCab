@@ -95,25 +95,22 @@ namespace NMeCab.Extension
         private unsafe static string GetCsvElement(char* csvRow, int rowLength, int index)
         {
             char* end = csvRow + rowLength;
-
-            for (int i = 0; i < index; i++)
-            {
-                while (*csvRow != ',')
-                {
-                    if (csvRow == end) return null;
-                    csvRow++;
-                }
-                csvRow++;
-            }
-
+            int count = 0;
             int len = 0;
-            while (csvRow != end && *csvRow != ',')
+
+            while (csvRow != end)
             {
+                if (*csvRow == ',')
+                {
+                    if (count == index) return new string(csvRow - len, 0, len);
+                    count++;
+                    len = 0;
+                }
                 len++;
                 csvRow++;
             }
 
-            return new string(csvRow - len, 0, len);
+            return count == index ? new string(csvRow - len, 0, len) : null;
         }
     }
 }
