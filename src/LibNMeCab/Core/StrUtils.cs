@@ -113,5 +113,20 @@ namespace NMeCab.Core
 
 #endif
 
+        /// <summary>
+        /// 指定の名前に対応するエンコーディングを取得する（.NET FWが対応していない名前にもアドホックに対応）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static Encoding GetEncoding(string name)
+        {
+            switch (name.ToUpper())
+            {
+                case "UTF8":
+                    return Encoding.UTF8;
+                default:
+                    return Encoding.GetEncoding(name);
+            }
+        }
     }
 }

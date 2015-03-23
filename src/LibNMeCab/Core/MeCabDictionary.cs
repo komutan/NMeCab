@@ -106,7 +106,7 @@ namespace NMeCab.Core
                 reader.ReadUInt32(); //dummy
 
                 string charSet = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
-                this.encoding = Encoding.GetEncoding(charSet);
+                this.encoding = StrUtils.GetEncoding(charSet);
 
                 long offset = stream.Position;
                 this.da.Open(mmf, offset, dSize);
@@ -151,7 +151,7 @@ namespace NMeCab.Core
             reader.ReadUInt32(); //dummy
 
             string charSet = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
-            this.encoding = Encoding.GetEncoding(charSet);
+            this.encoding = StrUtils.GetEncoding(charSet);
 
             this.da.Open(reader, dSize);
 
