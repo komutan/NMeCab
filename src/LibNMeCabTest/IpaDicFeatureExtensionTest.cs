@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMeCab.Extension;
+using NMeCab.Extension.IpaDic;
 
 namespace LibNMeCabTest
 {
     [TestClass]
-    public class MeCabNodeExtensionTest
+    public class IpaDicFeatureExtensionTest
     {
         [TestMethod]
         public void TestMethod1()

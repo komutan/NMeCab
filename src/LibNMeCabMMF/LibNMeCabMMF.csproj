@@ -124,7 +124,6 @@
     </Compile>
     <Compile Include="Extension\FeatureExtension.cs" />
     <Compile Include="Extension\IpaDic\IpaDicFeatureExtension.cs" />
-    <Compile Include="Extension\MeCabNodeExtension.cs" />
     <Compile Include="Extension\UniDic\UniDicFeatureExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
