@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;MMF MMF_DIC MMF_MTX</DefineConstants>
+    <DefineConstants>DEBUG;MMF MMF_DIC MMF_MTX EXTENSION</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -84,6 +84,15 @@
     <Compile Include="..\LibNMeCab\Core\Writer.cs">
       <Link>Core\Writer.cs</Link>
     </Compile>
+    <Compile Include="..\LibNMeCab\Extension\FeatureExtension.cs">
+      <Link>Extension\FeatureExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\LibNMeCab\Extension\IpaDic\IpaDicFeatureExtension.cs">
+      <Link>Extension\IpaDic\IpaDicFeatureExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\LibNMeCab\Extension\UniDic\UniDicFeatureExtension.cs">
+      <Link>Extension\UniDic\UniDicFeatureExtension.cs</Link>
+    </Compile>
     <Compile Include="..\LibNMeCab\MeCabDictionaryType.cs">
       <Link>MeCabDictionaryType.cs</Link>
     </Compile>
@@ -122,9 +131,6 @@
     <Compile Include="..\LibNMeCab\Settings.cs">
       <Link>Settings.cs</Link>
     </Compile>
-    <Compile Include="Extension\FeatureExtension.cs" />
-    <Compile Include="Extension\IpaDic\IpaDicFeatureExtension.cs" />
-    <Compile Include="Extension\UniDic\UniDicFeatureExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
