@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if EXTENSION
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -188,3 +189,4 @@ namespace NMeCab.Extension.UniDic
         }
     }
 }
+#endif

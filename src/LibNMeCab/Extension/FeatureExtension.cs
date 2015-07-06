@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if EXTENSION
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -19,7 +20,7 @@ namespace NMeCab.Extension
         /// </summary>
         private static string GetCsvItem(this string csvRow, int index)
         {
-            if (string.IsNullOrEmpty(csvRow)) return null;
+            if (csvRow == null) return null;
 
             string[] items = csvRow.Split(',');
             if (items.Length <= index) return null;
@@ -28,3 +29,4 @@ namespace NMeCab.Extension
         }
     }
 }
+#endif
