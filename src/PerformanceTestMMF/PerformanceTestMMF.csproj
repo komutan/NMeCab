@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibNMeCab, Version=0.0.6.4, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\LibNMeCab40MMF\bin\Release\LibNMeCab.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -45,20 +49,17 @@
     </Compile>
     <Compile Include="..\PerformanceTest\Properties\Settings.Designer.cs">
       <Link>Properties\Settings.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\LibNMeCabMMF\LibNMeCabMMF.csproj">
-      <Project>{B5C3DDEA-F7CE-4A9D-8B28-5FC1B582A4EB}</Project>
-      <Name>LibNMeCabMMF</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\PerformanceTest\Properties\Settings.settings">
       <Link>Properties\Settings.settings</Link>
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="app.config" />
   </ItemGroup>
