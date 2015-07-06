@@ -46,6 +46,9 @@
     <Compile Include="Core\PriorityQueue.cs" />
     <Compile Include="Core\StrUtils.cs" />
     <Compile Include="Core\Writer.cs" />
+    <Compile Include="Extension\FeatureExtension.cs" />
+    <Compile Include="Extension\IpaDic\IpaDicFeatureExtension.cs" />
+    <Compile Include="Extension\UniDic\UniDicFeatureExtension.cs" />
     <Compile Include="MeCabLatticeLevel.cs" />
     <Compile Include="MeCabDictionaryType.cs" />
     <Compile Include="MeCabFileFormatException.cs" />
