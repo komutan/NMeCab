@@ -68,7 +68,7 @@ namespace LibNMeCabTest
             {
                 Feature = ""
             };
-            Assert.IsNull(node.GetPartsOfSpeech());
+            Assert.AreEqual("", node.GetPartsOfSpeech());
             Assert.IsNull(node.GetPartsOfSpeechSection1());
             Assert.IsNull(node.GetPartsOfSpeechSection2());
             Assert.IsNull(node.GetPartsOfSpeechSection3());
