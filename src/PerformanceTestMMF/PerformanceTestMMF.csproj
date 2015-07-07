@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LibNMeCab, Version=0.0.6.4, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="LibNMeCab, Version=0.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\LibNMeCab40MMF\bin\Release\LibNMeCab.dll</HintPath>
     </Reference>
