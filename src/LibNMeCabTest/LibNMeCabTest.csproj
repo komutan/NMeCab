@@ -57,9 +57,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LibNMeCab35\LibNMeCab35.csproj">
-      <Project>{4ffe4221-2f41-446e-be59-d9cfcdf91ac6}</Project>
-      <Name>LibNMeCab35</Name>
+    <ProjectReference Include="..\LibNMeCab40MMF\LibNMeCab40MMF.csproj">
+      <Project>{86711194-4c2b-4853-830f-07c57f035283}</Project>
+      <Name>LibNMeCab40MMF</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
