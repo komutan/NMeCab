@@ -11,7 +11,7 @@ namespace NMeCab.Core
         {
             public T Value;
 
-            public LinkedList<Node> Childs = new LinkedList<Node>();
+            public readonly LinkedList<Node> Childs = new LinkedList<Node>();
 
             public Node(T value)
             {
@@ -19,7 +19,7 @@ namespace NMeCab.Core
             }
         }
 
-        private Node rootNode = null;
+        private Node rootNode;
 
         public int Count { get; private set; }
 
@@ -29,12 +29,6 @@ namespace NMeCab.Core
         {
             this.rootNode = null;
             this.Count = 0;
-        }
-
-        public void RemoveFirst()
-        {
-            this.rootNode = this.Unify(this.rootNode.Childs);
-            this.Count--;
         }
 
         public void Push(T item)
@@ -48,6 +42,12 @@ namespace NMeCab.Core
             T ret = this.First;
             this.RemoveFirst();
             return ret;
+        }
+
+        public void RemoveFirst()
+        {
+            this.rootNode = this.Unify(this.rootNode.Childs);
+            this.Count--;
         }
 
         private Node Merge(Node l, Node r)
