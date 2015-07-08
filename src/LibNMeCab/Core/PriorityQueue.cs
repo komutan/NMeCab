@@ -9,9 +9,63 @@ namespace NMeCab.Core
     {
         private class Node
         {
-            public T Value;
+            public T Value { get; private set; }
 
-            public readonly LinkedList<Node> Childs = new LinkedList<Node>();
+            public int ChiledsCount { get; private set; }
+
+            public Node FirstChild { get; private set; }
+
+            public Node LastChild { get; private set; }
+
+            public Node Prev { get; private set; }
+
+            public Node Next { get; private set; }
+
+            public void AddFirstChild(Node first)
+            {
+                this.ChiledsCount++;
+                if (this.ChiledsCount == 1)
+                {
+                    this.LastChild = first;
+                }
+                else
+                {
+                    Node old = this.FirstChild;
+                    first.Next = old;
+                    old.Prev = first;
+                }
+                this.FirstChild = first;
+            }
+
+            public void AddLastChild(Node last)
+            {
+                this.ChiledsCount++;
+                if (this.ChiledsCount == 1)
+                {
+                    this.FirstChild = last;
+                }
+                else
+                {
+                    Node old = this.LastChild;
+                    last.Prev = old;
+                    old.Next = last;
+                }
+                this.LastChild = last;
+            }
+
+            public Node PollFirstChild()
+            {
+                this.ChiledsCount--;
+                if (this.ChiledsCount == 0)
+                {
+                    this.LastChild.Prev = null;
+                    this.LastChild = null;
+                }
+                Node first = this.FirstChild;
+                this.FirstChild = first.Next;
+                first.Next = null;
+                return first;
+            }
 
             public Node(T value)
             {
@@ -23,23 +77,26 @@ namespace NMeCab.Core
 
         public int Count { get; private set; }
 
-        public T First { get { return this.rootNode.Value; } }
-
         public void Clear()
         {
-            this.rootNode = null;
             this.Count = 0;
+            this.rootNode = null;
         }
 
         public void Push(T item)
         {
-            this.rootNode = this.Merge(this.rootNode, new Node(item));
             this.Count++;
+            this.rootNode = this.Merge(this.rootNode, new Node(item));
+        }
+
+        public T Peek()
+        {
+            return this.rootNode.Value;
         }
 
         public T Pop()
         {
-            T ret = this.First;
+            T ret = this.Peek();
             this.RemoveFirst();
             return ret;
         }
@@ -48,8 +105,8 @@ namespace NMeCab.Core
         {
             if (this.Count == 0) throw new InvalidOperationException("Empty");
 
-            this.rootNode = this.Unify(this.rootNode.Childs);
             this.Count--;
+            this.rootNode = this.Unify(this.rootNode);
         }
 
         private Node Merge(Node l, Node r)
@@ -59,39 +116,39 @@ namespace NMeCab.Core
 
             if (l.Value.CompareTo(r.Value) > 0)
             {
-                r.Childs.AddFirst(l);
+                r.AddFirstChild(l);
                 return r;
             }
             else
             {
-                l.Childs.AddLast(r);
+                l.AddLastChild(r);
                 return l;
             }
         }
 
-        private Node Unify(LinkedList<Node> nodes)
+        private Node Unify(Node node)
         {
-            if (nodes == null || nodes.Count == 0) return null;
+            if (node == null || node.ChiledsCount == 0) return null;
 
-            Node[] tmp = new Node[nodes.Count / 2]; //擬似的Stack
+            Node[] tmp = new Node[node.ChiledsCount / 2]; //擬似的Stack
 
             for (int i = 0; i < tmp.Length; i++)
             {
-                Node x = nodes.First.Value;
-                nodes.RemoveFirst();
-                Node y = nodes.First.Value;
-                nodes.RemoveFirst();
+                Node x = node.PollFirstChild();
+                Node y = node.PollFirstChild();
                 tmp[i] = this.Merge(x, y);
             }
 
             Node z;
-            if (nodes.Count == 1)
-                z = nodes.First.Value;
+            if (node.ChiledsCount == 1)
+                z = node.PollFirstChild();
             else
                 z = null;
 
             for (int i = tmp.Length - 1; i >= 0; i--)
+            {
                 z = this.Merge(tmp[i], z);
+            }
 
             return z;
         }
