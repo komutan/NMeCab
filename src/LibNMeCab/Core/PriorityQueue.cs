@@ -46,6 +46,8 @@ namespace NMeCab.Core
 
         public void RemoveFirst()
         {
+            if (this.Count == 0) throw new InvalidOperationException("Empty");
+
             this.rootNode = this.Unify(this.rootNode.Childs);
             this.Count--;
         }
@@ -71,14 +73,27 @@ namespace NMeCab.Core
         {
             if (nodes == null || nodes.Count == 0) return null;
 
-            Node x = nodes.First.Value;
-            nodes.RemoveFirst();
-            if (nodes.Count == 0) return x;
+            Node[] tmp = new Node[nodes.Count / 2]; //擬似的Stack
 
-            Node y = nodes.First.Value;
-            nodes.RemoveFirst();
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                Node x = nodes.First.Value;
+                nodes.RemoveFirst();
+                Node y = nodes.First.Value;
+                nodes.RemoveFirst();
+                tmp[i] = this.Merge(x, y);
+            }
 
-            return this.Merge(this.Merge(x, y), this.Unify(nodes));
+            Node z;
+            if (nodes.Count == 1)
+                z = nodes.First.Value;
+            else
+                z = null;
+
+            for (int i = tmp.Length - 1; i >= 0; i--)
+                z = this.Merge(tmp[i], z);
+
+            return z;
         }
     }
 }
