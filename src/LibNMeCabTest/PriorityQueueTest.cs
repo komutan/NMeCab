@@ -46,10 +46,10 @@ namespace LibNMeCabTest
             var collection = new List<Element>();
             var count = 0;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 5; i++)
             {
                 //追加 優先度昇順
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 5; j++)
                 {
                     var item = new Element { Priority = j, Order = count };
                     queue.Push(item);
@@ -82,10 +82,10 @@ namespace LibNMeCabTest
             var collection = new List<Element>();
             var count = 0;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 5; i++)
             {
                 //追加 優先度降順
-                for (int j = 3; j >= 0; j--)
+                for (int j = 5; j >= 0; j--)
                 {
                     var item = new Element { Priority = j, Order = count };
                     queue.Push(item);

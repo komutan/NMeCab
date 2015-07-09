@@ -10,21 +10,16 @@ namespace NMeCab.Core
         private class Node
         {
             public T Value { get; private set; }
-
-            public int ChiledsCount { get; private set; }
-
+            public int ChildsCount { get; private set; }
             public Node FirstChild { get; private set; }
-
             public Node LastChild { get; private set; }
-
             public Node Prev { get; private set; }
-
             public Node Next { get; private set; }
 
             public void AddFirstChild(Node first)
             {
-                this.ChiledsCount++;
-                if (this.ChiledsCount == 1)
+                this.ChildsCount++;
+                if (this.ChildsCount == 1)
                 {
                     this.LastChild = first;
                 }
@@ -39,8 +34,8 @@ namespace NMeCab.Core
 
             public void AddLastChild(Node last)
             {
-                this.ChiledsCount++;
-                if (this.ChiledsCount == 1)
+                this.ChildsCount++;
+                if (this.ChildsCount == 1)
                 {
                     this.FirstChild = last;
                 }
@@ -55,8 +50,8 @@ namespace NMeCab.Core
 
             public Node PollFirstChild()
             {
-                this.ChiledsCount--;
-                if (this.ChiledsCount == 0)
+                this.ChildsCount--;
+                if (this.ChildsCount == 0)
                 {
                     this.LastChild.Prev = null;
                     this.LastChild = null;
@@ -128,9 +123,9 @@ namespace NMeCab.Core
 
         private Node Unify(Node node)
         {
-            if (node == null || node.ChiledsCount == 0) return null;
+            if (node == null || node.ChildsCount == 0) return null;
 
-            Node[] tmp = new Node[node.ChiledsCount / 2]; //擬似的Stack
+            Node[] tmp = new Node[node.ChildsCount / 2]; //必要な要素数が明らかなのでStackではなく配列
 
             for (int i = 0; i < tmp.Length; i++)
             {
@@ -140,12 +135,12 @@ namespace NMeCab.Core
             }
 
             Node z;
-            if (node.ChiledsCount == 1)
+            if (node.ChildsCount == 1) //子要素数が奇数の場合、まだ１つ残っている子要素をここで処理
                 z = node.PollFirstChild();
             else
                 z = null;
 
-            for (int i = tmp.Length - 1; i >= 0; i--)
+            for (int i = tmp.Length - 1; i >= 0; i--) //逆順ループで配列をStackのように振る舞わせる
             {
                 z = this.Merge(tmp[i], z);
             }
