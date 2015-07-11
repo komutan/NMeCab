@@ -81,7 +81,7 @@ namespace NMeCab.Core
         public void Push(T item)
         {
             this.Count++;
-            this.rootNode = this.MergeNodes(this.rootNode, new HeapNode(item));
+            this.rootNode = this.Merge(this.rootNode, new HeapNode(item));
         }
 
         public T Peek()
@@ -102,7 +102,7 @@ namespace NMeCab.Core
             this.rootNode = this.UnifyChilds(this.rootNode);
         }
 
-        private HeapNode MergeNodes(HeapNode l, HeapNode r)
+        private HeapNode Merge(HeapNode l, HeapNode r)
         {
             if (l == null) return r;
             if (r == null) return l;
@@ -127,7 +127,7 @@ namespace NMeCab.Core
             {
                 HeapNode x = node.PollFirstChild();
                 HeapNode y = node.PollFirstChild();
-                tmp[i] = this.MergeNodes(x, y);
+                tmp[i] = this.Merge(x, y);
             }
 
             HeapNode z;
@@ -138,7 +138,7 @@ namespace NMeCab.Core
 
             for (int i = tmp.Length - 1; i >= 0; i--) //逆順ループで配列をStackのように振る舞わせる
             {
-                z = this.MergeNodes(tmp[i], z);
+                z = this.Merge(tmp[i], z);
             }
 
             return z;
