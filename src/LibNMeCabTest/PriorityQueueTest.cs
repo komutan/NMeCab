@@ -73,6 +73,8 @@ namespace LibNMeCabTest
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(count, queue.Count);
             }
+
+            this.EmptyExceptionTest(queue);
         }
 
         [TestMethod]
@@ -110,6 +112,8 @@ namespace LibNMeCabTest
                 Assert.AreEqual(expected, actual);
                 Assert.AreEqual(count, queue.Count);
             }
+
+            this.EmptyExceptionTest(queue);
         }
 
         [TestMethod]
@@ -125,7 +129,7 @@ namespace LibNMeCabTest
             for (int i = 0; i < 1000; i++)
             {
                 //ランダム優先度でランダム個追加
-                int repeat = rnd.Next(10);
+                int repeat = rnd.Next(1, 10);
                 for (int j = 0; j < repeat; j++)
                 {
                     var item = new Element { Priority = rnd.Next(10), Order = order };
@@ -143,7 +147,7 @@ namespace LibNMeCabTest
                               select e).ToList();
 
                 //ランダム個取り出し
-                repeat = rnd.Next(collection.Count);
+                repeat = rnd.Next(1, collection.Count);
                 for (int j = 0; j < repeat; j++)
                 {
                     var actual = queue.Pop();
@@ -155,6 +159,48 @@ namespace LibNMeCabTest
                 }
                 collection.RemoveRange(0, repeat);
             }
+
+            while (queue.Count > 0) queue.Pop(); //空にする
+            this.EmptyExceptionTest(queue);
+        }
+
+        [TestMethod]
+        public void TestMethod4()
+        {
+            var queue = new NMeCab.Core.PriorityQueue<string>();
+
+            for (int i = 0; i < 10; i++) queue.Push("abc");
+
+            queue.Clear(); //テスト
+
+            Assert.AreEqual(0, queue.Count);
+            this.EmptyExceptionTest(queue);
+        }
+
+        [TestMethod]
+        public void TestMethod5()
+        {
+            var queue = new NMeCab.Core.PriorityQueue<int>();
+
+            //10万件挿入
+            for (int i = 0; i < 100000; i++) queue.Push(i % 5);
+
+            //取り出し
+            while (queue.Count > 0) queue.Pop();
+        }
+
+        private void EmptyExceptionTest<T>(NMeCab.Core.PriorityQueue<T> queue)
+            where T : IComparable<T>
+        {
+            try
+            {
+                queue.Pop();//空なら例外発生
+            }
+            catch (InvalidOperationException)
+            {
+                return;
+            }
+            Assert.Fail("Not Throwed Empty Exception");
         }
     }
 }

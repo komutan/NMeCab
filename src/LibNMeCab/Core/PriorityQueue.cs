@@ -4,6 +4,10 @@ using System.Text;
 
 namespace NMeCab.Core
 {
+    /// <summary>
+    /// 優先度付き先入れ先出しコレクション（実装アルゴリズムはPairing Heap）
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class PriorityQueue<T>
         where T : IComparable<T>
     {
@@ -11,55 +15,45 @@ namespace NMeCab.Core
         {
             public T Value { get; private set; }
             public int ChildsCount { get; private set; }
-            public HeapNode FirstChild { get; private set; }
-            public HeapNode LastChild { get; private set; }
-            public HeapNode Prev { get; private set; }
-            public HeapNode Next { get; private set; }
+            private HeapNode firstChild;
+            private HeapNode lastChild;
+            private HeapNode next;
 
-            public void AddFirstChild(HeapNode first)
+            public void AddFirstChild(HeapNode newNode)
             {
                 this.ChildsCount++;
                 if (this.ChildsCount == 1)
-                {
-                    this.LastChild = first;
-                }
+                    this.lastChild = newNode;
                 else
-                {
-                    HeapNode old = this.FirstChild;
-                    first.Next = old;
-                    old.Prev = first;
-                }
-                this.FirstChild = first;
+                    newNode.next = this.firstChild;
+                this.firstChild = newNode;
             }
 
-            public void AddLastChild(HeapNode last)
+            public void AddLastChild(HeapNode newNode)
             {
                 this.ChildsCount++;
                 if (this.ChildsCount == 1)
-                {
-                    this.FirstChild = last;
-                }
+                    this.firstChild = newNode;
                 else
-                {
-                    HeapNode old = this.LastChild;
-                    last.Prev = old;
-                    old.Next = last;
-                }
-                this.LastChild = last;
+                    this.lastChild.next = newNode;
+                this.lastChild = newNode;
             }
 
             public HeapNode PollFirstChild()
             {
+                HeapNode ret = this.firstChild;
                 this.ChildsCount--;
                 if (this.ChildsCount == 0)
                 {
-                    this.LastChild.Prev = null;
-                    this.LastChild = null;
+                    this.firstChild = null;
+                    this.lastChild = null;
                 }
-                HeapNode first = this.FirstChild;
-                this.FirstChild = first.Next;
-                first.Next = null;
-                return first;
+                else
+                {
+                    this.firstChild = ret.next;
+                    ret.next = null;
+                }
+                return ret;
             }
 
             public HeapNode(T value)
@@ -81,28 +75,20 @@ namespace NMeCab.Core
         public void Push(T item)
         {
             this.Count++;
-            this.rootNode = this.Merge(this.rootNode, new HeapNode(item));
-        }
-
-        public T Peek()
-        {
-            return this.rootNode.Value;
+            this.rootNode = this.MergeNodes(this.rootNode, new HeapNode(item));
         }
 
         public T Pop()
         {
-            T ret = this.Peek();
-            this.RemoveFirst();
+            if (this.Count == 0) throw new InvalidOperationException("Empty");
+
+            this.Count--;
+            T ret = this.rootNode.Value;
+            this.rootNode = this.UnifyChildNodes(this.rootNode);
             return ret;
         }
 
-        public void RemoveFirst()
-        {
-            this.Count--;
-            this.rootNode = this.UnifyChilds(this.rootNode);
-        }
-
-        private HeapNode Merge(HeapNode l, HeapNode r)
+        private HeapNode MergeNodes(HeapNode l, HeapNode r)
         {
             if (l == null) return r;
             if (r == null) return l;
@@ -119,7 +105,7 @@ namespace NMeCab.Core
             }
         }
 
-        private HeapNode UnifyChilds(HeapNode node)
+        private HeapNode UnifyChildNodes(HeapNode node)
         {
             HeapNode[] tmp = new HeapNode[node.ChildsCount / 2]; //必要な要素数が明らかなのでStackではなく配列
 
@@ -127,7 +113,7 @@ namespace NMeCab.Core
             {
                 HeapNode x = node.PollFirstChild();
                 HeapNode y = node.PollFirstChild();
-                tmp[i] = this.Merge(x, y);
+                tmp[i] = this.MergeNodes(x, y);
             }
 
             HeapNode z;
@@ -138,7 +124,7 @@ namespace NMeCab.Core
 
             for (int i = tmp.Length - 1; i >= 0; i--) //逆順ループで配列をStackのように振る舞わせる
             {
-                z = this.Merge(tmp[i], z);
+                z = this.MergeNodes(tmp[i], z);
             }
 
             return z;
