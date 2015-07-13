@@ -56,7 +56,7 @@ namespace NMeCab.Extension.IpaDic
         }
 
         /// <summary>
-        /// 活用型を取得
+        /// 原形を取得
         /// </summary>
         public static string GetOriginalForm(this MeCabNode node)
         {
