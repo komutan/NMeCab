@@ -143,46 +143,73 @@ namespace NMeCab.Extension.UniDic
             return node.GetFeatureItem(16);
         }
 
+        /// <summary>
+        /// 仮名形出現形を取得
+        /// </summary>
         public static string GetKana(this MeCabNode node)
         {
             return node.GetFeatureItem(17);
         }
-        
+
+        /// <summary>
+        /// 仮名形基本形を取得
+        /// </summary>
         public static string GetKanaBase(this MeCabNode node)
         {
             return node.GetFeatureItem(18);
         }
-        
+
+        /// <summary>
+        /// 語形出現形を取得
+        /// </summary>
         public static string GetForm(this MeCabNode node)
         {
             return node.GetFeatureItem(19);
         }
-        
+
+        /// <summary>
+        /// 語形基本形を取得
+        /// </summary>
         public static string GetFormBase(this MeCabNode node)
         {
             return node.GetFeatureItem(20);
         }
         
+        /// <summary>
+        /// 語頭変化結合形を取得
+        /// </summary>
         public static string GetIConType(this MeCabNode node)
         {
             return node.GetFeatureItem(21);
         }
-        
+
+        /// <summary>
+        /// 語末変化結合形を取得
+        /// </summary>
         public static string GetFConType(this MeCabNode node)
         {
             return node.GetFeatureItem(22);
         }
-        
+
+        /// <summary>
+        /// アクセント型を取得
+        /// </summary>
         public static string GetAType(this MeCabNode node)
         {
             return node.GetFeatureItem(23);
         }
-        
+
+        /// <summary>
+        /// アクセント結合型を取得
+        /// </summary>
         public static string GetAConType(this MeCabNode node)
         {
             return node.GetFeatureItem(24);
         }
         
+        /// <summary>
+        /// アクセント修飾型を取得
+        /// </summary>
         public static string GetAModType(this MeCabNode node)
         {
             return node.GetFeatureItem(25);
