@@ -171,6 +171,7 @@ namespace NMeCab
         public unsafe MeCabNode ParseToNode(char* str, int len)
         {
             this.ThrowIfDisposed();
+            if (len < 0) throw new ArgumentOutOfRangeException("len", "Please set one or more to length of string.");
 
             return this.viterbi.Analyze(str, len);
         }
@@ -183,7 +184,7 @@ namespace NMeCab
         /// 解析を行い結果を確からしいものから順番に取得する
         /// </summary>
         /// <param name="str">解析対象の文字列</param>
-        /// <returns>文頭の形態素を確からしい順に取得するための列挙子</returns>
+        /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
         public unsafe IEnumerable<MeCabNode> ParseNBestToNode(string str)
         {
             fixed (char* pStr = str)
@@ -194,7 +195,7 @@ namespace NMeCab
         /// 解析を行い結果を確からしいものから順番に取得する
         /// </summary>
         /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <returns>文頭の形態素を確からしい順に取得するための列挙子の公開</returns>
+        /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
         public unsafe IEnumerable<MeCabNode> ParseNBestToNode(char* str, int len)
         {
             if (this.LatticeLevel == 0)
