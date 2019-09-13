@@ -20,7 +20,8 @@ namespace NMeCab.Core
 
 #if MMF_MTX
         private MemoryMappedFile mmf;
-        private MemoryMappedViewAccessor matrix;
+        private MemoryMappedViewAccessor mmva;
+        private unsafe short* matrix;
 #else
         private short[] matrix;
 #endif
@@ -40,36 +41,33 @@ namespace NMeCab.Core
         }
 
 #if MMF_MTX
-
-        public void Open(string fileName)
+        public unsafe void Open(string fileName)
         {
-            //MMFインスタンスを生成するが、後でDisposeするために保持しておく
-            this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open,
-                                                        null, 0L, MemoryMappedFileAccess.Read);
-            this.Open(this.mmf);
-        }
+            this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, null, 0L, MemoryMappedFileAccess.Read);
+            this.mmva = this.mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
 
-        public void Open(MemoryMappedFile mmf)
-        {
-            using (MemoryMappedViewStream stream = mmf.CreateViewStream(
-                                                        0L, 0L, MemoryMappedFileAccess.Read))
-            using (BinaryReader reader = new BinaryReader(stream))
+            byte* ptr = null;
+            this.mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+
+            using (var stream = mmf.CreateViewStream(0L, 0L, MemoryMappedFileAccess.Read))
+            using (var reader = new BinaryReader(stream))
             {
                 this.LSize = reader.ReadUInt16();
                 this.RSize = reader.ReadUInt16();
 
-                long offset = stream.Position;
-                long size = this.LSize * this.RSize * sizeof(short);
-                this.matrix = mmf.CreateViewAccessor(offset, size, MemoryMappedFileAccess.Read);
+                long fSize = stream.Position + sizeof(short) * this.LSize * this.RSize;
+                if (this.mmva.Capacity < fSize)
+                    throw new MeCabInvalidFileException("file size is invalid", fileName);
+
+                ptr += stream.Position;
+                this.matrix = (short*)ptr;
             }
         }
-
 #else
-
         public void Open(string fileName)
         {
-            using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
-            using (BinaryReader reader = new BinaryReader(stream))
+            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var reader = new BinaryReader(stream))
             {
                 this.Open(reader, fileName);
             }
@@ -89,22 +87,16 @@ namespace NMeCab.Core
             if (reader.BaseStream.ReadByte() != -1)
                 throw new MeCabInvalidFileException("file size is invalid", fileName);
         }
-
 #endif
 
         #endregion
 
         #region Cost
 
-        public int Cost(MeCabNode lNode, MeCabNode rNode)
+        public unsafe int Cost(MeCabNode lNode, MeCabNode rNode)
         {
             int pos = lNode.RCAttr + this.LSize * rNode.LCAttr;
-
-#if MMF_MTX
-            return this.matrix.ReadInt16(pos * sizeof(short)) + rNode.WCost;
-#else
             return this.matrix[pos] + rNode.WCost;
-#endif
         }
 
         #endregion
@@ -129,8 +121,14 @@ namespace NMeCab.Core
             if (disposing)
             {
 #if MMF_MTX
-                if (this.mmf != null) this.mmf.Dispose();
-                if (this.matrix != null) this.matrix.Dispose();
+                if (this.mmva != null)
+                {
+                    this.mmva.SafeMemoryMappedViewHandle.ReleasePointer();
+                    this.mmva.Dispose();
+                }
+
+                if (this.mmf != null)
+                    this.mmf.Dispose();
 #endif
             }
 

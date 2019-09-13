@@ -5,9 +5,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+#if !MMF_DIC
 using System.IO;
-#if MMF_DIC
-using System.IO.MemoryMappedFiles;
 #endif
 
 namespace NMeCab.Core
@@ -15,37 +14,30 @@ namespace NMeCab.Core
     /// <summary>
     /// Double-Array Trie の実装
     /// </summary>
-    public class DoubleArray : IDisposable
+    public class DoubleArray
     {
         #region Array
 
         private struct Unit
         {
-            public readonly int Base;
-            public readonly uint Check;
-
-            public Unit(int b, uint c)
-            {
-                this.Base = b;
-                this.Check = c;
-            }
+#pragma warning disable 0649
+            public int Base;
+            public uint Check;
+#pragma warning restore 0649
         }
 
         public const int UnitSize = sizeof(int) + sizeof(uint);
 
 #if MMF_DIC
 
-        private MemoryMappedViewAccessor accessor;
+        private unsafe Unit* array;
 
         public int Size
         {
-            get { return (int)(this.accessor.Capacity) / UnitSize; }
+            get { return this.TotalSize / UnitSize; }
         }
 
-        public int TotalSize
-        {
-            get { return (int)(this.accessor.Capacity); }
-        }
+        public int TotalSize { get; private set; }
 
 #else
 
@@ -69,20 +61,25 @@ namespace NMeCab.Core
 
 #if MMF_DIC
 
-        public void Open(MemoryMappedFile mmf, long offset, long size)
+        public unsafe void Open(byte* ptr, int size)
         {
-            this.accessor = mmf.CreateViewAccessor(offset, size, MemoryMappedFileAccess.Read);
+            this.array = (Unit*)ptr;
+            this.TotalSize = size;
         }
 
 #else
 
-        public void Open(BinaryReader reader, uint size)
+        public void Open(BinaryReader reader, int size)
         {
             this.array = new Unit[size / UnitSize];
 
             for (int i = 0; i < array.Length; i++)
             {
-                this.array[i] = new Unit(reader.ReadInt32(), reader.ReadUInt32());
+                this.array[i] = new Unit()
+                {
+                    Base = reader.ReadInt32(),
+                    Check = reader.ReadUInt32()
+                };
             }
         }
 
@@ -95,71 +92,60 @@ namespace NMeCab.Core
         public struct ResultPair
         {
             public int Value;
-
             public int Length;
-
-            public ResultPair(int r, int t)
-            {
-                this.Value = r;
-                this.Length = t;
-            }
-        }
-
-        public unsafe void ExactMatchSearch(byte* key, ResultPair* result, int len, int nodePos)
-        {
-            *result = this.ExactMatchSearch(key, len, nodePos);
         }
 
         public unsafe ResultPair ExactMatchSearch(byte* key, int len, int nodePos)
         {
-            int b = this.ReadBase(nodePos);
-            Unit p;
+            int b = this.array[nodePos].Base;
+            int p;
 
             for (int i = 0; i < len; i++)
             {
-                this.ReadUnit(b + key[i] + 1, out p);
-                if (b == p.Check)
+                p = b + key[i] + 1;
+                if (b == this.array[p].Check)
                 {
-                    b = p.Base;
+                    b = this.array[p].Base;
                 }
                 else
                 {
-                    return new ResultPair(-1, 0);
+                    return new ResultPair() { Value = -1, Length = 0 };
                 }
             }
 
-            this.ReadUnit(b, out p);
-            int n = p.Base;
-            if (b == p.Check && n < 0)
+            p = b;
+            int n = this.array[b].Base;
+            if (b == this.array[p].Check && n < 0)
             {
-                return new ResultPair(-n - 1, len);
+                return new ResultPair() { Value = -n - 1, Length = 0 };
             }
 
-            return new ResultPair(-1, 0);
+            return new ResultPair() { Value = -1, Length = 0 };
         }
 
         public unsafe int CommonPrefixSearch(byte* key, ResultPair* result, int resultLen, int len, int nodePos = 0)
         {
-            int b = this.ReadBase(nodePos);
+            int b = this.array[nodePos].Base;
             int num = 0;
             int n;
-            Unit p;
+            int p;
 
             for (int i = 0; i < len; i++)
             {
-                this.ReadUnit(b, out p);
-                n = p.Base;
+                p = b;
+                n = this.array[p].Base;
 
-                if (b == p.Check && n < 0)
+                if (b == this.array[p].Check && n < 0)
                 {
-                    if (num < resultLen) result[num] = new ResultPair(-n - 1, i);
+                    if (num < resultLen)
+                        result[num] = new ResultPair() { Value = -n - 1, Length = i };
                     num++;
                 }
 
-                this.ReadUnit(b + key[i] + 1, out p);
-                if (b == p.Check)
+                p = b + key[i] + 1;
+                if (b == this.array[p].Check)
                 {
-                    b = p.Base;
+                    b = this.array[p].Base;
                 }
                 else
                 {
@@ -167,67 +153,17 @@ namespace NMeCab.Core
                 }
             }
 
-            this.ReadUnit(b, out p);
-            n = p.Base;
+            p = b;
+            n = this.array[p].Base;
 
-            if (b == p.Check && n < 0)
+            if (b == this.array[p].Check && n < 0)
             {
-                if (num < resultLen) result[num] = new ResultPair(-n - 1, len);
+                if (num < resultLen)
+                    result[num] = new ResultPair() { Value = -n - 1, Length = len };
                 num++;
             }
 
             return num;
-        }
-
-
-
-        private int ReadBase(int pos)
-        {
-#if MMF_DIC
-            return this.accessor.ReadInt32(pos * UnitSize);
-#else
-            return this.array[pos].Base;
-#endif
-        }
-
-        private void ReadUnit(int pos, out Unit unit)
-        {
-#if MMF_DIC
-            this.accessor.Read<Unit>(pos * UnitSize, out unit);
-#else
-            unit = this.array[pos];
-#endif
-        }
-
-        #endregion
-
-        #region Dispose
-
-        private bool disposed;
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposed) return;
-
-            if (disposing)
-            {
-#if MMF_DIC
-                if (this.accessor != null) this.accessor.Dispose();
-#endif
-            }
-
-            this.disposed = true;
-        }
-
-        ~DoubleArray()
-        {
-            this.Dispose(false);
         }
 
         #endregion

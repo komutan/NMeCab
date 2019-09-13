@@ -16,32 +16,32 @@ namespace NMeCab.Core
         /// <summary>
         /// 右文脈 id
         /// </summary>
-        public ushort LcAttr { get; set; }
+        public ushort LcAttr;
 
         /// <summary>
         /// 左文脈 id
         /// </summary>
-        public ushort RcAttr { get; set; }
+        public ushort RcAttr;
 
         /// <summary>
         /// 形態素 ID
         /// </summary>
-        public ushort PosId { get; set; }
+        public ushort PosId;
 
         /// <summary>
         /// 単語生起コスト
         /// </summary>
-        public short WCost { get; set; }
+        public short WCost;
 
         /// <summary>
         /// 素性情報の位置
         /// </summary>
-        public uint Feature { get; set; }
+        public uint Feature;
 
         /// <summary>
         /// reserved for noun compound
         /// </summary>
-        public uint Compound { get; set; }
+        public uint Compound;
 
         #endregion
 

@@ -21,14 +21,15 @@ namespace NMeCab.Core
 
 #if MMF_DIC
         private MemoryMappedFile mmf;
-        private MemoryMappedViewAccessor tokens;
-        private MemoryMappedViewAccessor features;
+        private MemoryMappedViewAccessor mmva;
+        private unsafe Token* tokens;
+        private unsafe byte* features;
 #else
         private Token[] tokens;
         private byte[] features;
 #endif
 
-        private DoubleArray da = new DoubleArray();
+        private readonly DoubleArray da = new DoubleArray();
 
         private Encoding encoding;
 
@@ -73,28 +74,26 @@ namespace NMeCab.Core
 
 #if MMF_DIC
 
-        public void Open(string filePath)
+        public unsafe void Open(string fileName)
         {
-            this.mmf = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open,
-                                                       null, 0L, MemoryMappedFileAccess.Read);
-            this.Open(this.mmf, filePath);
-        }
+            this.FileName = fileName;
 
-        public void Open(MemoryMappedFile mmf, string filePath = null)
-        {
-            this.FileName = filePath;
+            this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, null, 0L, MemoryMappedFileAccess.Read);
+            this.mmva = mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
 
-            using (MemoryMappedViewStream stream = mmf.CreateViewStream(
-                                                        0L, 0L, MemoryMappedFileAccess.Read))
-            using (BinaryReader reader = new BinaryReader(stream))
+            byte* ptr = null;
+            this.mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+
+            using (var stream = this.mmf.CreateViewStream(0L, 0L, MemoryMappedFileAccess.Read))
+            using (var reader = new BinaryReader(stream))
             {
                 uint magic = reader.ReadUInt32();
-                if (stream.CanSeek && stream.Length < (magic ^ DictionaryMagicID)) //正確なサイズ取得ができないので不等号で代用
-                    throw new MeCabInvalidFileException("dictionary file is broken", filePath);
+                if (this.mmva.Capacity < (magic ^ DictionaryMagicID))
+                    throw new MeCabInvalidFileException("dictionary file is broken", fileName);
 
                 this.Version = reader.ReadUInt32();
                 if (this.Version != DicVersion)
-                    throw new MeCabInvalidFileException("incompatible version", filePath);
+                    throw new MeCabInvalidFileException("incompatible version", fileName);
 
                 this.Type = (DictionaryType)reader.ReadUInt32();
                 this.LexSize = reader.ReadUInt32();
@@ -108,22 +107,25 @@ namespace NMeCab.Core
                 string charSet = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
                 this.encoding = StrUtils.GetEncoding(charSet);
 
-                long offset = stream.Position;
-                this.da.Open(mmf, offset, dSize);
-                offset += dSize;
-                this.tokens = mmf.CreateViewAccessor(offset, tSize, MemoryMappedFileAccess.Read);
-                offset += tSize;
-                this.features = mmf.CreateViewAccessor(offset, fSize, MemoryMappedFileAccess.Read);
+                ptr += stream.Position;
+
+                this.da.Open(ptr, (int)dSize);
+                ptr += dSize;
+
+                this.tokens = (Token*)ptr;
+                ptr += tSize;
+
+                this.features = ptr;
             }
         }
 
 #else
 
-        public void Open(string filePath)
+        public void Open(string fileName)
         {
-            this.FileName = filePath;
-            
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            this.FileName = fileName;
+
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             using (BinaryReader reader = new BinaryReader(fileStream))
             {
                 this.Open(reader);
@@ -153,7 +155,7 @@ namespace NMeCab.Core
             string charSet = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
             this.encoding = StrUtils.GetEncoding(charSet);
 
-            this.da.Open(reader, dSize);
+            this.da.Open(reader, (int)dSize);
 
             this.tokens = new Token[tSize / sizeof(Token)];
             for (int i = 0; i < this.tokens.Length; i++)
@@ -187,7 +189,7 @@ namespace NMeCab.Core
             byte* bytes = stackalloc byte[maxByteCount];
             int bytesLen = this.encoding.GetBytes(key, len, bytes, maxByteCount);
 
-            DoubleArray.ResultPair result = this.da.ExactMatchSearch(bytes, bytesLen, nodePos);
+            var result = this.da.ExactMatchSearch(bytes, bytesLen, nodePos);
 
             //文字数をデコードしたものに変換
             result.Length = this.encoding.GetCharCount(bytes, result.Length);
@@ -218,19 +220,49 @@ namespace NMeCab.Core
 
         #region Get Infomation
 
-        public unsafe Token[] GetToken(DoubleArray.ResultPair n)
+        public int GetTokenSize(int value)
         {
-            Token[] dist = new Token[0xFF & n.Value];
-            int tokenPos = n.Value >> 8;
-#if MMF_DIC
-            this.tokens.ReadArray<Token>(tokenPos * sizeof(Token), dist, 0, dist.Length);
-#else
-            Array.Copy(this.tokens, tokenPos, dist, 0, dist.Length);
-#endif
-            return dist;
+            return 0xFF & value;
         }
 
-        public string GetFeature(uint featurePos)
+        public int GetTokenPos(int value)
+        {
+            return value >> 8;
+        }
+
+#if MMF_DIC
+        public unsafe Token* GetTokens(int value)
+        {
+            return this.tokens + this.GetTokenPos(value);
+        }
+
+        public unsafe Token[] GetTokensArray(int value)
+        {
+            var ret = new Token[this.GetTokenSize(value)];
+            var t = this.GetTokens(value);
+
+            for (int i = 0; i < ret.Length; i++)
+            {
+                ret[i] = t[i];
+            }
+
+            return ret;
+        }
+#else
+        public ArraySegment<Token> GetTokens(int value)
+        {
+            return new ArraySegment<Token>(this.tokens, this.GetTokenPos(value), this.GetTokenSize(value));
+        }
+
+        public Token[] GetTokensArray(int value)
+        {
+            var ret = new Token[this.GetTokenSize(value)];
+            Array.Copy(this.tokens, this.GetTokenPos(value), ret, 0, ret.Length);
+            return ret;
+        }
+#endif
+
+        public unsafe string GetFeature(uint featurePos)
         {
             return StrUtils.GetString(this.features, (long)featurePos, this.encoding);
         }
@@ -268,11 +300,15 @@ namespace NMeCab.Core
 
             if (disposing)
             {
-                if (this.da != null) this.da.Dispose();
 #if MMF_DIC
-                if (this.mmf != null) this.mmf.Dispose();
-                if (this.tokens != null) this.tokens.Dispose();
-                if (this.features != null) this.features.Dispose();
+                if (this.mmva != null)
+                {
+                    this.mmva.SafeMemoryMappedViewHandle.ReleasePointer();
+                    this.mmva.Dispose();
+                }
+
+                if (this.mmf != null)
+                    this.mmf.Dispose();
 #endif
             }
 

@@ -10,9 +10,9 @@ namespace NMeCab.Core
 {
     public struct CharInfo
     {
-        #region  Const/Field/Property
+        #region Const/Field/Property
 
-        private readonly uint bits;
+        private uint bits;
 
         /// <summary>
         /// 互換カテゴリ

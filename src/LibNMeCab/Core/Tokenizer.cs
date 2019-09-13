@@ -55,7 +55,7 @@ namespace NMeCab.Core
             if (this.unkDic.Type != DictionaryType.Unk)
                 throw new MeCabInvalidFileException("not a unk dictionary", this.unkDic.FileName);
 
-            MeCabDictionary sysDic = new MeCabDictionary();
+            var sysDic = new MeCabDictionary();
             sysDic.Open(Path.Combine(prefix, SysDicFile));
             if (sysDic.Type != DictionaryType.Sys)
                 throw new MeCabInvalidFileException("not a system dictionary", sysDic.FileName);
@@ -63,7 +63,7 @@ namespace NMeCab.Core
 
             for (int i = 0; i < param.UserDic.Length; i++)
             {
-                MeCabDictionary d = new MeCabDictionary();
+                var d = new MeCabDictionary();
                 d.Open(Path.Combine(prefix, param.UserDic[i]));
                 if (d.Type != DictionaryType.Usr)
                     throw new MeCabInvalidFileException("not a user dictionary", d.FileName);
@@ -76,10 +76,11 @@ namespace NMeCab.Core
             for (int i = 0; i < this.unkTokens.Length; i++)
             {
                 string key = this.property.Name(i);
-                DoubleArray.ResultPair n = this.unkDic.ExactMatchSearch(key);
+                var n = this.unkDic.ExactMatchSearch(key);
                 if (n.Value == -1)
                     throw new MeCabInvalidFileException("cannot find UNK category: " + key, this.unkDic.FileName);
-                this.unkTokens[i] = this.unkDic.GetToken(n);
+
+                this.unkTokens[i] = this.unkDic.GetTokensArray(n.Value);
             }
 
             this.space = this.property.GetCharInfo(' ');
@@ -111,28 +112,34 @@ namespace NMeCab.Core
             if (end - begin > ushort.MaxValue) end = begin + ushort.MaxValue;
             char* begin2 = property.SeekToOtherType(begin, end, this.space, &cInfo, &cLen);
 
-            DoubleArray.ResultPair* daResults = stackalloc DoubleArray.ResultPair[DAResultSize];
+            var daResults = stackalloc DoubleArray.ResultPair[DAResultSize];
 
             foreach (MeCabDictionary it in this.dic)
             {
                 int n = it.CommonPrefixSearch(begin2, (int)(end - begin2), daResults, DAResultSize);
-
                 for (int i = 0; i < n; i++)
                 {
-                    Token[] token = it.GetToken(daResults[i]);
-                    for (int j = 0; j < token.Length; j++)
+#if MMF_DIC
+                    var tokenSize = it.GetTokenSize(daResults->Value);
+                    var tokens = it.GetTokens(daResults->Value);
+                    for (int j = 0; j < tokenSize; j++)
+#else
+                    var seg = it.GetTokens(daResults->Value);
+                    var tokens = seg.Array;
+                    for (int j = seg.Offset; j < seg.Offset + seg.Count; j++)
+#endif
                     {
-                        MeCabNode newNode = this.GetNewNode();
-                        this.ReadNodeInfo(it, token[j], newNode);
-                        //newNode.Token = token[j];
-                        newNode.Length = daResults[i].Length;
-                        newNode.RLength = (int)(begin2 - begin) + daResults[i].Length;
-                        newNode.Surface = new string(begin2, 0, daResults[i].Length);
+                        var newNode = this.GetNewNode();
+                        this.ReadNodeInfo(it, tokens[j], newNode);
+                        newNode.Length = daResults->Length;
+                        newNode.RLength = (int)(begin2 - begin) + daResults->Length;
+                        newNode.Surface = new string(begin2, 0, newNode.Length);
                         newNode.Stat = MeCabNodeStat.Nor;
                         newNode.CharType = cInfo.DefaultType;
                         newNode.BNext = resultNode;
                         resultNode = newNode;
                     }
+                    daResults++;
                 }
             }
 
@@ -186,18 +193,18 @@ namespace NMeCab.Core
         private unsafe void AddUnknown(ref MeCabNode resultNode, CharInfo cInfo,
                                        char* begin, char* begin2, char* begin3)
         {
-            Token[] token = this.unkTokens[cInfo.DefaultType];
+            var token = this.unkTokens[cInfo.DefaultType];
             for (int i = 0; i < token.Length; i++)
             {
-                MeCabNode newNode = this.GetNewNode();
+                var newNode = this.GetNewNode();
                 this.ReadNodeInfo(this.unkDic, token[i], newNode);
-                newNode.CharType = cInfo.DefaultType;
-                newNode.Surface = new string(begin2, 0, (int)(begin3 - begin2));
                 newNode.Length = (int)(begin3 - begin2);
                 newNode.RLength = (int)(begin3 - begin);
-                newNode.BNext = resultNode;
+                newNode.Surface = new string(begin2, 0, newNode.Length);
+                newNode.CharType = cInfo.DefaultType;
                 newNode.Stat = MeCabNodeStat.Unk;
                 if (this.unkFeature != null) newNode.Feature = this.unkFeature;
+                newNode.BNext = resultNode;
                 resultNode = newNode;
             }
         }
@@ -208,7 +215,7 @@ namespace NMeCab.Core
 
         public MeCabNode GetBosNode()
         {
-            MeCabNode bosNode = this.GetNewNode();
+            var bosNode = this.GetNewNode();
             bosNode.Surface = BosKey; // dummy
             bosNode.Feature = this.bosFeature;
             bosNode.IsBest = true;
@@ -218,14 +225,14 @@ namespace NMeCab.Core
 
         public MeCabNode GetEosNode()
         {
-            MeCabNode eosNode = this.GetBosNode(); // same
+            var eosNode = this.GetBosNode(); // same
             eosNode.Stat = MeCabNodeStat.Eos;
             return eosNode;
         }
 
         public MeCabNode GetNewNode()
         {
-            MeCabNode node = new MeCabNode();
+            var node = new MeCabNode();
 #if NeedId
             node.Id = Tokenizer.id++;
 #endif
@@ -251,10 +258,12 @@ namespace NMeCab.Core
             if (disposing)
             {
                 if (this.dic != null)
-                    foreach (MeCabDictionary d in this.dic)
-                        if (d != null) d.Dispose();
+                    foreach (var d in this.dic)
+                        if (d != null)
+                            d.Dispose();
 
-                if (this.unkDic != null) this.unkDic.Dispose();
+                if (this.unkDic != null)
+                    this.unkDic.Dispose();
             }
 
             this.disposed = true;
