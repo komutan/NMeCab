@@ -16,20 +16,20 @@ namespace NMeCab
     {
         public string DicDir
         {
-            get { return this[nameof(DicDir)] ?? "dic"; }
-            set { this[nameof(DicDir)] = value; }
+            get { return this.GetOrDefalt("dic"); }
+            set { this.Set(value); }
         }
 
         public string[] UserDic
         {
-            get { return this[nameof(UserDic)].SplitAndTrim(','); }
-            set { this[nameof(UserDic)] = string.Join(",", value); }
+            get { return this.GetTrimedStrAry(','); }
+            set { this.SetStrAry(',', value); }
         }
 
         public int MaxGroupingSize
         {
-            get { return this[nameof(MaxGroupingSize)].ToInt(defalt: 24); }
-            set { this[nameof(MaxGroupingSize)] = value.ToString(); }
+            get { return this.GetOrDefalt( 24); }
+            set { this.Set(value); }
         }
 
         /// <summary>
@@ -37,14 +37,14 @@ namespace NMeCab
         /// </summary>
         public string BosFeature
         {
-            get { return this[nameof(BosFeature)]; }
-            set { this[nameof(BosFeature)] = value; }
+            get { return this.GetOrDefalt(""); }
+            set { this.Set(value); }
         }
 
         public string UnkFeature
         {
-            get { return this[nameof(UnkFeature)]; }
-            set { this[nameof(UnkFeature)] = value; }
+            get { return this.GetOrDefalt(""); }
+            set { this.Set(value); }
         }
 
 
@@ -53,8 +53,8 @@ namespace NMeCab
         /// </summary>
         public int CostFactor
         {
-            get { return this[nameof(CostFactor)].ToInt(defalt: 0); }
-            set { this[nameof(CostFactor)] = value.ToString(); }
+            get { return this.GetOrDefalt(0); }
+            set { this.Set(value); }
         }
 
         /// <summary>
@@ -62,8 +62,8 @@ namespace NMeCab
         /// </summary>
         public float Theta
         {
-            get { return this[nameof(Theta)].ToFloat(defalt: 0.75f); }
-            set { this[nameof(Theta)] = value.ToString(); }
+            get { return this.GetOrDefalt(0.75f); }
+            set { this.Set(value); }
         }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace NMeCab
         /// </summary>
         public MeCabLatticeLevel LatticeLevel
         {
-            get { return this[nameof(LatticeLevel)].ToEnum<MeCabLatticeLevel>(defalt: MeCabLatticeLevel.One); }
-            set { this[nameof(LatticeLevel)] = value.ToString(); }
+            get { return this.GetOrDefalt(MeCabLatticeLevel.One); }
+            set { this.Set(value); }
         }
 
         /// <summary>
@@ -80,8 +80,8 @@ namespace NMeCab
         /// </summary>
         public bool Partial
         {
-            get { return this[nameof(Partial)].ToBool(defalt: false); }
-            set { this[nameof(Partial)] = value.ToString(); }
+            get { return this.GetOrDefalt(false); }
+            set { this.Set(value); }
         }
 
         /// <summary>
@@ -93,20 +93,20 @@ namespace NMeCab
         /// </value>
         public bool AllMorphs
         {
-            get { return this[nameof(AllMorphs)].ToBool(defalt: false); }
+            get { return this.GetOrDefalt(false); }
             set { this[nameof(AllMorphs)] = value.ToString(); }
         }
 
         public string OutputFormatType
         {
-            get { return this[nameof(OutputFormatType)] ?? "lattice"; }
-            set { this[nameof(OutputFormatType)] = value; }
+            get { return this.GetOrDefalt("lattice"); }
+            set { this.Set(value); }
         }
 
         public string RcFile
         {
-            get { return this[nameof(RcFile)] ?? "dicrc"; }
-            set { this[nameof(RcFile)] = value; }
+            get { return this.GetOrDefalt("dicrc"); }
+            set { this.Set(value); }
         }
 
         public void LoadDicRC()
@@ -128,12 +128,67 @@ namespace NMeCab
             }
         }
 
-        private string GetConfig([CallerMemberName]string name = null, string defalt = null)
+        private string GetOrDefalt(string defalt, [CallerMemberName]string name = null)
+        {
+            return this[name] ?? defalt;
+        }
+
+        private int GetOrDefalt(int defalt, [CallerMemberName]string name = null)
         {
             var wrk = this[name];
-            if (!string.IsNullOrEmpty(wrk)) return wrk;
+            if (wrk == null) return defalt;
 
-            return defalt;
+            return int.Parse(wrk);
+        }
+
+        private float GetOrDefalt(float defalt, [CallerMemberName]string name = null)
+        {
+            var wrk = this[name];
+            if (wrk == null) return defalt;
+
+            return float.Parse(wrk);
+        }
+
+        private bool GetOrDefalt(bool defalt, [CallerMemberName]string name = null)
+        {
+            var wrk = this[name];
+            if (wrk == null) return defalt;
+
+            return bool.Parse(wrk);
+        }
+
+        private TEnum GetOrDefalt<TEnum>(TEnum defalt, [CallerMemberName]string name = null)
+            where TEnum : Enum
+        {
+            var wrk = this[name];
+            if (wrk == null) return defalt;
+
+            return (TEnum)Enum.Parse(typeof(TEnum), wrk, true);
+        }
+
+        private string[] GetTrimedStrAry(char separator, [CallerMemberName]string name = null)
+        {
+            var wrk = this[name];
+            if (wrk == null) return new string[0];
+
+            var ret = wrk.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < ret.Length; i++)
+            {
+                ret[i] = ret[i].Trim();
+            }
+
+            return ret;
+        }
+
+        private void Set(object value, [CallerMemberName]string name = null)
+        {
+            this[name] = value.ToString();
+        }
+
+        private void SetStrAry(char separator, string[] values, [CallerMemberName]string name = null)
+        {
+            this[name] = string.Join(separator.ToString(), values);
         }
     }
 }
