@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Collections.Specialized;
 
 namespace NMeCab.Core
 {
@@ -12,8 +13,6 @@ namespace NMeCab.Core
         public char[] TrimChars { get; set; }
         public bool IsRewrites { get; set; }
 
-        private readonly Dictionary<string, string> dic = new Dictionary<string, string>();
-
         public IniParser()
         {
             this.SplitChar = '=';
@@ -21,19 +20,13 @@ namespace NMeCab.Core
             this.TrimChars = new char[] { ' ', '\t' };
         }
 
-        public string this[string key]
-        {
-            get { return this.dic[key]; }
-            set { this.dic[key] = value; }
-        }
-
-        public void Load(string fileName, Encoding encoding)
+        public void Load(NameValueCollection store, string fileName, Encoding encoding)
         {
             using (TextReader reader = new StreamReader(fileName, encoding))
-                this.Load(reader, fileName);
+                this.Load(store, reader, fileName);
         }
 
-        public void Load(TextReader reader, string fileName = null)
+        public void Load(NameValueCollection store, TextReader reader, string fileName = null)
         {
             int lineNo = 0;
             for (string line = reader.ReadLine(); line != null; line = reader.ReadLine())
@@ -47,16 +40,11 @@ namespace NMeCab.Core
                 if (eqPos <= 0) throw new MeCabFileFormatException("Format error.", fileName, lineNo, line);
 
                 string key = line.Substring(0, eqPos).TrimEnd(this.TrimChars);
-                if (!this.IsRewrites && this.dic.ContainsKey(key)) continue;
+                if (!this.IsRewrites && store[key] != null) continue;
 
                 string value = line.Substring(eqPos + 1).TrimStart(this.TrimChars);
-                this.dic[key] = value;
+                store[key] = value;
             }
-        }
-
-        public void Clear()
-        {
-            this.dic.Clear();
         }
     }
 }
