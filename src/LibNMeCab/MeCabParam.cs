@@ -7,47 +7,82 @@ using System.Collections.Generic;
 using System.Text;
 using NMeCab.Core;
 using System.IO;
+using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 
 namespace NMeCab
 {
-    public class MeCabParam
+    public class MeCabParam : NameValueCollection
     {
-        public string DicDir { get; set; }
+        public string DicDir
+        {
+            get { return this[nameof(DicDir)] ?? "dic"; }
+            set { this[nameof(DicDir)] = value; }
+        }
 
-        public string[] UserDic { get; set; }
+        public string[] UserDic
+        {
+            get { return this[nameof(UserDic)].SplitAndTrim(','); }
+            set { this[nameof(UserDic)] = string.Join(",", value); }
+        }
 
-        public int MaxGroupingSize { get; set; }
+        public int MaxGroupingSize
+        {
+            get { return this[nameof(MaxGroupingSize)].ToInt(defalt: 24); }
+            set { this[nameof(MaxGroupingSize)] = value.ToString(); }
+        }
 
         /// <summary>
         /// 文頭, 文末の素性
         /// </summary>
-        public string BosFeature { get; set; }
+        public string BosFeature
+        {
+            get { return this[nameof(BosFeature)]; }
+            set { this[nameof(BosFeature)] = value; }
+        }
 
-        public string UnkFeature { get; set; }
+        public string UnkFeature
+        {
+            get { return this[nameof(UnkFeature)]; }
+            set { this[nameof(UnkFeature)] = value; }
+        }
 
-        public bool AlloCateSentence { get; set; }
 
         /// <summary>
         /// コスト値に変換するときのスケーリングファクター
         /// </summary>
-        public int CostFactor { get; set; }
-
-        public const float DefaultTheta = 0.75f;
+        public int CostFactor
+        {
+            get { return this[nameof(CostFactor)].ToInt(defalt: 0); }
+            set { this[nameof(CostFactor)] = value.ToString(); }
+        }
 
         /// <summary>
         /// ソフト分かち書きの温度パラメータ
         /// </summary>
-        public float Theta { get; set; }
+        public float Theta
+        {
+            get { return this[nameof(Theta)].ToFloat(defalt: 0.75f); }
+            set { this[nameof(Theta)] = value.ToString(); }
+        }
 
         /// <summary>
         /// ラティスレベル(どの程度のラティス情報を解析時に構築するか)
         /// </summary>
-        public MeCabLatticeLevel LatticeLevel { get; set; }
+        public MeCabLatticeLevel LatticeLevel
+        {
+            get { return this[nameof(LatticeLevel)].ToEnum<MeCabLatticeLevel>(defalt: MeCabLatticeLevel.One); }
+            set { this[nameof(LatticeLevel)] = value.ToString(); }
+        }
 
         /// <summary>
         /// 部分解析
         /// </summary>
-        public bool Partial { get; set; }
+        public bool Partial
+        {
+            get { return this[nameof(Partial)].ToBool(defalt: false); }
+            set { this[nameof(Partial)] = value.ToString(); }
+        }
 
         /// <summary>
         /// 出力モード
@@ -56,55 +91,49 @@ namespace NMeCab
         /// true: 全出力
         /// false: ベスト解のみ
         /// </value>
-        public bool AllMorphs { get; set; }
-
-        //public bool AllocateSentence { get; set; }
-
-        public string OutputFormatType { get; set; }
-
-        public const string DefaultRcFile = "dicrc";
-
-        public string RcFile { get; set; }
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        public MeCabParam()
+        public bool AllMorphs
         {
-            this.Theta = MeCabParam.DefaultTheta;
-            this.RcFile = MeCabParam.DefaultRcFile;
+            get { return this[nameof(AllMorphs)].ToBool(defalt: false); }
+            set { this[nameof(AllMorphs)] = value.ToString(); }
+        }
 
-            Properties.Settings settings = Properties.Settings.Default;
-            this.DicDir = settings.DicDir;
-            this.UserDic = this.SplitStringArray(settings.UserDic, ',');
-            this.OutputFormatType = settings.OutputFormatType;
+        public string OutputFormatType
+        {
+            get { return this[nameof(OutputFormatType)] ?? "lattice"; }
+            set { this[nameof(OutputFormatType)] = value; }
+        }
+
+        public string RcFile
+        {
+            get { return this[nameof(RcFile)] ?? "dicrc"; }
+            set { this[nameof(RcFile)] = value; }
         }
 
         public void LoadDicRC()
         {
-            string rc = Path.Combine(this.DicDir, this.RcFile);
-            this.Load(rc);
+            var rc = Path.Combine(this.DicDir, this.RcFile);
+            if (!File.Exists(rc)) return;
+
+            var ini = new IniParser();
+            ini.Load(this, rc, Encoding.ASCII);
         }
 
-        public void Load(string path)
+        public void Load(NameValueCollection conf, bool overwrites = true)
         {
-            IniParser ini = new IniParser();
-            ini.Load(path, Encoding.ASCII);
+            foreach (var key in conf.AllKeys)
+            {
+                if (!overwrites && this[key] != null) continue;
 
-            this.CostFactor = int.Parse(ini["cost-factor"] ?? "0");
-            this.BosFeature = ini["bos-feature"];
+                this[key] = conf[key];
+            }
         }
 
-        private string[] SplitStringArray(string configStr, char separator)
+        private string GetConfig([CallerMemberName]string name = null, string defalt = null)
         {
-            if (string.IsNullOrEmpty(configStr)) return new string[0];
+            var wrk = this[name];
+            if (!string.IsNullOrEmpty(wrk)) return wrk;
 
-            string[] ret = configStr.Split(separator);
-
-            for (int i = 0; i < ret.Length; i++)
-                ret[i] = ret[i].Trim();
-
-            return ret;
+            return defalt;
         }
     }
 }

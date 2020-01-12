@@ -19,7 +19,6 @@ namespace NMeCab.Core
         private const string SysDicFile = "sys.dic";
         private const string UnkDicFile = "unk.dic";
         private const int DAResultSize = 512;
-        private const int DefaltMaxGroupingSize = 24;
         private const string BosKey = "BOS/EOS";
 
         #endregion
@@ -89,7 +88,6 @@ namespace NMeCab.Core
             this.unkFeature = param.UnkFeature;
 
             this.maxGroupingSize = param.MaxGroupingSize;
-            if (this.maxGroupingSize <= 0) this.maxGroupingSize = DefaltMaxGroupingSize;
         }
 
 #if NeedId
