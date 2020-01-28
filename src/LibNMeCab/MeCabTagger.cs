@@ -33,8 +33,9 @@ namespace NMeCab
         public static MeCabTagger Create(string dicDir = "dic",
                                          IEnumerable<string> userDics = null)
         {
-            // 限定でLINQを使用
-            var userDicAry = System.Linq.Enumerable.ToArray(userDics);
+            var userDicAry = userDics == null
+                           ? new string[0]
+                           : System.Linq.Enumerable.ToArray(userDics); // 限定でLINQを使用
 
             MeCabTagger tagger = null;
             try
