@@ -4,7 +4,6 @@
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
 using System.Collections.Generic;
-using System.Text;
 using NMeCab.Core;
 
 namespace NMeCab
@@ -12,65 +11,6 @@ namespace NMeCab
     public class MeCabTagger : IDisposable
     {
         private readonly Viterbi viterbi = new Viterbi();
-        private readonly Writer writer = new Writer();
-
-        #region Mode
-
-        /// <summary>
-        /// 部分解析モード
-        /// </summary>
-        public bool Partial
-        {
-            get { this.ThrowIfDisposed(); return this.viterbi.Partial; }
-            set { this.ThrowIfDisposed(); this.viterbi.Partial = value; }
-        }
-
-        /// <summary>
-        /// ソフト分かち書きの温度パラメータ
-        /// </summary>
-        public float Theta
-        {
-            get { this.ThrowIfDisposed(); return this.viterbi.Theta; }
-            set { this.ThrowIfDisposed(); this.viterbi.Theta = value; }
-        }
-
-        /// <summary>
-        /// ラティスレベル(どの程度のラティス情報を解析時に構築するか)
-        /// </summary>
-        /// <value>
-        /// 0: 最適解のみが出力可能なレベル (デフォルト, 高速) 
-        /// 1: N-best 解が出力可能なレベル (中速) 
-        /// 2: ソフトわかち書きが可能なレベル (低速) 
-        /// </value>
-        public MeCabLatticeLevel LatticeLevel
-        {
-            get { this.ThrowIfDisposed(); return this.viterbi.LatticeLevel; }
-            set { this.ThrowIfDisposed(); this.viterbi.LatticeLevel = value; }
-        }
-
-        /// <summary>
-        /// 全出力モード
-        /// </summary>
-        /// <value>
-        /// true: 全出力
-        /// false: ベスト解のみ
-        /// </value>
-        public bool AllMorphs
-        {
-            get { this.ThrowIfDisposed(); return this.viterbi.AllMorphs; }
-            set { this.ThrowIfDisposed(); this.viterbi.AllMorphs = value; }
-        }
-
-        /// <summary>
-        /// 解析結果のフォーマット
-        /// </summary>
-        public string OutPutFormatType
-        {
-            get { this.ThrowIfDisposed(); return this.writer.OutputFormatType; }
-            set { this.ThrowIfDisposed(); this.writer.OutputFormatType = value; }
-        }
-
-        #endregion
 
         #region Constractor
 
@@ -78,45 +18,37 @@ namespace NMeCab
         /// コンストラクタ
         /// </summary>
         private MeCabTagger()
-        {
-        }
+        { }
 
         #endregion
 
-        #region Open/Create
+        #region Create
 
         /// <summary>
-        /// MeCabTaggerを開く
+        /// MeCabTaggerインスタンスを作成する
         /// </summary>
-        /// <param name="param">初期化パラメーター</param>
-        private void Open(MeCabParam param)
-        {
-            this.viterbi.Open(param);
-
-            this.writer.Open(param);
-        }
-
-        /// <summary>
-        /// MeCabTaggerのインスタンスを生成する
-        /// </summary>
+        /// <param name="dicDir">辞書のディレクトリ</param>
+        /// <param name="userDics">ユーザー辞書ファイル名のコレクション</param>
         /// <returns>MeCabTaggerのインスタンス</returns>
-        public static MeCabTagger Create()
+        public static MeCabTagger Create(string dicDir = "dic",
+                                         IEnumerable<string> userDics = null)
         {
-            MeCabParam param = new MeCabParam();
-            param.LoadDicRC();
-            return MeCabTagger.Create(param);
-        }
+            // 限定でLINQを使用
+            var userDicAry = System.Linq.Enumerable.ToArray(userDics);
 
-        /// <summary>
-        /// MeCabTaggerのインスタンスを生成する
-        /// </summary>
-        /// <param name="param">初期化パラメーター</param>
-        /// <returns>MeCabTaggerのインスタンス</returns>
-        public static MeCabTagger Create(MeCabParam param)
-        {
-            MeCabTagger tagger = new MeCabTagger();
-            tagger.Open(param);
-            return tagger;
+            MeCabTagger tagger = null;
+            try
+            {
+                tagger = new MeCabTagger();
+                tagger.viterbi.Open(dicDir, userDicAry);
+
+                return tagger;
+            }
+            catch (Exception)
+            {
+                tagger?.Dispose();
+                throw;
+            }
         }
 
         #endregion
@@ -127,9 +59,11 @@ namespace NMeCab
         /// 解析を行う
         /// </summary>
         /// <param name="str">解析対象の文字列</param>
-        /// <returns>解析結果の文字列</returns>
-        public unsafe string Parse(string str)
+        /// <returns>文頭の形態素</returns>
+        public unsafe MeCabNode Parse(string str)
         {
+            if (str == null) throw new ArgumentNullException(nameof(str));
+
             fixed (char* pStr = str)
                 return this.Parse(pStr, str.Length);
         }
@@ -139,41 +73,13 @@ namespace NMeCab
         /// </summary>
         /// <param name="str">解析対象の文字列へのポインタ</param>
         /// <param name="len">解析対象の文字列の長さ</param>
-        /// <returns>解析結果の文字列</returns>
-        public unsafe string Parse(char* str, int len)
-        {
-            MeCabNode n = this.ParseToNode(str, len);
-            if (n == null) return null;
-            StringBuilder os = new StringBuilder();
-            this.writer.Write(os, n);
-            return os.ToString();
-        }
-
-        /// <summary>
-        /// 解析を行う
-        /// </summary>
-        /// <param name="str">解析対象の文字列</param>
         /// <returns>文頭の形態素</returns>
-        public unsafe MeCabNode ParseToNode(string str)
+        public unsafe MeCabNode Parse(char* str, int len)
         {
-            if (str == null) throw new ArgumentNullException("str");
+            var param = new MeCabParam();
 
-            fixed (char* pStr = str)
-                return this.ParseToNode(pStr, str.Length);
-        }
-
-        /// <summary>
-        /// 解析を行う
-        /// </summary>
-        /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <param name="len">解析対象の文字列の長さ</param>
-        /// <returns>文頭の形態素</returns>
-        public unsafe MeCabNode ParseToNode(char* str, int len)
-        {
-            this.ThrowIfDisposed();
-            if (len < 0) throw new ArgumentOutOfRangeException("len", "Please set one or more to length of string.");
-
-            return this.viterbi.Analyze(str, len);
+            var lattice = this.ParseToLattice(str, len, param);
+            return lattice.BosNode;
         }
 
         #endregion
@@ -187,6 +93,8 @@ namespace NMeCab
         /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
         public unsafe IEnumerable<MeCabNode> ParseNBestToNode(string str)
         {
+            if (str == null) throw new ArgumentNullException(nameof(str));
+
             fixed (char* pStr = str)
                 return this.ParseNBestToNode(pStr, str.Length);
         }
@@ -198,47 +106,72 @@ namespace NMeCab
         /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
         public unsafe IEnumerable<MeCabNode> ParseNBestToNode(char* str, int len)
         {
-            if (this.LatticeLevel == 0)
-                throw new InvalidOperationException("Please set one or more to LatticeLevel.");
+            var param = new MeCabParam()
+            {
+                NBest = true
+            };
 
-            MeCabNode n = this.ParseToNode(str, len);
-            NBestGenerator nBest = new NBestGenerator();
-            nBest.Set(n);
+            var lattice = this.ParseToLattice(str, len, param);
+            var nBest = new NBestGenerator();
+            nBest.Set(lattice.EosNode);
             return nBest.GetEnumerator();
         }
 
-        /// <summary>
-        /// ParseのN-Best解出力version
-        /// </summary>
-        /// <param name="n">必要な解析結果の個数</param>
-        /// <param name="str">解析対象の文字列</param>
-        /// <returns>解析結果の文字列</returns>
-        public unsafe string ParseNBest(int n, string str)
+        #endregion
+
+        #region AllMophs
+
+        public unsafe MeCabNode ParseAllMorphs(string str)
         {
+            if (str == null) throw new ArgumentNullException(nameof(str));
+
             fixed (char* pStr = str)
-                return this.ParseNBest(n, pStr, str.Length);
+                return this.ParseAllMorphs(pStr, str.Length);
+        }
+
+        public unsafe MeCabNode ParseAllMorphs(char* str, int len)
+        {
+            var param = new MeCabParam()
+            {
+                AllMorphs = true
+            };
+
+            var lattice = this.ParseToLattice(str, len, param);
+            return lattice.BosNode;
+        }
+
+        #endregion
+
+        #region Lattice
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public unsafe MeCabLattice ParseToLattice(string str, MeCabParam param)
+        {
+            if (str == null) throw new ArgumentNullException(nameof(str));
+
+            fixed (char* pStr = str)
+                return this.ParseToLattice(pStr, str.Length, param);
         }
 
         /// <summary>
-        /// ParseのN-Best解出力version
+        /// 
         /// </summary>
-        /// <param name="n">必要な解析結果の個数</param>
-        /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <param name="len">解析対象の文字列の長さ</param>
-        /// <returns>解析結果の文字列</returns>
-        public unsafe string ParseNBest(int n, char* str, int len)
+        /// <param name="str"></param>
+        /// <param name="len"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public unsafe MeCabLattice ParseToLattice(char* str, int len, MeCabParam param)
         {
-            if (n <= 0) throw new ArgumentOutOfRangeException("n", "");
+            this.ThrowIfDisposed();
+            if (len <= 0)
+                throw new ArgumentOutOfRangeException("Please set one or more to length of string.");
 
-            if (n == 1) return this.Parse(str, len);
-
-            StringBuilder os = new StringBuilder();
-            foreach (MeCabNode node in this.ParseNBestToNode(str, len))
-            {
-                this.writer.Write(os, node);
-                if (--n == 0) break;
-            }
-            return os.ToString();
+            return this.viterbi.Analyze(str, len, param);
         }
 
         #endregion
@@ -262,7 +195,7 @@ namespace NMeCab
 
             if (disposing)
             {
-                this.viterbi.Dispose(); //Nullチェック不要
+                this.viterbi.Dispose();
             }
 
             this.disposed = true;

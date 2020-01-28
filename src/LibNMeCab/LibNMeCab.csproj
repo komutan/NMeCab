@@ -10,6 +10,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;MMF_MTX;MMF_DIC</DefineConstants>
   </PropertyGroup>
 
 </Project>

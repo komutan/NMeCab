@@ -34,21 +34,17 @@ namespace NMeCab.Core
 
         #region Open
 
-        public void Open(MeCabParam param)
+        public unsafe void Open(string dicDir)
         {
-            string fileName = Path.Combine(param.DicDir, MatrixFile);
-            this.Open(fileName);
-        }
+            string fileName = Path.Combine(dicDir, MatrixFile);
 
 #if MMF_MTX
-        public unsafe void Open(string fileName)
-        {
             this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, null, 0L, MemoryMappedFileAccess.Read);
             this.mmva = this.mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
 
             byte* ptr = null;
             this.mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-
+            
             using (var stream = mmf.CreateViewStream(0L, 0L, MemoryMappedFileAccess.Read))
             using (var reader = new BinaryReader(stream))
             {
@@ -62,32 +58,24 @@ namespace NMeCab.Core
                 ptr += stream.Position;
                 this.matrix = (short*)ptr;
             }
-        }
 #else
-        public void Open(string fileName)
-        {
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
             using (var reader = new BinaryReader(stream))
             {
-                this.Open(reader, fileName);
+                this.LSize = reader.ReadUInt16();
+                this.RSize = reader.ReadUInt16();
+
+                this.matrix = new short[this.LSize * this.RSize];
+                for (int i = 0; i < this.matrix.Length; i++)
+                {
+                    this.matrix[i] = reader.ReadInt16();
+                }
+
+                if (reader.BaseStream.ReadByte() != -1)
+                    throw new MeCabInvalidFileException("file size is invalid", fileName);
             }
-        }
-
-        public void Open(BinaryReader reader, string fileName = null)
-        {
-            this.LSize = reader.ReadUInt16();
-            this.RSize = reader.ReadUInt16();
-
-            this.matrix = new short[this.LSize * this.RSize];
-            for (int i = 0; i < this.matrix.Length; i++)
-            {
-                this.matrix[i] = reader.ReadInt16();
-            }
-
-            if (reader.BaseStream.ReadByte() != -1)
-                throw new MeCabInvalidFileException("file size is invalid", fileName);
-        }
 #endif
+        }
 
         #endregion
 

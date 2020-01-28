@@ -19,7 +19,6 @@ namespace NMeCab.Core
         private const string SysDicFile = "sys.dic";
         private const string UnkDicFile = "unk.dic";
         private const int DAResultSize = 512;
-        private const string BosKey = "BOS/EOS";
 
         #endregion
 
@@ -27,12 +26,9 @@ namespace NMeCab.Core
 
         private MeCabDictionary[] dic;
         private readonly MeCabDictionary unkDic = new MeCabDictionary();
-        private string bosFeature;
-        private string unkFeature;
         private Token[][] unkTokens;
         private CharInfo space;
         private readonly CharProperty property = new CharProperty();
-        private int maxGroupingSize;
 #if NeedId
         [ThreadStaticAttribute]
         private static uint id;
@@ -42,34 +38,32 @@ namespace NMeCab.Core
 
         #region Open/Clear
 
-        public void Open(MeCabParam param)
+        public void Open(string dicDir, string[] userDics)
         {
-            this.dic = new MeCabDictionary[param.UserDic.Length + 1];
+            this.property.Open(dicDir);
 
-            string prefix = param.DicDir;
+            this.dic = new MeCabDictionary[userDics.Length + 1];
+            for (int i = 0; i < this.dic.Length; i++)
+                this.dic[i] = new MeCabDictionary();
 
-            this.property.Open(prefix);
+            var sysDic = this.dic[0];
+            sysDic.Open(Path.Combine(dicDir, SysDicFile));
+            if (sysDic.Type != DictionaryType.Sys)
+                throw new MeCabInvalidFileException("not a system dictionary", SysDicFile);
 
-            this.unkDic.Open(Path.Combine(prefix, UnkDicFile));
+            for (int i = 0; i < userDics.Length; i++)
+            {
+                var d = this.dic[i + 1];
+                d.Open(Path.Combine(dicDir, userDics[i]));
+                if (d.Type != DictionaryType.Usr)
+                    throw new MeCabInvalidFileException("not a user dictionary", userDics[i]);
+                if (!sysDic.IsCompatible(d))
+                    throw new MeCabInvalidFileException("incompatible dictionary", userDics[i]);
+            }
+
+            this.unkDic.Open(Path.Combine(dicDir, UnkDicFile));
             if (this.unkDic.Type != DictionaryType.Unk)
                 throw new MeCabInvalidFileException("not a unk dictionary", this.unkDic.FileName);
-
-            var sysDic = new MeCabDictionary();
-            sysDic.Open(Path.Combine(prefix, SysDicFile));
-            if (sysDic.Type != DictionaryType.Sys)
-                throw new MeCabInvalidFileException("not a system dictionary", sysDic.FileName);
-            this.dic[0] = sysDic;
-
-            for (int i = 0; i < param.UserDic.Length; i++)
-            {
-                var d = new MeCabDictionary();
-                d.Open(Path.Combine(prefix, param.UserDic[i]));
-                if (d.Type != DictionaryType.Usr)
-                    throw new MeCabInvalidFileException("not a user dictionary", d.FileName);
-                if (!sysDic.IsCompatible(d))
-                    throw new MeCabInvalidFileException("incompatible dictionary", d.FileName);
-                this.dic[i + 1] = d;
-            }
 
             this.unkTokens = new Token[this.property.Size][];
             for (int i = 0; i < this.unkTokens.Length; i++)
@@ -83,11 +77,6 @@ namespace NMeCab.Core
             }
 
             this.space = this.property.GetCharInfo(' ');
-
-            this.bosFeature = param.BosFeature;
-            this.unkFeature = param.UnkFeature;
-
-            this.maxGroupingSize = param.MaxGroupingSize;
         }
 
 #if NeedId
@@ -101,7 +90,7 @@ namespace NMeCab.Core
 
         #region Lookup
 
-        public unsafe MeCabNode Lookup(char* begin, char* end)
+        public unsafe MeCabNode Lookup(char* begin, char* end, MeCabParam param)
         {
             CharInfo cInfo;
             MeCabNode resultNode = null;
@@ -148,7 +137,7 @@ namespace NMeCab.Core
 
             if (begin3 > end)
             {
-                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3);
+                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
                 return resultNode;
             }
 
@@ -157,7 +146,7 @@ namespace NMeCab.Core
                 char* tmp = begin3;
                 CharInfo fail;
                 begin3 = this.property.SeekToOtherType(begin3, end, cInfo, &fail, &cLen);
-                if (cLen <= maxGroupingSize) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3);
+                if (cLen <= param.MaxGroupingSize) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
                 groupBegin3 = begin3;
                 begin3 = tmp;
             }
@@ -167,12 +156,12 @@ namespace NMeCab.Core
                 if (begin3 > end) break;
                 if (begin3 == groupBegin3) continue;
                 cLen = i;
-                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3);
+                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
                 if (!cInfo.IsKindOf(this.property.GetCharInfo(*begin3))) break;
                 begin3 += 1;
             }
 
-            if (resultNode == null) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3);
+            if (resultNode == null) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
 
             return resultNode;
         }
@@ -189,7 +178,8 @@ namespace NMeCab.Core
         }
 
         private unsafe void AddUnknown(ref MeCabNode resultNode, CharInfo cInfo,
-                                       char* begin, char* begin2, char* begin3)
+                                       char* begin, char* begin2, char* begin3,
+                                       MeCabParam param)
         {
             var token = this.unkTokens[cInfo.DefaultType];
             for (int i = 0; i < token.Length; i++)
@@ -201,7 +191,7 @@ namespace NMeCab.Core
                 newNode.Surface = new string(begin2, 0, newNode.Length);
                 newNode.CharType = cInfo.DefaultType;
                 newNode.Stat = MeCabNodeStat.Unk;
-                if (this.unkFeature != null) newNode.Feature = this.unkFeature;
+                if (param.UnkFeature != null) newNode.Feature = param.UnkFeature;
                 newNode.BNext = resultNode;
                 resultNode = newNode;
             }
@@ -211,19 +201,19 @@ namespace NMeCab.Core
 
         #region Get Node
 
-        public MeCabNode GetBosNode()
+        public MeCabNode GetBosNode(MeCabParam param)
         {
             var bosNode = this.GetNewNode();
-            bosNode.Surface = BosKey; // dummy
-            bosNode.Feature = this.bosFeature;
+            bosNode.Surface = "";
+            bosNode.Feature = "";
             bosNode.IsBest = true;
             bosNode.Stat = MeCabNodeStat.Bos;
             return bosNode;
         }
 
-        public MeCabNode GetEosNode()
+        public MeCabNode GetEosNode(MeCabParam param)
         {
-            var eosNode = this.GetBosNode(); // same
+            var eosNode = this.GetBosNode(param); // same
             eosNode.Stat = MeCabNodeStat.Eos;
             return eosNode;
         }
@@ -257,11 +247,9 @@ namespace NMeCab.Core
             {
                 if (this.dic != null)
                     foreach (var d in this.dic)
-                        if (d != null)
-                            d.Dispose();
+                        d?.Dispose();
 
-                if (this.unkDic != null)
-                    this.unkDic.Dispose();
+                this.unkDic.Dispose();  //Nullチェック不要
             }
 
             this.disposed = true;
