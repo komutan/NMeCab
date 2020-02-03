@@ -53,17 +53,16 @@ namespace NMeCab
         /// <returns>MeCabTaggerのインスタンス</returns>
         public static MeCabTagger Create(string dicDir, string[] userDics)
         {
-            MeCabTagger tagger = null;
+            var tagger = new MeCabTagger();
             try
             {
-                tagger = new MeCabTagger();
                 tagger.viterbi.Open(dicDir, userDics);
 
                 return tagger;
             }
             catch (Exception)
             {
-                tagger?.Dispose();
+                tagger.Dispose();
                 throw;
             }
         }
@@ -76,8 +75,8 @@ namespace NMeCab
         /// 解析を行う
         /// </summary>
         /// <param name="str">解析対象の文字列</param>
-        /// <returns>文頭の形態素</returns>
-        public unsafe MeCabNode Parse(string str)
+        /// <returns>形態素</returns>
+        public unsafe MeCabNode[] Parse(string str)
         {
             fixed (char* pStr = str)
                 return this.Parse(pStr, str.Length);
@@ -88,12 +87,15 @@ namespace NMeCab
         /// </summary>
         /// <param name="str">解析対象の文字列へのポインタ</param>
         /// <param name="len">解析対象の文字列の長さ</param>
-        /// <returns>文頭の形態素</returns>
-        public unsafe MeCabNode Parse(char* str, int len)
+        /// <returns>形態素</returns>
+        public unsafe MeCabNode[] Parse(char* str, int len)
         {
-            var param = new MeCabParam();
-            var lattice = this.ParseToLattice(str, len, param);
-            return lattice.BosNode;
+            var param = new MeCabParam()
+            {
+                LatticeLevel = MeCabLatticeLevel.Zero
+            };
+
+            return this.ParseToLattice(str, len, param).GetBestNodes();
         }
 
         #endregion
@@ -105,7 +107,7 @@ namespace NMeCab
         /// </summary>
         /// <param name="str">解析対象の文字列</param>
         /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
-        public unsafe IEnumerable<MeCabNode> ParseNBestToNode(string str)
+        public unsafe IEnumerable<MeCabNode[]> ParseNBestToNode(string str)
         {
             fixed (char* pStr = str)
                 return this.ParseNBestToNode(pStr, str.Length);
@@ -117,17 +119,14 @@ namespace NMeCab
         /// <param name="str">解析対象の文字列へのポインタ</param>
         /// <param name="len">解析対象の文字列の長さ</param>
         /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
-        public unsafe IEnumerable<MeCabNode> ParseNBestToNode(char* str, int len)
+        public unsafe IEnumerable<MeCabNode[]> ParseNBestToNode(char* str, int len)
         {
             var param = new MeCabParam()
             {
-                NBest = true
+                LatticeLevel = MeCabLatticeLevel.One
             };
 
-            var lattice = this.ParseToLattice(str, len, param);
-            var nBest = new NBestGenerator();
-            nBest.Set(lattice.EosNode);
-            return nBest.GetEnumerator();
+            return this.ParseToLattice(str, len, param).GetNBestResults();
         }
 
         #endregion
@@ -138,8 +137,8 @@ namespace NMeCab
         /// 解析を行い可能性があるすべての形態素を取得する
         /// </summary>
         /// <param name="str">解析対象の文字列</param>
-        /// <returns>文頭の形態素</returns>
-        public unsafe MeCabNode ParseAllMorphs(string str)
+        /// <returns>形態素</returns>
+        public unsafe MeCabNode[] ParseAllMorphs(string str)
         {
             fixed (char* pStr = str)
                 return this.ParseAllMorphs(pStr, str.Length);
@@ -150,17 +149,16 @@ namespace NMeCab
         /// </summary>
         /// <param name="str">解析対象の文字列へのポインタ</param>
         /// <param name="len">解析対象の文字列の長さ</param>
-        /// <param name="len">文頭の形態素</param>
+        /// <param name="len">形態素</param>
         /// <returns></returns>
-        public unsafe MeCabNode ParseAllMorphs(char* str, int len)
+        public unsafe MeCabNode[] ParseAllMorphs(char* str, int len)
         {
             var param = new MeCabParam()
             {
-                AllMorphs = true
+                LatticeLevel = MeCabLatticeLevel.Two
             };
 
-            var lattice = this.ParseToLattice(str, len, param);
-            return lattice.BosNode;
+            return this.ParseToLattice(str, len, param).GetAllNodes();
         }
 
         #endregion

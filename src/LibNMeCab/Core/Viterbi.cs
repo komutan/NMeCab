@@ -24,22 +24,12 @@ namespace NMeCab.Core
             connector.Open(dicDir);
         }
 
-#if NeedId
-        public void Clear()
-        {
-            this.tokenizer.Clear();
-        }
-#endif
-
         #endregion
 
         #region AnalyzeStart
 
         public unsafe MeCabLattice Analyze(char* str, int len, MeCabParam param)
         {
-#if NeedId
-            this.Clear();
-#endif
             var lattice = new MeCabLattice()
             {
                 Param = param,
@@ -47,15 +37,21 @@ namespace NMeCab.Core
                 EndNodeList = new MeCabNode[len + 1],
             };
 
-            this.DoViterbi(str, len, lattice);
-
-            if (lattice.Param.MarginalProbe)
-                this.ForwardBackward(len, lattice);
-
-            if (lattice.Param.AllMorphs)
-                this.BuildAllLattice(lattice);
-            else
-                this.BuildBestLattice(lattice);
+            switch (param.LatticeLevel)
+            {
+                case MeCabLatticeLevel.Zero:
+                    this.DoViterbi(str, len, lattice, false);
+                    break;
+                case MeCabLatticeLevel.One:
+                    this.DoViterbi(str, len, lattice, true);
+                    break;
+                case MeCabLatticeLevel.Two:
+                    this.DoViterbi(str, len, lattice, true);
+                    this.ForwardBackward(len, lattice);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(param.LatticeLevel));
+            }
 
             return lattice;
         }
@@ -105,7 +101,7 @@ namespace NMeCab.Core
             }
         }
 
-        private unsafe void DoViterbi(char* sentence, int len, MeCabLattice work)
+        private unsafe void DoViterbi(char* sentence, int len, MeCabLattice work, bool withAllPath)
         {
             work.BosNode = this.tokenizer.GetBosNode(work.Param);
             work.BosNode.Length = len;
@@ -115,12 +111,6 @@ namespace NMeCab.Core
             work.BosNode.Surface = new string(begin, 0, len);
             work.EndNodeList[0] = work.BosNode;
 
-            Action<int, MeCabNode, MeCabLattice> connect;
-            if (work.Param.NBest || work.Param.MarginalProbe)
-                connect = this.ConnectWithAllPath;
-            else
-                connect = this.ConnectNomal;
-
             for (int pos = 0; pos < len; pos++)
             {
                 if (work.EndNodeList[pos] != null)
@@ -129,7 +119,7 @@ namespace NMeCab.Core
                     rNode.BPos = pos;
                     rNode.EPos = pos + rNode.RLength;
                     work.BeginNodeList[pos] = rNode;
-                    connect(pos, rNode, work);
+                    Connect(pos, rNode, work, withAllPath);
                 }
             }
 
@@ -140,7 +130,7 @@ namespace NMeCab.Core
             {
                 if (work.EndNodeList[pos] != null)
                 {
-                    connect(pos, work.EosNode, work);
+                    Connect(pos, work.EosNode, work, withAllPath);
                     break;
                 }
             }
@@ -150,7 +140,7 @@ namespace NMeCab.Core
 
         #region Connect
 
-        private void ConnectWithAllPath(int pos, MeCabNode rNode, MeCabLattice work)
+        private void Connect(int pos, MeCabNode rNode, MeCabLattice work, bool withAllPath)
         {
             for (; rNode != null; rNode = rNode.BNext)
             {
@@ -158,7 +148,7 @@ namespace NMeCab.Core
 
                 MeCabNode bestNode = null;
 
-                for (MeCabNode lNode = work.EndNodeList[pos]; lNode != null; lNode = lNode.ENext)
+                for (var lNode = work.EndNodeList[pos]; lNode != null; lNode = lNode.ENext)
                 {
                     int lCost = this.connector.Cost(lNode, rNode); // local cost
                     long cost = lNode.Cost + lCost;
@@ -169,16 +159,20 @@ namespace NMeCab.Core
                         bestCost = cost;
                     }
 
-                    MeCabPath path = new MeCabPath()
+                    if (withAllPath)
                     {
-                        Cost = lCost,
-                        RNode = rNode,
-                        LNode = lNode,
-                        LNext = rNode.LPath,
-                        RNext = lNode.RPath
-                    };
-                    rNode.LPath = path;
-                    lNode.RPath = path;
+                        var path = new MeCabPath()
+                        {
+                            Cost = lCost,
+                            RNode = rNode,
+                            LNode = lNode,
+                            LNext = rNode.LPath,
+                            RNext = lNode.RPath
+                        };
+
+                        rNode.LPath = path;
+                        lNode.RPath = path;
+                    }
                 }
 
                 if (bestNode == null) throw new ArgumentException("too long sentence.");
@@ -189,72 +183,6 @@ namespace NMeCab.Core
                 int x = rNode.RLength + pos;
                 rNode.ENext = work.EndNodeList[x];
                 work.EndNodeList[x] = rNode;
-            }
-        }
-
-        private void ConnectNomal(int pos, MeCabNode rNode, MeCabLattice work)
-        {
-            for (; rNode != null; rNode = rNode.BNext)
-            {
-                long bestCost = int.MaxValue; // 2147483647
-
-                MeCabNode bestNode = null;
-
-                for (MeCabNode lNode = work.EndNodeList[pos]; lNode != null; lNode = lNode.ENext)
-                {
-                    long cost = lNode.Cost + this.connector.Cost(lNode, rNode);
-
-                    if (cost < bestCost)
-                    {
-                        bestNode = lNode;
-                        bestCost = cost;
-                    }
-                }
-
-                if (bestNode == null) throw new MeCabException("too long sentence.");
-
-                rNode.Prev = bestNode;
-                rNode.Next = null;
-                rNode.Cost = bestCost;
-                int x = rNode.RLength + pos;
-                rNode.ENext = work.EndNodeList[x];
-                work.EndNodeList[x] = rNode;
-            }
-        }
-
-        #endregion
-
-        #region Build Lattice
-
-        private void BuildAllLattice(MeCabLattice work)
-        {
-            if (!work.Param.AllMorphs) return;
-
-            MeCabNode prev = work.BosNode;
-
-            for (int pos = 0; pos < work.BeginNodeList.Length; pos++)
-            {
-                for (MeCabNode node = work.BeginNodeList[pos]; node != null; node = node.BNext)
-                {
-                    prev.Next = node;
-                    node.Prev = prev;
-                    prev = node;
-                    for (MeCabPath path = node.LPath; path != null; path = path.LNext)
-                    {
-                        path.Prob = (float)(path.LNode.Alpha
-                                            - work.Param.Theta * path.Cost
-                                            + path.RNode.Beta - work.Z);
-                    }
-                }
-            }
-        }
-
-        private void BuildBestLattice(MeCabLattice work)
-        {
-            for (var node = work.EosNode; node.Prev != null; node = node.Prev)
-            {
-                node.IsBest = true;
-                node.Prev.Next = node;
             }
         }
 

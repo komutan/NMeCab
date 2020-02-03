@@ -3,12 +3,12 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NMeCab.Core
 {
-    public class NBestGenerator
+    public class NBestGenerator : IEnumerable<MeCabNode[]>
     {
         private class QueueElement : IComparable<QueueElement>
         {
@@ -21,65 +21,56 @@ namespace NMeCab.Core
             {
                 return this.Fx.CompareTo(other.Fx);
             }
-
-            public override string ToString()
-            {
-                return this.Node.ToString();
-            }
         }
 
-        private PriorityQueue<QueueElement> agenda = new PriorityQueue<QueueElement>();
+        private readonly PriorityQueue<QueueElement> agenda = new PriorityQueue<QueueElement>();
 
-        public void Set(MeCabNode node)
+        public NBestGenerator(MeCabNode eos)
         {
-            for (; node.Next != null; node = node.Next) { } // seek to EOS;
-            this.agenda.Clear();
-            QueueElement eos = new QueueElement()
+            this.agenda.Push(new QueueElement()
             {
-                Node = node,
+                Node = eos,
                 Next = null,
                 Fx = 0,
                 Gx = 0
-            };
-            this.agenda.Push(eos);
+            });
         }
 
-        public MeCabNode Next()
+        public IEnumerator<MeCabNode[]> GetEnumerator()
         {
             while (this.agenda.Count != 0)
             {
-                QueueElement top = this.agenda.Pop();
-                MeCabNode rNode = top.Node;
+                var top = this.agenda.Pop();
+                var rNode = top.Node;
 
                 if (rNode.Stat == MeCabNodeStat.Bos)
                 {
-                    for (QueueElement n = top; n.Next != null; n = n.Next)
-                    {
-                        n.Node.Next = n.Next.Node; // change next & prev
-                        n.Next.Node.Prev = n.Node;
-                    }
-                    return rNode;
+                    var list = new List<MeCabNode>();
+
+                    for (var n = top; n.Next != null; n = n.Next)
+                        list.Add(n.Node);
+
+                    yield return list.ToArray();
                 }
 
                 for (MeCabPath path = rNode.LPath; path != null; path = path.LNext)
                 {
-                    QueueElement n = new QueueElement()
+                    var n = new QueueElement()
                     {
                         Node = path.LNode,
                         Gx = path.Cost + top.Gx,
                         Fx = path.LNode.Cost + path.Cost + top.Gx,
                         Next = top
                     };
+
                     this.agenda.Push(n);
                 }
             }
-            return null;
         }
 
-        public IEnumerable<MeCabNode> GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            for (MeCabNode rNode = this.Next(); rNode != null; rNode = this.Next())
-                yield return rNode;
+            return this.GetEnumerator();
         }
     }
 }

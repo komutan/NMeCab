@@ -5,19 +5,9 @@ namespace NMeCab
     public class MeCabParam
     {
         /// <summary>
-        ///  N-BEST解を出力
+        /// ラティスレベル(どの程度のラティス情報を解析時に構築するか)
         /// </summary>
-        public bool NBest { get; set; } = false;
-
-        /// <summary>
-        /// 全形態素を出力
-        /// </summary>
-        public bool AllMorphs { get; set; } = false;
-
-        /// <summary>
-        /// 周辺確率を出力
-        /// </summary>
-        public bool MarginalProbe { get; set; } = false;
+        public MeCabLatticeLevel LatticeLevel { get; set; }     
 
         /// <summary>
         /// ソフト分かち書きの温度パラメータ
