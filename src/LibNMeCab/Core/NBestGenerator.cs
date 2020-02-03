@@ -55,15 +55,13 @@ namespace NMeCab.Core
 
                 for (MeCabPath path = rNode.LPath; path != null; path = path.LNext)
                 {
-                    var n = new QueueElement()
+                    this.agenda.Push(new QueueElement()
                     {
                         Node = path.LNode,
                         Gx = path.Cost + top.Gx,
                         Fx = path.LNode.Cost + path.Cost + top.Gx,
                         Next = top
-                    };
-
-                    this.agenda.Push(n);
+                    });
                 }
             }
         }
