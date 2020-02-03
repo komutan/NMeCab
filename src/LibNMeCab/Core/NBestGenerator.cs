@@ -53,7 +53,7 @@ namespace NMeCab.Core
                     yield return list.ToArray();
                 }
 
-                for (MeCabPath path = rNode.LPath; path != null; path = path.LNext)
+                for (var path = rNode.LPath; path != null; path = path.LNext)
                 {
                     this.agenda.Push(new QueueElement()
                     {
