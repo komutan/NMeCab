@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace NMeCab.Core
@@ -88,6 +89,7 @@ namespace NMeCab.Core
             return ret;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private HeapNode MergeNodes(HeapNode l, HeapNode r)
         {
             if (l == null) return r;
@@ -105,6 +107,7 @@ namespace NMeCab.Core
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private HeapNode UnifyChildNodes(HeapNode node)
         {
             HeapNode[] tmp = new HeapNode[node.ChildsCount / 2]; //必要な要素数が明らかなのでStackではなく配列

@@ -2,53 +2,139 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
-using System;
-using System.Collections.Generic;
 using System.Text;
 using NMeCab.Core;
-using System.Globalization;
 
 namespace NMeCab
 {
-    public class MeCabNode
+    public class MeCabNode : MeCabNodeBase<MeCabNode>
+    { }
+
+    public class MeCabIpaDicNode : MeCabNodeBase<MeCabIpaDicNode>
+    {
+        private string[] features = null;
+
+        private string[] Features
+        {
+            get
+            {
+                if (features == null)
+                    features = StrUtils.ParseCsvRow(this.Feature, 8, 16);
+
+                return this.features;
+            }
+        }
+
+        /// <summary>
+        /// 品詞
+        /// </summary>
+        public string PartsOfSpeech
+        {
+            get { return this.Features[0]; }
+        }
+
+        /// <summary>
+        /// 品詞細分類1
+        /// </summary>
+        public string PartsOfSpeechSection1
+        {
+            get { return this.Features[1]; }
+        }
+
+        /// <summary>
+        /// 品詞細分類2
+        /// </summary>
+        public string PartsOfSpeechSection2
+        {
+            get { return this.Features[2]; }
+        }
+
+        /// <summary>
+        /// 品詞細分類3
+        /// </summary>
+        public string PartsOfSpeechSection3
+        {
+            get { return this.Features[3]; }
+        }
+
+        /// <summary>
+        /// 活用形
+        /// </summary>
+        public string ConjugatedForm
+        {
+            get { return this.Features[4]; }
+        }
+
+        /// <summary>
+        /// 活用型
+        /// </summary>
+        public string Inflection
+        {
+            get { return this.Features[5]; }
+        }
+
+        /// <summary>
+        /// 原形
+        /// </summary>
+        public string OriginalForm
+        {
+            get { return this.Features[6]; }
+        }
+
+        /// <summary>
+        /// 読み
+        /// </summary>
+        public string Reading
+        {
+            get { return this.Features[7]; }
+        }
+
+        /// <summary>
+        /// 発音
+        /// </summary>
+        public string Pronounciation
+        {
+            get { return this.Features[8]; }
+        }
+    }
+
+    public abstract class MeCabNodeBase<TNode>
+        where TNode : MeCabNodeBase<TNode>
     {
         /// <summary>
-        /// 一つ前の形態素
+        /// 累積コストが最小である、一つ前の形態素
         /// </summary>
-        public MeCabNode Prev { get; set; }
-
-        /// <summary>
-        /// 一つ先の形態素
-        /// </summary>
-        public MeCabNode Next { get; set; }
-
-        /// <summary>
-        /// 同じ位置で終わる形態素
-        /// </summary>
-        public MeCabNode ENext { get; set; }
+        public TNode BestPrev { get; set; }
 
         /// <summary>
         /// 同じ開始位置で始まる形態素
         /// </summary>
-        public MeCabNode BNext { get; set; }
-
-        internal MeCabPath RPath { get; set; }
-
-        internal MeCabPath LPath { get; set; }
-
-        //internal MeCabNode[] BeginNodeList { get; set; }
-
-        //internal MeCabNode[] EndNodeList { get; set; }
+        public TNode BNext { get; set; }
 
         /// <summary>
-        /// 形態素の文字列情報
+        /// 同じ位置で終わる形態素
+        /// </summary>
+        public TNode ENext { get; set; }
+
+        /// <summary>
+        /// 前の形態素の候補へのパス
+        /// </summary>
+        public MeCabPath<TNode> LPath { get; set; }
+
+        /// <summary>
+        /// 次の形態素の候補へのパス
+        /// </summary>
+        public MeCabPath<TNode> RPath { get; set; }
+
+        /// <summary>
+        /// 形態素の表層形
         /// </summary>
         public string Surface { get; set; }
 
         private string feature;
 
         /// <summary>
-        /// CSV で表記された素性情報
+        /// CSVで表記された素性情報
         /// </summary>
         public string Feature
         {
@@ -72,19 +158,17 @@ namespace NMeCab
         /// </summary>
         /// <param name="featurePos">辞書内の素性情報の位置</param>
         /// <param name="dic">検索元の辞書</param>
-        internal void SetFeature(uint featurePos, MeCabDictionary dic)
+        public void SetFeature(uint featurePos, MeCabDictionary dic)
         {
             this.feature = null;
             this.featurePos = featurePos;
             this.Dictionary = dic;
         }
 
-#if NeedId
         /// <summary>
-        /// 形態素に付与される ユニークID
+        /// 解析の単位で形態素に付与するユニークID
         /// </summary>
         public uint Id { get; set; }
-#endif
 
         /// <summary>
         /// 形態素の長さ
@@ -97,17 +181,17 @@ namespace NMeCab
         public int RLength { get; set; }
 
         /// <summary>
-        /// 右文脈 id
-        /// </summary>
-        public ushort RCAttr { get; set; }
-
-        /// <summary>
-        /// 左文脈 id
+        /// 左文脈ID
         /// </summary>
         public ushort LCAttr { get; set; }
 
         /// <summary>
-        /// 形態素 ID
+        /// 右文脈ID
+        /// </summary>
+        public ushort RCAttr { get; set; }
+
+        /// <summary>
+        /// 形態素ID
         /// </summary>
         public ushort PosId { get; set; }
 
@@ -122,14 +206,9 @@ namespace NMeCab
         public MeCabNodeStat Stat { get; set; }
 
         /// <summary>
-        /// ベスト解
+        /// ベスト解か
         /// </summary>
         public bool IsBest { get; set; }
-
-        ///// <summary>
-        ///// it is avaialbe only when BOS node
-        ///// </summary>
-        //public int SentenceLength { get; set; }
 
         /// <summary>
         /// forward backward の foward log 確率
@@ -156,18 +235,20 @@ namespace NMeCab
         /// </summary>
         public long Cost { get; set; }
 
-        //public Token Token { get; set; }
-
+        /// <summary>
+        /// 開始位置
+        /// </summary>
         public int BPos { get; set; }
 
+        /// <summary>
+        /// 終了位置
+        /// </summary>
         public int EPos { get; set; }
 
         public override string ToString()
         {
             StringBuilder os = new StringBuilder();
-#if NeedId
             os.Append(this.Id).Append(" ");
-#endif
             os.Append("[Surface:");
             if (this.Stat == MeCabNodeStat.Bos)
                 os.Append("BOS");
@@ -191,12 +272,10 @@ namespace NMeCab
             os.Append("[Prob:").Append(this.Prob).Append("]");
             os.Append("[Cost:").Append(this.Cost).Append("]");
 
-            for (MeCabPath path = this.LPath; path != null; path = path.LNext)
+            for (var path = this.LPath; path != null; path = path.LNext)
             {
                 os.Append("[Path:");
-#if NeedId
                 os.Append(path.LNode.Id).Append(" ");
-#endif
                 os.Append("(Cost:").Append(path.Cost).Append(")");
                 os.Append("(Prob:").Append(path.Prob).Append(")");
                 os.Append("]");

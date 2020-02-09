@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.CompilerServices;
 #if MMF_DIC
 using System.IO.MemoryMappedFiles;
 #endif
@@ -20,6 +21,7 @@ namespace NMeCab.Core
         /// <param name="bytes">バイト配列</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(byte[] bytes, Encoding enc)
         {
             return StrUtils.GetString(bytes, 0L, enc);
@@ -35,6 +37,7 @@ namespace NMeCab.Core
         /// <param name="offset">オフセット位置</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe static string GetString(byte[] bytes, long offset, Encoding enc)
         {
             fixed (byte* pBytes = bytes)
@@ -51,10 +54,12 @@ namespace NMeCab.Core
         /// <param name="offset">オフセット位置</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe static string GetString(byte* bytes, long offset, Encoding enc)
         {
             return StrUtils.GetString(bytes + offset, enc);
         }
+
         /// <summary>
         /// バイト配列の中から終端が\0で表された文字列を取り出す。
         /// </summary>
@@ -64,6 +69,7 @@ namespace NMeCab.Core
         /// <param name="bytes">デコードする最初のバイトへのポインタ</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe static string GetString(byte* bytes, Encoding enc)
         {
             //バイト長のカウント
@@ -100,6 +106,77 @@ namespace NMeCab.Core
                 default:
                     return Encoding.GetEncoding(name);
             }
+        }
+
+        /// <summary>
+        /// 単一行のCSV形式の文字列を配列に変換する
+        /// </summary>
+        /// <param name="csvRowString">単一行のCSV形式の文字列</param>
+        /// <param name="defaltColumnBuffSize">配列長の内部バッファの初期値</param>
+        /// <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
+        /// <returns>変換後の文字列配列</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] ParseCsvRow(string csvRowString,
+                                           int defaltColumnBuffSize,
+                                           int defaltStringBuffSize)
+        {
+            var ret = new List<string>(defaltColumnBuffSize);
+            var buff = new StringBuilder(defaltStringBuffSize);
+            Action<char> action = Normal;
+
+            foreach (var c in csvRowString)
+                action(c);
+
+            return ret.ToArray();
+
+            #region Inner methods
+
+            void Normal(char c)
+            {
+                switch (c)
+                {
+                    case ',':
+                        ret.Add(buff.ToString());
+                        buff.Clear();
+                        break;
+                    case '"':
+                        action = AfterLeftWQuote;
+                        break;
+                    default:
+                        buff.Append(c);
+                        break;
+                }
+            }
+
+            void AfterLeftWQuote(char c)
+            {
+                buff.Append(c);
+
+                switch (c)
+                {
+                    case '"':
+                        action = Normal;
+                        break;
+                    default:
+                        action = InsideWQuote;
+                        break;
+                }
+            }
+
+            void InsideWQuote(char c)
+            {
+                switch (c)
+                {
+                    case '"':
+                        action = Normal;
+                        break;
+                    default:
+                        buff.Append(c);
+                        break;
+                }
+            }
+
+            #endregion
         }
     }
 }

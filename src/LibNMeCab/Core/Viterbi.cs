@@ -3,16 +3,17 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
-using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace NMeCab.Core
 {
-    public class Viterbi : IDisposable
+    public class Viterbi<TNode> : IDisposable
+        where TNode : MeCabNodeBase<TNode>
     {
         #region Field/Property
 
-        private readonly Tokenizer tokenizer = new Tokenizer();
-        private readonly Connector connector = new Connector();
+        private readonly Tokenizer<TNode> tokenizer = new Tokenizer<TNode>();
+        private readonly Connector<TNode> connector = new Connector<TNode>();
 
         #endregion
 
@@ -20,24 +21,18 @@ namespace NMeCab.Core
 
         public void Open(string dicDir, string[] userDics)
         {
-            tokenizer.Open(dicDir, userDics);
-            connector.Open(dicDir);
+            this.tokenizer.Open(dicDir, userDics);
+            this.connector.Open(dicDir);
         }
 
         #endregion
 
         #region AnalyzeStart
 
-        public unsafe MeCabLattice Analyze(char* str, int len, MeCabParam param)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void Analyze(char* str, int len, MeCabLattice<TNode> lattice)
         {
-            var lattice = new MeCabLattice()
-            {
-                Param = param,
-                BeginNodeList = new MeCabNode[len + 1],
-                EndNodeList = new MeCabNode[len + 1],
-            };
-
-            switch (param.LatticeLevel)
+            switch (lattice.Param.LatticeLevel)
             {
                 case MeCabLatticeLevel.Zero:
                     this.DoViterbi(str, len, lattice, false);
@@ -50,39 +45,39 @@ namespace NMeCab.Core
                     this.ForwardBackward(len, lattice);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(param.LatticeLevel));
+                    throw new ArgumentOutOfRangeException(nameof(lattice.Param.LatticeLevel));
             }
-
-            return lattice;
         }
 
         #endregion
 
         #region Analyze
 
-        private unsafe void ForwardBackward(int len, MeCabLattice work)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void ForwardBackward(int len, MeCabLattice<TNode> lattice)
         {
-            work.EndNodeList[0].Alpha = 0f;
+            lattice.EndNodeList[0].Alpha = 0f;
             for (int pos = 0; pos <= len; pos++)
-                for (MeCabNode node = work.BeginNodeList[pos]; node != null; node = node.BNext)
-                    this.CalcAlpha(node, work.Param.Theta);
+                for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
+                    this.CalcAlpha(node, lattice.Param.Theta);
 
-            work.BeginNodeList[len].Beta = 0f;
+            lattice.BeginNodeList[len].Beta = 0f;
             for (int pos = len; pos >= 0; pos--)
-                for (MeCabNode node = work.EndNodeList[pos]; node != null; node = node.ENext)
-                    this.CalcBeta(node, work.Param.Theta);
+                for (var node = lattice.EndNodeList[pos]; node != null; node = node.ENext)
+                    this.CalcBeta(node, lattice.Param.Theta);
 
-            work.Z = work.BeginNodeList[len].Alpha; // alpha of EOS
+            lattice.Z = lattice.BeginNodeList[len].Alpha; // alpha of EOS
 
             for (int pos = 0; pos <= len; pos++)
-                for (MeCabNode node = work.BeginNodeList[pos]; node != null; node = node.BNext)
-                    node.Prob = (float)Math.Exp(node.Alpha + node.Beta - work.Z);
+                for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
+                    node.Prob = (float)Math.Exp(node.Alpha + node.Beta - lattice.Z);
         }
 
-        private void CalcAlpha(MeCabNode n, double beta)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CalcAlpha(TNode n, double beta)
         {
             n.Alpha = 0f;
-            for (MeCabPath path = n.LPath; path != null; path = path.LNext)
+            for (var path = n.LPath; path != null; path = path.LNext)
             {
                 n.Alpha = (float)Utils.LogSumExp(n.Alpha,
                                                  -beta * path.Cost + path.LNode.Alpha,
@@ -90,10 +85,11 @@ namespace NMeCab.Core
             }
         }
 
-        private void CalcBeta(MeCabNode n, double beta)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void CalcBeta(TNode n, double beta)
         {
             n.Beta = 0f;
-            for (MeCabPath path = n.RPath; path != null; path = path.RNext)
+            for (var path = n.RPath; path != null; path = path.RNext)
             {
                 n.Beta = (float)Utils.LogSumExp(n.Beta,
                                                 -beta * path.Cost + path.RNode.Beta,
@@ -101,36 +97,31 @@ namespace NMeCab.Core
             }
         }
 
-        private unsafe void DoViterbi(char* sentence, int len, MeCabLattice work, bool withAllPath)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void DoViterbi(char* str, int len, MeCabLattice<TNode> lattice, bool withAllPath)
         {
-            work.BosNode = this.tokenizer.GetBosNode(work.Param);
-            work.BosNode.Length = len;
-
-            char* begin = sentence;
-            char* end = begin + len;
-            work.BosNode.Surface = new string(begin, 0, len);
-            work.EndNodeList[0] = work.BosNode;
+            var begin = str;
+            var end = str + len;
 
             for (int pos = 0; pos < len; pos++)
             {
-                if (work.EndNodeList[pos] != null)
+                if (lattice.EndNodeList[pos] != null)
                 {
-                    MeCabNode rNode = tokenizer.Lookup(begin + pos, end, work.Param);
+                    var rNode = tokenizer.Lookup(begin, end, lattice);
                     rNode.BPos = pos;
                     rNode.EPos = pos + rNode.RLength;
-                    work.BeginNodeList[pos] = rNode;
-                    Connect(pos, rNode, work, withAllPath);
+                    lattice.BeginNodeList[pos] = rNode;
+                    this.Connect(pos, rNode, lattice.EndNodeList, withAllPath);
                 }
+
+                begin++;
             }
 
-            work.EosNode = tokenizer.GetEosNode(work.Param);
-            work.EosNode.Surface = end->ToString();
-            work.BeginNodeList[len] = work.EosNode;
             for (int pos = len; pos >= 0; pos--)
             {
-                if (work.EndNodeList[pos] != null)
+                if (lattice.EndNodeList[pos] != null)
                 {
-                    Connect(pos, work.EosNode, work, withAllPath);
+                    this.Connect(pos, lattice.EosNode, lattice.EndNodeList, withAllPath);
                     break;
                 }
             }
@@ -140,15 +131,15 @@ namespace NMeCab.Core
 
         #region Connect
 
-        private void Connect(int pos, MeCabNode rNode, MeCabLattice work, bool withAllPath)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void Connect(int pos, TNode rNode, TNode[] endNodeList, bool withAllPath)
         {
             for (; rNode != null; rNode = rNode.BNext)
             {
                 long bestCost = int.MaxValue; // 2147483647
+                TNode bestNode = null;
 
-                MeCabNode bestNode = null;
-
-                for (var lNode = work.EndNodeList[pos]; lNode != null; lNode = lNode.ENext)
+                for (var lNode = endNodeList[pos]; lNode != null; lNode = lNode.ENext)
                 {
                     int lCost = this.connector.Cost(lNode, rNode); // local cost
                     long cost = lNode.Cost + lCost;
@@ -161,7 +152,7 @@ namespace NMeCab.Core
 
                     if (withAllPath)
                     {
-                        var path = new MeCabPath()
+                        var path = new MeCabPath<TNode>()
                         {
                             Cost = lCost,
                             RNode = rNode,
@@ -177,12 +168,11 @@ namespace NMeCab.Core
 
                 if (bestNode == null) throw new ArgumentException("too long sentence.");
 
-                rNode.Prev = bestNode;
-                rNode.Next = null;
+                rNode.BestPrev = bestNode;
                 rNode.Cost = bestCost;
                 int x = rNode.RLength + pos;
-                rNode.ENext = work.EndNodeList[x];
-                work.EndNodeList[x] = rNode;
+                rNode.ENext = endNodeList[x];
+                endNodeList[x] = rNode;
             }
         }
 
@@ -207,8 +197,8 @@ namespace NMeCab.Core
 
             if (disposing)
             {
-                this.tokenizer.Dispose(); //Nullチェック不要
-                this.connector.Dispose(); //Nullチェック不要
+                this.tokenizer.Dispose(); // Nullチェック不要
+                this.connector.Dispose(); // Nullチェック不要
             }
 
             this.disposed = true;

@@ -8,63 +8,52 @@ using NMeCab.Core;
 
 namespace NMeCab
 {
-    public class MeCabTagger : IDisposable
+    public class MeCabTagger : MeCabTaggerBase<MeCabNode>
     {
-        private readonly Viterbi viterbi = new Viterbi();
-
-        #region Constractor
-
-        /// <summary>
-        /// コンストラクタ
-        /// </summary>
-        private MeCabTagger()
-        { }
-
-        #endregion
-
-        #region Create
-
-        /// <summary>
-        /// MeCabTaggerインスタンスを作成する
-        /// </summary>
-        /// <param name="dicDir">辞書のディレクトリ</param>
-        /// <returns>MeCabTaggerのインスタンス</returns>
-        public static MeCabTagger Create(string dicDir)
+        protected override MeCabNode CreateNewNode()
         {
-            return MeCabTagger.Create(dicDir, new string[0]);
+            return new MeCabNode();
+        }
+    }
+
+    public class MeCabIpaDicTagger : MeCabTaggerBase<MeCabIpaDicNode>
+    {
+        protected override MeCabIpaDicNode CreateNewNode()
+        {
+            return new MeCabIpaDicNode();
+        }
+    }
+
+    public abstract class MeCabTaggerBase<TNode> : IDisposable
+        where TNode : MeCabNodeBase<TNode>
+    {
+        private readonly Viterbi<TNode> viterbi = new Viterbi<TNode>();
+
+        protected abstract TNode CreateNewNode();
+
+        #region Open
+
+        private bool opened = false;
+
+        public void Open(string dicDir, IEnumerable<string> userDics)
+        {
+            this.Open(dicDir, new List<string>(userDics).ToArray());
         }
 
-        /// <summary>
-        /// MeCabTaggerインスタンスを作成する
-        /// </summary>
-        /// <param name="dicDir">辞書のディレクトリ</param>
-        /// <param name="userDics">ユーザー辞書ファイル名のコレクション</param>
-        /// <returns>MeCabTaggerのインスタンス</returns>
-        public static MeCabTagger Create(string dicDir, IEnumerable<string> userDics)
+        public void Open(string dicDir, string[] userDics)
         {
-            return MeCabTagger.Create(dicDir, (new List<string>(userDics)).ToArray());
+            if (this.opened)
+                throw new InvalidOperationException("this tagger was alredy opened.");
+
+            this.viterbi.Open(dicDir, userDics);
+
+            this.opened = true;
         }
 
-        /// <summary>
-        /// MeCabTaggerインスタンスを作成する
-        /// </summary>
-        /// <param name="dicDir">辞書のディレクトリ</param>
-        /// <param name="userDics">ユーザー辞書ファイル名の配列</param>
-        /// <returns>MeCabTaggerのインスタンス</returns>
-        public static MeCabTagger Create(string dicDir, string[] userDics)
+        private void ThrowIfNotOpend()
         {
-            var tagger = new MeCabTagger();
-            try
-            {
-                tagger.viterbi.Open(dicDir, userDics);
-
-                return tagger;
-            }
-            catch (Exception)
-            {
-                tagger.Dispose();
-                throw;
-            }
+            if (!this.opened)
+                throw new InvalidOperationException("this tagger was not opned.");
         }
 
         #endregion
@@ -74,28 +63,28 @@ namespace NMeCab
         /// <summary>
         /// 解析を行う
         /// </summary>
-        /// <param name="str">解析対象の文字列</param>
-        /// <returns>形態素</returns>
-        public unsafe MeCabNode[] Parse(string str)
+        /// <param name="sentence">解析対象の文字列</param>
+        /// <returns>形態素の配列</returns>
+        public unsafe TNode[] Parse(string sentence)
         {
-            fixed (char* pStr = str)
-                return this.Parse(pStr, str.Length);
+            fixed (char* pStr = sentence)
+                return this.Parse(pStr, sentence.Length);
         }
 
         /// <summary>
         /// 解析を行う
         /// </summary>
-        /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <param name="len">解析対象の文字列の長さ</param>
-        /// <returns>形態素</returns>
-        public unsafe MeCabNode[] Parse(char* str, int len)
+        /// <param name="sentence">解析対象の文字列へのポインタ</param>
+        /// <param name="length">解析対象の文字列の長さ</param>
+        /// <returns>形態素の配列</returns>
+        public unsafe TNode[] Parse(char* sentence, int length)
         {
             var param = new MeCabParam()
             {
                 LatticeLevel = MeCabLatticeLevel.Zero
             };
 
-            return this.ParseToLattice(str, len, param).GetBestNodes();
+            return this.ParseToLattice(sentence, length, param).GetBestNodes();
         }
 
         #endregion
@@ -105,28 +94,28 @@ namespace NMeCab
         /// <summary>
         /// 解析を行い結果を確からしいものから順番に取得する
         /// </summary>
-        /// <param name="str">解析対象の文字列</param>
-        /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
-        public unsafe IEnumerable<MeCabNode[]> ParseNBestToNode(string str)
+        /// <param name="sentence">解析対象の文字列</param>
+        /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
+        public unsafe IEnumerable<TNode[]> ParseNBestToNode(string sentence)
         {
-            fixed (char* pStr = str)
-                return this.ParseNBestToNode(pStr, str.Length);
+            fixed (char* pStr = sentence)
+                return this.ParseNBestToNode(pStr, sentence.Length);
         }
 
         /// <summary>
         /// 解析を行い結果を確からしいものから順番に取得する
         /// </summary>
-        /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <param name="len">解析対象の文字列の長さ</param>
-        /// <returns>文頭の形態素を、確からしい順に取得する列挙子</returns>
-        public unsafe IEnumerable<MeCabNode[]> ParseNBestToNode(char* str, int len)
+        /// <param name="sentence">解析対象の文字列へのポインタ</param>
+        /// <param name="length">解析対象の文字列の長さ</param>
+        /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
+        public unsafe IEnumerable<TNode[]> ParseNBestToNode(char* sentence, int length)
         {
             var param = new MeCabParam()
             {
                 LatticeLevel = MeCabLatticeLevel.One
             };
 
-            return this.ParseToLattice(str, len, param).GetNBestResults();
+            return this.ParseToLattice(sentence, length, param).GetNBestResults();
         }
 
         #endregion
@@ -136,29 +125,31 @@ namespace NMeCab
         /// <summary>
         /// 解析を行い可能性があるすべての形態素を取得する
         /// </summary>
-        /// <param name="str">解析対象の文字列</param>
-        /// <returns>形態素</returns>
-        public unsafe MeCabNode[] ParseAllMorphs(string str)
+        /// <param name="sentence">解析対象の文字列</param>
+        /// <returns>形態素の配列</returns>
+        public unsafe TNode[] ParseAllMorphs(string sentence)
         {
-            fixed (char* pStr = str)
-                return this.ParseAllMorphs(pStr, str.Length);
+            if (sentence == null)
+                throw new ArgumentNullException(nameof(sentence));
+
+            fixed (char* pStr = sentence)
+                return this.ParseAllMorphs(pStr, sentence.Length);
         }
 
         /// <summary>
         /// 解析を行い可能性があるすべての形態素を取得する
         /// </summary>
-        /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <param name="len">解析対象の文字列の長さ</param>
-        /// <param name="len">形態素</param>
-        /// <returns></returns>
-        public unsafe MeCabNode[] ParseAllMorphs(char* str, int len)
+        /// <param name="sentence">解析対象の文字列へのポインタ</param>
+        /// <param name="length">解析対象の文字列の長さ</param>
+        /// <returns>形態素の配列</returns>
+        public unsafe TNode[] ParseAllMorphs(char* sentence, int length)
         {
             var param = new MeCabParam()
             {
                 LatticeLevel = MeCabLatticeLevel.Two
             };
 
-            return this.ParseToLattice(str, len, param).GetAllNodes();
+            return this.ParseToLattice(sentence, length, param).GetAllNodes();
         }
 
         #endregion
@@ -166,33 +157,37 @@ namespace NMeCab
         #region Lattice
 
         /// <summary>
-        /// 解析を行いラティスを取得する
+        /// 解析を行い、結果をラティスとして取得する
         /// </summary>
-        /// <param name="str">解析対象の文字列</param>
+        /// <param name="sentence">解析対象の文字列</param>
         /// <param name="param">解析パラメータ</param>
         /// <returns>ラティス</returns>
-        public unsafe MeCabLattice ParseToLattice(string str, MeCabParam param)
+        public unsafe MeCabLattice<TNode> ParseToLattice(string sentence, MeCabParam param)
         {
-            if (str == null) throw new ArgumentNullException(nameof(str));
+            if (sentence == null)
+                throw new ArgumentNullException(nameof(sentence));
 
-            fixed (char* pStr = str)
-                return this.ParseToLattice(pStr, str.Length, param);
+            fixed (char* pStr = sentence)
+                return this.ParseToLattice(pStr, sentence.Length, param);
         }
 
         /// <summary>
-        /// 解析を行いラティスを取得する
+        /// 解析を行い、結果をラティスとして取得する
         /// </summary>
-        /// <param name="str">解析対象の文字列へのポインタ</param>
-        /// <param name="len">解析対象の文字列の長さ</param>
+        /// <param name="sentence">解析対象の文字列へのポインタ</param>
+        /// <param name="length">解析対象の文字列の長さ</param>
         /// <param name="param">解析パラメータ</param>
         /// <returns>ラティス</returns>
-        public unsafe MeCabLattice ParseToLattice(char* str, int len, MeCabParam param)
+        public unsafe MeCabLattice<TNode> ParseToLattice(char* sentence, int length, MeCabParam param)
         {
+            this.ThrowIfNotOpend();
             this.ThrowIfDisposed();
-            if (len <= 0)
+            if (length <= 0)
                 throw new ArgumentOutOfRangeException("Please set one or more to length of string.");
 
-            return this.viterbi.Analyze(str, len, param);
+            var lattice = new MeCabLattice<TNode>(this.CreateNewNode, param, length);
+            this.viterbi.Analyze(sentence, length, lattice);
+            return lattice;
         }
 
         #endregion
@@ -222,7 +217,7 @@ namespace NMeCab
             this.disposed = true;
         }
 
-        ~MeCabTagger()
+        ~MeCabTaggerBase()
         {
             this.Dispose(false);
         }

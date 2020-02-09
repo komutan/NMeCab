@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace NMeCab.Core
 {
     public static class Utils
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double LogSumExp(double x, double y, bool flg)
         {
             const double MinusLogEpsilon = 50.0;

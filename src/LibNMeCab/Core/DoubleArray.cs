@@ -4,6 +4,7 @@
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 #if !MMF_DIC
 using System.IO;
@@ -95,6 +96,7 @@ namespace NMeCab.Core
             public int Length;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe ResultPair ExactMatchSearch(byte* key, int len, int nodePos)
         {
             int b = this.array[nodePos].Base;
@@ -123,6 +125,7 @@ namespace NMeCab.Core
             return new ResultPair() { Value = -1, Length = 0 };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe int CommonPrefixSearch(byte* key, ResultPair* result, int resultLen, int len, int nodePos = 0)
         {
             int b = this.array[nodePos].Base;

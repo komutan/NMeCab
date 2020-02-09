@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace NMeCab.Core
 {
@@ -47,7 +48,7 @@ namespace NMeCab.Core
             {
                 long fSize = sizeof(uint) + 32 * cSize + sizeof(uint) * charInfoList.Length;
                 if (reader.BaseStream.Length != fSize)
-                    throw new MeCabInvalidFileException("invalid file size", fileName);
+                    throw new InvalidDataException($"invalid file size. {fileName ?? ""}");
             }
 
             this.cList = new string[cSize];
@@ -66,11 +67,13 @@ namespace NMeCab.Core
 
         #region Get Infometion
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string Name(int i)
         {
             return this.cList[i];
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe char* SeekToOtherType(char* begin, char* end, CharInfo c, CharInfo* fail, int* cLen)
         {
             char* p = begin;
@@ -90,6 +93,7 @@ namespace NMeCab.Core
             return p;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public CharInfo GetCharInfo(char c)
         {
             return this.charInfoList[c];

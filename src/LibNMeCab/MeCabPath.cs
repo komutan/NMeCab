@@ -2,23 +2,21 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace NMeCab.Core
+namespace NMeCab
 {
-    public class MeCabPath
+    public class MeCabPath<TNode>
+        where TNode : MeCabNodeBase<TNode>
     {
         #region  Const/Field/Property
 
-        public MeCabNode RNode { get; set; }
+        public TNode RNode { get; set; }
 
-        public MeCabPath RNext { get; set; }
+        public MeCabPath<TNode> RNext { get; set; }
 
-        public MeCabNode LNode { get; set; }
+        public TNode LNode { get; set; }
 
-        public MeCabPath LNext { get; set; }
+        public MeCabPath<TNode> LNext { get; set; }
 
         public int Cost { get; set; }
 
@@ -35,7 +33,6 @@ namespace NMeCab.Core
                                  this.Prob,
                                  this.LNode,
                                  this.RNode);
-
         }
 
         #endregion
