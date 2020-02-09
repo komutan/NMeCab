@@ -8,11 +8,12 @@ using System.Collections.Generic;
 
 namespace NMeCab.Core
 {
-    public class NBestGenerator : IEnumerable<MeCabNode[]>
+    public class NBestGenerator<TNode> : IEnumerable<TNode[]>
+        where TNode : MeCabNodeBase<TNode>
     {
         private class QueueElement : IComparable<QueueElement>
         {
-            public MeCabNode Node { get; set; }
+            public TNode Node { get; set; }
             public QueueElement Next { get; set; }
             public long Fx { get; set; }
             public long Gx { get; set; }
@@ -25,7 +26,7 @@ namespace NMeCab.Core
 
         private readonly PriorityQueue<QueueElement> agenda = new PriorityQueue<QueueElement>();
 
-        public NBestGenerator(MeCabNode eos)
+        public NBestGenerator(TNode eos)
         {
             this.agenda.Push(new QueueElement()
             {
@@ -36,7 +37,7 @@ namespace NMeCab.Core
             });
         }
 
-        public IEnumerator<MeCabNode[]> GetEnumerator()
+        public IEnumerator<TNode[]> GetEnumerator()
         {
             while (this.agenda.Count != 0)
             {
@@ -45,7 +46,7 @@ namespace NMeCab.Core
 
                 if (rNode.Stat == MeCabNodeStat.Bos)
                 {
-                    var list = new List<MeCabNode>();
+                    var list = new List<TNode>();
 
                     for (var n = top; n.Next != null; n = n.Next)
                         list.Add(n.Node);

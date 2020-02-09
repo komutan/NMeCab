@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>NMeCab</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -13,4 +14,7 @@
     <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;MMF_MTX;MMF_DIC</DefineConstants>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="MeCabIpaDicTagger.cs" />
+  </ItemGroup>
 </Project>

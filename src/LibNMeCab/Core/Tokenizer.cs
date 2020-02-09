@@ -3,16 +3,16 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
+using System.Runtime.CompilerServices;
 #if NeedId
 using System.Threading;
 #endif
 
 namespace NMeCab.Core
 {
-    public class Tokenizer : IDisposable
+    public class Tokenizer<TNode> : IDisposable
+        where TNode : MeCabNodeBase<TNode>
     {
         #region Const
 
@@ -29,10 +29,6 @@ namespace NMeCab.Core
         private Token[][] unkTokens;
         private CharInfo space;
         private readonly CharProperty property = new CharProperty();
-#if NeedId
-        [ThreadStaticAttribute]
-        private static uint id;
-#endif
 
         #endregion
 
@@ -49,21 +45,21 @@ namespace NMeCab.Core
             var sysDic = this.dic[0];
             sysDic.Open(Path.Combine(dicDir, SysDicFile));
             if (sysDic.Type != DictionaryType.Sys)
-                throw new MeCabInvalidFileException("not a system dictionary", SysDicFile);
+                throw new InvalidDataException($"not a system dictionary. {sysDic.FileName ?? ""}");
 
             for (int i = 0; i < userDics.Length; i++)
             {
                 var d = this.dic[i + 1];
                 d.Open(Path.Combine(dicDir, userDics[i]));
                 if (d.Type != DictionaryType.Usr)
-                    throw new MeCabInvalidFileException("not a user dictionary", userDics[i]);
+                    throw new InvalidDataException($"not a user dictionary. {d.FileName ?? ""}");
                 if (!sysDic.IsCompatible(d))
-                    throw new MeCabInvalidFileException("incompatible dictionary", userDics[i]);
+                    throw new InvalidDataException($"incompatible dictionary. {d.FileName ?? ""}");
             }
 
             this.unkDic.Open(Path.Combine(dicDir, UnkDicFile));
             if (this.unkDic.Type != DictionaryType.Unk)
-                throw new MeCabInvalidFileException("not a unk dictionary", this.unkDic.FileName);
+                throw new InvalidDataException($"not a unk dictionary. {UnkDicFile}");
 
             this.unkTokens = new Token[this.property.Size][];
             for (int i = 0; i < this.unkTokens.Length; i++)
@@ -71,7 +67,7 @@ namespace NMeCab.Core
                 string key = this.property.Name(i);
                 var n = this.unkDic.ExactMatchSearch(key);
                 if (n.Value == -1)
-                    throw new MeCabInvalidFileException("cannot find UNK category: " + key, this.unkDic.FileName);
+                    throw new InvalidDataException($"cannot find UNK category: {key} {this.unkDic.FileName ?? ""}");
 
                 this.unkTokens[i] = this.unkDic.GetTokensArray(n.Value);
             }
@@ -90,10 +86,10 @@ namespace NMeCab.Core
 
         #region Lookup
 
-        public unsafe MeCabNode Lookup(char* begin, char* end, MeCabParam param)
+        public unsafe TNode Lookup(char* begin, char* end, MeCabLattice<TNode> lattice)
         {
             CharInfo cInfo;
-            MeCabNode resultNode = null;
+            TNode resultNode = null;
             int cLen;
 
             if (end - begin > ushort.MaxValue) end = begin + ushort.MaxValue;
@@ -116,7 +112,7 @@ namespace NMeCab.Core
                     for (int j = seg.Offset; j < seg.Offset + seg.Count; j++)
 #endif
                     {
-                        var newNode = this.GetNewNode();
+                        var newNode = lattice.CreateNewNode();
                         this.ReadNodeInfo(it, tokens[j], newNode);
                         newNode.Length = daResults->Length;
                         newNode.RLength = (int)(begin2 - begin) + daResults->Length;
@@ -137,7 +133,7 @@ namespace NMeCab.Core
 
             if (begin3 > end)
             {
-                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
+                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
                 return resultNode;
             }
 
@@ -146,7 +142,8 @@ namespace NMeCab.Core
                 char* tmp = begin3;
                 CharInfo fail;
                 begin3 = this.property.SeekToOtherType(begin3, end, cInfo, &fail, &cLen);
-                if (cLen <= param.MaxGroupingSize) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
+                if (cLen <= lattice.Param.MaxGroupingSize)
+                    this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
                 groupBegin3 = begin3;
                 begin3 = tmp;
             }
@@ -156,75 +153,47 @@ namespace NMeCab.Core
                 if (begin3 > end) break;
                 if (begin3 == groupBegin3) continue;
                 cLen = i;
-                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
+                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
                 if (!cInfo.IsKindOf(this.property.GetCharInfo(*begin3))) break;
                 begin3 += 1;
             }
 
-            if (resultNode == null) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, param);
+            if (resultNode == null) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
 
             return resultNode;
         }
 
-        private void ReadNodeInfo(MeCabDictionary dic, Token token, MeCabNode node)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ReadNodeInfo(MeCabDictionary dic, Token token, TNode node)
         {
             node.LCAttr = token.LcAttr;
             node.RCAttr = token.RcAttr;
             node.PosId = token.PosId;
             node.WCost = token.WCost;
             //node.Token = token;
-            //node.Feature = dic.GetFeature(token); //この段階では素性情報を取得しない
-            node.SetFeature(token.Feature, dic); //そのかわり遅延取得を可能にする
+            //node.Feature = dic.GetFeature(token); // この段階では素性情報を取得しない
+            node.SetFeature(token.Feature, dic); // そのかわり遅延取得を可能にする
         }
 
-        private unsafe void AddUnknown(ref MeCabNode resultNode, CharInfo cInfo,
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void AddUnknown(ref TNode resultNode, CharInfo cInfo,
                                        char* begin, char* begin2, char* begin3,
-                                       MeCabParam param)
+                                       MeCabLattice<TNode> lattice)
         {
             var token = this.unkTokens[cInfo.DefaultType];
             for (int i = 0; i < token.Length; i++)
             {
-                var newNode = this.GetNewNode();
+                var newNode = lattice.CreateNewNode();
                 this.ReadNodeInfo(this.unkDic, token[i], newNode);
                 newNode.Length = (int)(begin3 - begin2);
                 newNode.RLength = (int)(begin3 - begin);
                 newNode.Surface = new string(begin2, 0, newNode.Length);
                 newNode.CharType = cInfo.DefaultType;
                 newNode.Stat = MeCabNodeStat.Unk;
-                if (param.UnkFeature != null) newNode.Feature = param.UnkFeature;
+                if (lattice.Param.UnkFeature != null) newNode.Feature = lattice.Param.UnkFeature;
                 newNode.BNext = resultNode;
                 resultNode = newNode;
             }
-        }
-
-        #endregion
-
-        #region Get Node
-
-        public MeCabNode GetBosNode(MeCabParam param)
-        {
-            var bosNode = this.GetNewNode();
-            bosNode.Surface = "";
-            bosNode.Feature = "";
-            bosNode.IsBest = true;
-            bosNode.Stat = MeCabNodeStat.Bos;
-            return bosNode;
-        }
-
-        public MeCabNode GetEosNode(MeCabParam param)
-        {
-            var eosNode = this.GetBosNode(param); // same
-            eosNode.Stat = MeCabNodeStat.Eos;
-            return eosNode;
-        }
-
-        public MeCabNode GetNewNode()
-        {
-            var node = new MeCabNode();
-#if NeedId
-            node.Id = Tokenizer.id++;
-#endif
-            return node;
         }
 
         #endregion
@@ -249,7 +218,7 @@ namespace NMeCab.Core
                     foreach (var d in this.dic)
                         d?.Dispose();
 
-                this.unkDic.Dispose();  //Nullチェック不要
+                this.unkDic.Dispose();  // Nullチェック不要
             }
 
             this.disposed = true;

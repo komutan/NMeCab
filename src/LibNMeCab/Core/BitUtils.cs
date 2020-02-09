@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace NMeCab.Core
@@ -23,6 +24,7 @@ namespace NMeCab.Core
         /// <param name="offset">開始ビット位置</param>
         /// <param name="len">ビット長</param>
         /// <returns>ビットフィールド値</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GetBitField(uint bits, int offset, int len)
         {
             uint mask = ~(AllOne << len);
@@ -35,6 +37,7 @@ namespace NMeCab.Core
         /// <param name="bits">ビット列を表すUInt32値</param>
         /// <param name="offset">ビット位置</param>
         /// <returns>ビット値</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool GetFlag(uint bits, int offset)
         {
             uint mask = One << offset;
@@ -49,6 +52,7 @@ namespace NMeCab.Core
         /// <param name="offset">開始ビット位置</param>
         /// <param name="len">ビット長</param>
         /// <returns>比較結果</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool CompareAnd(uint bits1, uint bits2, int offset, int len)
         {
             uint mask = ~(AllOne << len) << offset;

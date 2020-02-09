@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Runtime.CompilerServices;
 #if MMF_DIC
 using System.IO.MemoryMappedFiles;
 #endif
@@ -89,11 +90,11 @@ namespace NMeCab.Core
             {
                 uint magic = reader.ReadUInt32();
                 if (this.mmva.Capacity < (magic ^ DictionaryMagicID))
-                    throw new MeCabInvalidFileException("dictionary file is broken", fileName);
+                    throw new InvalidDataException($"dictionary file is broken. {fileName}");
 
                 this.Version = reader.ReadUInt32();
                 if (this.Version != DicVersion)
-                    throw new MeCabInvalidFileException("incompatible version", fileName);
+                    throw new InvalidDataException($"incompatible version dictionaly. {fileName}");
 
                 this.Type = (DictionaryType)reader.ReadUInt32();
                 this.LexSize = reader.ReadUInt32();
@@ -137,11 +138,11 @@ namespace NMeCab.Core
             uint magic = reader.ReadUInt32();
             //CanSeekの時のみストリーム長のチェック
             if (reader.BaseStream.CanSeek && reader.BaseStream.Length != (magic ^ DictionaryMagicID))
-                throw new MeCabInvalidFileException("dictionary file is broken", this.FileName);
+                throw new InvalidDataException($"dictionary file is broken. {this.FileName}");
 
             this.Version = reader.ReadUInt32();
             if (this.Version != DicVersion)
-                throw new MeCabInvalidFileException("incompatible version", this.FileName);
+                throw new InvalidDataException($"incompatible version dictionaly. {this.FileName}");
 
             this.Type = (DictionaryType)reader.ReadUInt32();
             this.LexSize = reader.ReadUInt32();
@@ -162,9 +163,6 @@ namespace NMeCab.Core
                 this.tokens[i] = Token.Create(reader);
 
             this.features = reader.ReadBytes((int)fSize);
-
-            if (reader.BaseStream.ReadByte() != -1)
-                throw new MeCabInvalidFileException("dictionary file is broken", this.FileName);
         }
 
 #endif
@@ -173,12 +171,14 @@ namespace NMeCab.Core
 
         #region Search
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe DoubleArray.ResultPair ExactMatchSearch(string key)
         {
             fixed (char* pKey = key)
                 return this.ExactMatchSearch(pKey, key.Length, 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe DoubleArray.ResultPair ExactMatchSearch(char* key, int len, int nodePos = 0)
         {
             //if (this.encoding == Encoding.Unicode)
@@ -197,6 +197,7 @@ namespace NMeCab.Core
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe int CommonPrefixSearch(char* key, int len, DoubleArray.ResultPair* result, int rLen)
         {
             //if (this.encoding == Encoding.Unicode)
@@ -220,22 +221,26 @@ namespace NMeCab.Core
 
         #region Get Infomation
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetTokenSize(int value)
         {
             return 0xFF & value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int GetTokenPos(int value)
         {
             return value >> 8;
         }
 
 #if MMF_DIC
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Token* GetTokens(int value)
         {
             return this.tokens + this.GetTokenPos(value);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Token[] GetTokensArray(int value)
         {
             var ret = new Token[this.GetTokenSize(value)];
@@ -249,11 +254,13 @@ namespace NMeCab.Core
             return ret;
         }
 #else
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ArraySegment<Token> GetTokens(int value)
         {
             return new ArraySegment<Token>(this.tokens, this.GetTokenPos(value), this.GetTokenSize(value));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Token[] GetTokensArray(int value)
         {
             var ret = new Token[this.GetTokenSize(value)];
@@ -262,6 +269,7 @@ namespace NMeCab.Core
         }
 #endif
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe string GetFeature(uint featurePos)
         {
             return StrUtils.GetString(this.features, (long)featurePos, this.encoding);
@@ -271,6 +279,7 @@ namespace NMeCab.Core
 
         #region etc.
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsCompatible(MeCabDictionary d)
         {
             return (this.Version == d.Version &&

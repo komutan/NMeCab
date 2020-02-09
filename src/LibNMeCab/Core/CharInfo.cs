@@ -4,6 +4,7 @@
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace NMeCab.Core
@@ -87,6 +88,7 @@ namespace NMeCab.Core
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKindOf(CharInfo c)
         {
             return BitUtils.CompareAnd(this.bits, c.bits, 0, 18);

@@ -3,16 +3,16 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 #if MMF_MTX
 using System.IO.MemoryMappedFiles;
+using System.Runtime.CompilerServices;
 #endif
 
 namespace NMeCab.Core
 {
-    public class Connector : IDisposable
+    public class Connector<TNode> : IDisposable
+        where TNode : MeCabNodeBase<TNode>
     {
         #region Const/Field/Property
 
@@ -27,7 +27,6 @@ namespace NMeCab.Core
 #endif
 
         public ushort LSize { get; private set; }
-
         public ushort RSize { get; private set; }
 
         #endregion
@@ -53,7 +52,7 @@ namespace NMeCab.Core
 
                 long fSize = stream.Position + sizeof(short) * this.LSize * this.RSize;
                 if (this.mmva.Capacity < fSize)
-                    throw new MeCabInvalidFileException("file size is invalid", fileName);
+                    throw new InvalidDataException($"File size is invalid. {fileName}");
 
                 ptr += stream.Position;
                 this.matrix = (short*)ptr;
@@ -72,7 +71,7 @@ namespace NMeCab.Core
                 }
 
                 if (reader.BaseStream.ReadByte() != -1)
-                    throw new MeCabInvalidFileException("file size is invalid", fileName);
+                    throw new InvalidDataException($"File size is invalid. {fileName}");
             }
 #endif
         }
@@ -81,7 +80,8 @@ namespace NMeCab.Core
 
         #region Cost
 
-        public unsafe int Cost(MeCabNode lNode, MeCabNode rNode)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe int Cost(TNode lNode, TNode rNode)
         {
             int pos = lNode.RCAttr + this.LSize * rNode.LCAttr;
             return this.matrix[pos] + rNode.WCost;
