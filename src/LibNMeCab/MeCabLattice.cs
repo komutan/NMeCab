@@ -9,6 +9,10 @@ using NMeCab.Core;
 
 namespace NMeCab
 {
+     /// <summary>
+     /// 形態素解析中の情報の集合を表します。
+     /// </summary>
+     /// <typeparam name="TNode">形態素ノードの型</typeparam>
     public class MeCabLattice<TNode>
         where TNode : MeCabNodeBase<TNode>
     {
@@ -18,12 +22,24 @@ namespace NMeCab
 
         public MeCabParam Param { get; }
 
+        /// <summary>
+        /// 開始位置別の形態素ノード配列
+        /// </summary>
         public TNode[] BeginNodeList { get; }
 
+        /// <summary>
+        /// 終了位置別の形態素ノード配列
+        /// </summary>
         public TNode[] EndNodeList { get; }
 
+        /// <summary>
+        /// 開始ノード
+        /// </summary>
         public TNode BosNode { get; }
 
+        /// <summary>
+        /// 終了ノード
+        /// </summary>
         public TNode EosNode { get; }
 
         public float Z { get; internal set; } = 0.0f;
@@ -46,6 +62,10 @@ namespace NMeCab
             this.EosNode = eosNode;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TNode CreateNewNode()
         {
@@ -54,12 +74,19 @@ namespace NMeCab
             return newNode;
         }
 
+        /// <summary>
+        ///  ベスト解を取得します。
+        /// </summary>
+        /// <returns></returns>
         public TNode[] GetBestNodes()
         {
             var stack = new Stack<TNode>();
 
-            for (var node = this.EosNode.BestPrev; node.BestPrev != null; node = node.BestPrev)
+            for (var node = this.EosNode.Prev; node.Prev != null; node = node.Prev)
+            {
+                node.Prev.Next = node;
                 stack.Push(node);
+            }
 
             return stack.ToArray();
         }

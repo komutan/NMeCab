@@ -48,21 +48,31 @@ namespace NMeCab.Core
                 {
                     var list = new List<TNode>();
 
-                    for (var n = top; n.Next != null; n = n.Next)
+                    var n = top.Next;
+                    top.Node.Next = n.Node;
+
+                    for (; n.Next.Next != null; n = n.Next)
+                    {
+                        n.Node.Next = n.Next.Node;
+                        n.Next.Node.Prev = n.Node;
                         list.Add(n.Node);
+                    }
+
+                    n.Next.Node.Prev = n.Node;
 
                     yield return list.ToArray();
                 }
 
                 for (var path = rNode.LPath; path != null; path = path.LNext)
                 {
-                    this.agenda.Push(new QueueElement()
-                    {
-                        Node = path.LNode,
-                        Gx = path.Cost + top.Gx,
-                        Fx = path.LNode.Cost + path.Cost + top.Gx,
-                        Next = top
-                    });
+                    this.agenda.Push(
+                        new QueueElement()
+                        {
+                            Node = path.LNode,
+                            Gx = path.Cost + top.Gx,
+                            Fx = path.LNode.Cost + path.Cost + top.Gx,
+                            Next = top
+                        });
                 }
             }
         }

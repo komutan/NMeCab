@@ -168,7 +168,7 @@ namespace NMeCab.Core
 
                 if (bestNode == null) throw new ArgumentException("too long sentence.");
 
-                rNode.BestPrev = bestNode;
+                rNode.Prev = bestNode;
                 rNode.Cost = bestCost;
                 int x = rNode.RLength + pos;
                 rNode.ENext = endNodeList[x];

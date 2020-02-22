@@ -75,21 +75,11 @@ namespace NMeCab.Core
             //バイト長のカウント
             int byteCount = 0;
             while (bytes[byteCount] != Nul) //終端\0に到達するまでシーク
-            {
                 checked { byteCount++; } //文字列のバイト長がInt32.MaxValueを超えたならエラー
-            }
 
-            if (byteCount == 0)
-                return "";
+            if (byteCount == 0) return "";
 
-            //生成されうる最大文字数のバッファを確保
-            int maxCharCount = enc.GetMaxCharCount(byteCount);
-            fixed (char* buff = new char[maxCharCount])
-            {
-                //バイト配列を文字列にデコード
-                int len = enc.GetChars(bytes, byteCount, buff, maxCharCount);
-                return new string(buff, 0, len);
-            }
+            return enc.GetString(bytes, byteCount);
         }
 
         /// <summary>
@@ -97,6 +87,7 @@ namespace NMeCab.Core
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Encoding GetEncoding(string name)
         {
             switch (name.ToUpper())
@@ -112,16 +103,16 @@ namespace NMeCab.Core
         /// 単一行のCSV形式の文字列を配列に変換する
         /// </summary>
         /// <param name="csvRowString">単一行のCSV形式の文字列</param>
-        /// <param name="defaltColumnBuffSize">配列長の内部バッファの初期値</param>
+        /// <param name="defaltColumnBuffSize">配列の内部バッファの初期値</param>
         /// <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
         /// <returns>変換後の文字列配列</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string[] ParseCsvRow(string csvRowString,
+        public static string[] SplitCsvRow(string csvRowString,
                                            int defaltColumnBuffSize,
                                            int defaltStringBuffSize)
         {
             var ret = new List<string>(defaltColumnBuffSize);
-            var buff = new StringBuilder(defaltStringBuffSize);
+            var stb = new StringBuilder(defaltStringBuffSize);
             Action<char> action = Normal;
 
             foreach (var c in csvRowString)
@@ -136,21 +127,21 @@ namespace NMeCab.Core
                 switch (c)
                 {
                     case ',':
-                        ret.Add(buff.ToString());
-                        buff.Clear();
+                        ret.Add(stb.ToString());
+                        stb.Clear();
                         break;
                     case '"':
                         action = AfterLeftWQuote;
                         break;
                     default:
-                        buff.Append(c);
+                        stb.Append(c);
                         break;
                 }
             }
 
             void AfterLeftWQuote(char c)
             {
-                buff.Append(c);
+                stb.Append(c);
 
                 switch (c)
                 {
@@ -171,7 +162,7 @@ namespace NMeCab.Core
                         action = Normal;
                         break;
                     default:
-                        buff.Append(c);
+                        stb.Append(c);
                         break;
                 }
             }

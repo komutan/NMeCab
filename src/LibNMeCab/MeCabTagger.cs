@@ -8,52 +8,98 @@ using NMeCab.Core;
 
 namespace NMeCab
 {
+    /// <summary>
+    /// 使用する辞書を限定しない場合の形態素解析処理の起点です。
+    /// </summary>
     public class MeCabTagger : MeCabTaggerBase<MeCabNode>
     {
+        /// <summary>
+        /// コンストラクタ（非公開）
+        /// </summary>
+        private MeCabTagger()
+        { }
+
+        /// <summary>
+        /// 形態素解析処理の起点を作成します。
+        /// </summary>
+        /// <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+        /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+        /// <returns>形態素解析処理の起点</returns>
+        public static MeCabTagger Create(string dicDir, string[] userDic = null)
+        {
+            return Create(dicDir, userDic, () => new MeCabTagger());
+        }
+
+        /// <summary>
+        /// 形態素ノードインスタンス生成メソッドです。（内部用）
+        /// </summary>
+        /// <returns>形態素ノード</returns>
         protected override MeCabNode CreateNewNode()
         {
             return new MeCabNode();
         }
     }
 
-    public class MeCabIpaDicTagger : MeCabTaggerBase<MeCabIpaDicNode>
-    {
-        protected override MeCabIpaDicNode CreateNewNode()
-        {
-            return new MeCabIpaDicNode();
-        }
-    }
-
+    /// <summary>
+    /// 形態素解析処理の起点になる抽象基底クラスです。
+    /// </summary>
+    /// <typeparam name="TNode">形態素ノードの型</typeparam>
     public abstract class MeCabTaggerBase<TNode> : IDisposable
         where TNode : MeCabNodeBase<TNode>
     {
         private readonly Viterbi<TNode> viterbi = new Viterbi<TNode>();
 
+        /// <summary>
+        /// 形態素ノードインスタンス生成メソッドです。（内部用）
+        /// </summary>
+        /// <returns>形態素ノード</returns>
         protected abstract TNode CreateNewNode();
 
-        #region Open
+        #region Static Create
 
-        private bool opened = false;
-
-        public void Open(string dicDir, IEnumerable<string> userDics)
+        /// <summary>
+        /// 形態素解析処理の起点を作成します。
+        /// </summary>
+        /// <typeparam name="TTagger">作成する形態素解析処理の起点の具象型</typeparam>
+        /// <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+        /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+        /// <param name="allocator">Taggetインスタンス生成メソッド</param>
+        /// <returns>形態素解析処理の起点</returns>
+        protected static TTagger Create<TTagger>(string dicDir,
+                                                 IEnumerable<string> userDics,
+                                                 Func<TTagger> allocator)
+            where TTagger : MeCabTaggerBase<TNode>
         {
-            this.Open(dicDir, new List<string>(userDics).ToArray());
-        }
+            if (dicDir == null)
+                throw new ArgumentNullException(nameof(dicDir));
 
-        public void Open(string dicDir, string[] userDics)
-        {
-            if (this.opened)
-                throw new InvalidOperationException("this tagger was alredy opened.");
+            if (allocator == null)
+                throw new ArgumentNullException(nameof(allocator));
 
-            this.viterbi.Open(dicDir, userDics);
+            TTagger tagger = null;
+            try
+            {
+                tagger = allocator();
+                tagger.viterbi.Open(dicDir, ToNullTrimedArray(userDics));
+                return tagger;
+            }
+            catch (Exception)
+            {
+                tagger?.Dispose();
+                throw;
+            }
 
-            this.opened = true;
-        }
-
-        private void ThrowIfNotOpend()
-        {
-            if (!this.opened)
-                throw new InvalidOperationException("this tagger was not opned.");
+            string[] ToNullTrimedArray(IEnumerable<string> target)
+            {
+                if (target == null)
+                    return new string[0];
+                else if (target is string[] ary)
+                    return ary;
+                else if (target is List<string> list)
+                    return list.ToArray();
+                else
+                    return (new List<string>(target)).ToArray();
+            }
         }
 
         #endregion
@@ -61,10 +107,10 @@ namespace NMeCab
         #region Parse
 
         /// <summary>
-        /// 解析を行う
+        /// 形態素解析を行います。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
-        /// <returns>形態素の配列</returns>
+        /// <returns>ベスト解の形態素ノードの配列</returns>
         public unsafe TNode[] Parse(string sentence)
         {
             fixed (char* pStr = sentence)
@@ -72,11 +118,11 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 解析を行う
+        /// 形態素解析を行います。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
-        /// <returns>形態素の配列</returns>
+        /// <returns>ベスト解の形態素ノードの配列</returns>
         public unsafe TNode[] Parse(char* sentence, int length)
         {
             var param = new MeCabParam()
@@ -92,7 +138,7 @@ namespace NMeCab
         #region NBest
 
         /// <summary>
-        /// 解析を行い結果を確からしいものから順番に取得する
+        /// 形態素解析を行い、結果を確からしいものから順に取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
         /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
@@ -103,7 +149,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 解析を行い結果を確からしいものから順番に取得する
+        /// 形態素解析を行い、結果を確からしいものから順に取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
@@ -123,10 +169,10 @@ namespace NMeCab
         #region AllMophs
 
         /// <summary>
-        /// 解析を行い可能性があるすべての形態素を取得する
+        /// 形態素解析を行い、可能性があるすべての形態素を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
-        /// <returns>形態素の配列</returns>
+        /// <returns>すべての形態素ノードの配列</returns>
         public unsafe TNode[] ParseAllMorphs(string sentence)
         {
             if (sentence == null)
@@ -137,11 +183,11 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 解析を行い可能性があるすべての形態素を取得する
+        /// 形態素解析を行い、可能性があるすべての形態素を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
-        /// <returns>形態素の配列</returns>
+        /// <returns>すべての形態素ノードの配列</returns>
         public unsafe TNode[] ParseAllMorphs(char* sentence, int length)
         {
             var param = new MeCabParam()
@@ -157,7 +203,7 @@ namespace NMeCab
         #region Lattice
 
         /// <summary>
-        /// 解析を行い、結果をラティスとして取得する
+        /// 形態素解析を行い、結果をラティスとして取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
         /// <param name="param">解析パラメータ</param>
@@ -172,7 +218,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 解析を行い、結果をラティスとして取得する
+        /// 形態素解析を行い、結果をラティスとして取得します
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
@@ -180,7 +226,6 @@ namespace NMeCab
         /// <returns>ラティス</returns>
         public unsafe MeCabLattice<TNode> ParseToLattice(char* sentence, int length, MeCabParam param)
         {
-            this.ThrowIfNotOpend();
             this.ThrowIfDisposed();
             if (length <= 0)
                 throw new ArgumentOutOfRangeException("Please set one or more to length of string.");
@@ -197,7 +242,7 @@ namespace NMeCab
         private bool disposed;
 
         /// <summary>
-        /// 使用中のリソースを開放する
+        /// 使用中のリソースを開放します。
         /// </summary>
         public void Dispose()
         {

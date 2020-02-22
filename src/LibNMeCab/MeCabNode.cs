@@ -7,104 +7,28 @@ using NMeCab.Core;
 
 namespace NMeCab
 {
+    /// <summary>
+    /// 形態素ノードを表します。使用する辞書は限定しません。
+    /// </summary>
     public class MeCabNode : MeCabNodeBase<MeCabNode>
     { }
 
-    public class MeCabIpaDicNode : MeCabNodeBase<MeCabIpaDicNode>
-    {
-        private string[] features = null;
-
-        private string[] Features
-        {
-            get
-            {
-                if (features == null)
-                    features = StrUtils.ParseCsvRow(this.Feature, 8, 16);
-
-                return this.features;
-            }
-        }
-
-        /// <summary>
-        /// 品詞
-        /// </summary>
-        public string PartsOfSpeech
-        {
-            get { return this.Features[0]; }
-        }
-
-        /// <summary>
-        /// 品詞細分類1
-        /// </summary>
-        public string PartsOfSpeechSection1
-        {
-            get { return this.Features[1]; }
-        }
-
-        /// <summary>
-        /// 品詞細分類2
-        /// </summary>
-        public string PartsOfSpeechSection2
-        {
-            get { return this.Features[2]; }
-        }
-
-        /// <summary>
-        /// 品詞細分類3
-        /// </summary>
-        public string PartsOfSpeechSection3
-        {
-            get { return this.Features[3]; }
-        }
-
-        /// <summary>
-        /// 活用形
-        /// </summary>
-        public string ConjugatedForm
-        {
-            get { return this.Features[4]; }
-        }
-
-        /// <summary>
-        /// 活用型
-        /// </summary>
-        public string Inflection
-        {
-            get { return this.Features[5]; }
-        }
-
-        /// <summary>
-        /// 原形
-        /// </summary>
-        public string OriginalForm
-        {
-            get { return this.Features[6]; }
-        }
-
-        /// <summary>
-        /// 読み
-        /// </summary>
-        public string Reading
-        {
-            get { return this.Features[7]; }
-        }
-
-        /// <summary>
-        /// 発音
-        /// </summary>
-        public string Pronounciation
-        {
-            get { return this.Features[8]; }
-        }
-    }
-
+    /// <summary>
+    /// 形態素ノードの基底クラスを表します。
+    /// </summary>
+    /// <typeparam name="TNode">連結する形態素ノードの具象型</typeparam>
     public abstract class MeCabNodeBase<TNode>
         where TNode : MeCabNodeBase<TNode>
     {
         /// <summary>
-        /// 累積コストが最小である、一つ前の形態素
+        /// 一つ前の形態素
         /// </summary>
-        public TNode BestPrev { get; set; }
+        public TNode Prev { get; set; }
+
+        /// <summary>
+        /// 一つ後の形態素
+        /// </summary>
+        public TNode Next { get; set; }
 
         /// <summary>
         /// 同じ開始位置で始まる形態素
@@ -245,6 +169,10 @@ namespace NMeCab
         /// </summary>
         public int EPos { get; set; }
 
+        /// <summary>
+        /// インスタンスの文字列表現を返します。
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder os = new StringBuilder();
@@ -257,7 +185,6 @@ namespace NMeCab
             else
                 os.Append(this.Surface);
             os.Append("]");
-
             os.Append("[Feature:").Append(this.Feature).Append("]");
             os.Append("[BPos:").Append(this.BPos).Append("]");
             os.Append("[EPos:").Append(this.EPos).Append("]");
@@ -271,16 +198,6 @@ namespace NMeCab
             os.Append("[Beta:").Append(this.Beta).Append("]");
             os.Append("[Prob:").Append(this.Prob).Append("]");
             os.Append("[Cost:").Append(this.Cost).Append("]");
-
-            for (var path = this.LPath; path != null; path = path.LNext)
-            {
-                os.Append("[Path:");
-                os.Append(path.LNode.Id).Append(" ");
-                os.Append("(Cost:").Append(path.Cost).Append(")");
-                os.Append("(Prob:").Append(path.Prob).Append(")");
-                os.Append("]");
-            }
-
             return os.ToString();
         }
     }
