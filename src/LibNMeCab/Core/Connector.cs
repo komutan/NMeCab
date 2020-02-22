@@ -4,9 +4,9 @@
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 #if MMF_MTX
 using System.IO.MemoryMappedFiles;
-using System.Runtime.CompilerServices;
 #endif
 
 namespace NMeCab.Core

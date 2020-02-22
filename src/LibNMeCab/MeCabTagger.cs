@@ -31,7 +31,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 形態素ノードインスタンス生成メソッドです。（内部用）
+        /// 形態素ノードインスタンス生成メソッドです。
         /// </summary>
         /// <returns>形態素ノード</returns>
         protected override MeCabNode CreateNewNode()
@@ -70,11 +70,8 @@ namespace NMeCab
                                                  Func<TTagger> allocator)
             where TTagger : MeCabTaggerBase<TNode>
         {
-            if (dicDir == null)
-                throw new ArgumentNullException(nameof(dicDir));
-
-            if (allocator == null)
-                throw new ArgumentNullException(nameof(allocator));
+            if (dicDir == null) throw new ArgumentNullException(nameof(dicDir));
+            if (allocator == null) throw new ArgumentNullException(nameof(allocator));
 
             TTagger tagger = null;
             try
@@ -175,8 +172,7 @@ namespace NMeCab
         /// <returns>すべての形態素ノードの配列</returns>
         public unsafe TNode[] ParseAllMorphs(string sentence)
         {
-            if (sentence == null)
-                throw new ArgumentNullException(nameof(sentence));
+            if (sentence == null) throw new ArgumentNullException(nameof(sentence));
 
             fixed (char* pStr = sentence)
                 return this.ParseAllMorphs(pStr, sentence.Length);
@@ -210,8 +206,7 @@ namespace NMeCab
         /// <returns>ラティス</returns>
         public unsafe MeCabLattice<TNode> ParseToLattice(string sentence, MeCabParam param)
         {
-            if (sentence == null)
-                throw new ArgumentNullException(nameof(sentence));
+            if (sentence == null) throw new ArgumentNullException(nameof(sentence));
 
             fixed (char* pStr = sentence)
                 return this.ParseToLattice(pStr, sentence.Length, param);
@@ -227,8 +222,7 @@ namespace NMeCab
         public unsafe MeCabLattice<TNode> ParseToLattice(char* sentence, int length, MeCabParam param)
         {
             this.ThrowIfDisposed();
-            if (length <= 0)
-                throw new ArgumentOutOfRangeException("Please set one or more to length of string.");
+            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
 
             var lattice = new MeCabLattice<TNode>(this.CreateNewNode, param, length);
             this.viterbi.Analyze(sentence, length, lattice);

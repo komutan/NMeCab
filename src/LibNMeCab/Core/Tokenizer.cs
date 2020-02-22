@@ -5,9 +5,6 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-#if NeedId
-using System.Threading;
-#endif
 
 namespace NMeCab.Core
 {
