@@ -118,6 +118,8 @@ namespace NMeCab.Core
             foreach (var c in csvRowString)
                 action(c);
 
+            ret.Add(stb.ToString());
+
             return ret.ToArray();
 
             #region Inner methods

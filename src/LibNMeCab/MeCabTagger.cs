@@ -9,7 +9,7 @@ using NMeCab.Core;
 namespace NMeCab
 {
     /// <summary>
-    /// 使用する辞書を限定しない場合の形態素解析処理の起点です。
+    /// 形態素解析処理の起点を表します。使用する辞書の形式は限定しません。
     /// </summary>
     public class MeCabTagger : MeCabTaggerBase<MeCabNode>
     {
@@ -41,7 +41,7 @@ namespace NMeCab
     }
 
     /// <summary>
-    /// 形態素解析処理の起点になる抽象基底クラスです。
+    /// 形態素解析処理の起点を表す抽象基底クラスです。
     /// </summary>
     /// <typeparam name="TNode">形態素ノードの型</typeparam>
     public abstract class MeCabTaggerBase<TNode> : IDisposable
@@ -107,7 +107,7 @@ namespace NMeCab
         #region Parse
 
         /// <summary>
-        /// 形態素解析を行います。
+        /// 形態素解析を行い、最も確からしい結果を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
         /// <returns>ベスト解の形態素ノードの配列</returns>
@@ -118,7 +118,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 形態素解析を行います。
+        /// 形態素解析を行い、最も確からしい結果を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
@@ -138,7 +138,7 @@ namespace NMeCab
         #region NBest
 
         /// <summary>
-        /// 形態素解析を行い、結果を確からしいものから順に取得します。
+        /// 形態素解析を行い、確からしい順に複数の結果を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
         /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
@@ -149,7 +149,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 形態素解析を行い、結果を確からしいものから順に取得します。
+        /// 形態素解析を行い、確からしい順に複数の結果を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>

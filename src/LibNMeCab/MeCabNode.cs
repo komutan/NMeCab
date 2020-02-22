@@ -8,13 +8,13 @@ using NMeCab.Core;
 namespace NMeCab
 {
     /// <summary>
-    /// 形態素ノードを表します。使用する辞書は限定しません。
+    /// 形態素ノードを表します。使用する辞書の形式は限定しません。
     /// </summary>
     public class MeCabNode : MeCabNodeBase<MeCabNode>
     { }
 
     /// <summary>
-    /// 形態素ノードの基底クラスを表します。
+    /// 形態素ノードを表す抽象基底クラスです。
     /// </summary>
     /// <typeparam name="TNode">連結する形態素ノードの具象型</typeparam>
     public abstract class MeCabNodeBase<TNode>

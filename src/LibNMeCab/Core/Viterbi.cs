@@ -141,8 +141,8 @@ namespace NMeCab.Core
 
                 for (var lNode = endNodeList[pos]; lNode != null; lNode = lNode.ENext)
                 {
-                    int lCost = this.connector.Cost(lNode, rNode); // local cost
-                    long cost = lNode.Cost + lCost;
+                    int localCost = this.connector.Cost(lNode, rNode);
+                    long cost = lNode.Cost + localCost;
 
                     if (cost < bestCost)
                     {
@@ -154,7 +154,7 @@ namespace NMeCab.Core
                     {
                         var path = new MeCabPath<TNode>()
                         {
-                            Cost = lCost,
+                            Cost = localCost,
                             RNode = rNode,
                             LNode = lNode,
                             LNext = rNode.LPath,
@@ -170,9 +170,13 @@ namespace NMeCab.Core
 
                 rNode.Prev = bestNode;
                 rNode.Cost = bestCost;
-                int x = rNode.RLength + pos;
-                rNode.ENext = endNodeList[x];
-                endNodeList[x] = rNode;
+
+                if (rNode.RLength != 0)
+                {
+                    int x = rNode.RLength + pos;
+                    rNode.ENext = endNodeList[x];
+                    endNodeList[x] = rNode;
+                }
             }
         }
 

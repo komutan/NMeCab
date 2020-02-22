@@ -4,7 +4,7 @@ using NMeCab.Core;
 namespace NMeCab
 {
     /// <summary>
-    /// IPA辞書を使用する場合の形態素解析処理の起点です。
+    /// IPA形式の辞書を使用する場合の形態素解析処理の起点を表します。
     /// </summary>
     public class MeCabIpaDicTagger : MeCabTaggerBase<MeCabIpaDicNode>
     {
@@ -36,7 +36,7 @@ namespace NMeCab
     }
 
     /// <summary>
-    /// IPA辞書を使用する場合の形態素ノードです。
+    /// IPA形式の辞書を使用する場合の形態素ノードです。
     /// 素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
     /// </summary>
     public class MeCabIpaDicNode : MeCabNodeBase<MeCabIpaDicNode>

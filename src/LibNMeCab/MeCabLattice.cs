@@ -9,10 +9,10 @@ using NMeCab.Core;
 
 namespace NMeCab
 {
-     /// <summary>
-     /// 形態素解析中の情報の集合を表します。
-     /// </summary>
-     /// <typeparam name="TNode">形態素ノードの型</typeparam>
+    /// <summary>
+    /// 形態素解析中の情報の集合を表します。
+    /// </summary>
+    /// <typeparam name="TNode">形態素ノードの型</typeparam>
     public class MeCabLattice<TNode>
         where TNode : MeCabNodeBase<TNode>
     {
@@ -20,15 +20,18 @@ namespace NMeCab
 
         private uint seqNum = 0u;
 
+        /// <summary>
+        /// 解析パラメータ
+        /// </summary>
         public MeCabParam Param { get; }
 
         /// <summary>
-        /// 開始位置別の形態素ノード配列
+        /// 開始位置をインデックスとした形態素ノード配列
         /// </summary>
         public TNode[] BeginNodeList { get; }
 
         /// <summary>
-        /// 終了位置別の形態素ノード配列
+        /// 終了位置をインデックスとした形態素ノード配列
         /// </summary>
         public TNode[] EndNodeList { get; }
 
@@ -44,6 +47,12 @@ namespace NMeCab
 
         public float Z { get; internal set; } = 0.0f;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="nodeAllocator"></param>
+        /// <param name="param"></param>
+        /// <param name="length"></param>
         public MeCabLattice(Func<TNode> nodeAllocator, MeCabParam param, int length)
         {
             this.nodeAllocator = nodeAllocator;
@@ -53,21 +62,21 @@ namespace NMeCab
 
             var bosNode = CreateNewNode();
             bosNode.Stat = MeCabNodeStat.Bos;
-            this.EndNodeList[length] = BosNode;
+            this.EndNodeList[0] = bosNode;
             this.BosNode = bosNode;
 
-            var eosNode = this.EosNode;
+            var eosNode = CreateNewNode();
             eosNode.Stat = MeCabNodeStat.Eos;
-            this.BeginNodeList[0] = bosNode;
+            this.BeginNodeList[length] = eosNode;
             this.EosNode = eosNode;
         }
 
         /// <summary>
-        /// 
+        /// 新しい形態素ノードを作成します。
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TNode CreateNewNode()
+        internal TNode CreateNewNode()
         {
             var newNode = this.nodeAllocator();
             newNode.Id = this.seqNum++;
@@ -75,15 +84,16 @@ namespace NMeCab
         }
 
         /// <summary>
-        ///  ベスト解を取得します。
+        /// ベスト解を取得します。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>ベスト解の形態素ノードの配列</returns>
         public TNode[] GetBestNodes()
         {
             var stack = new Stack<TNode>();
 
             for (var node = this.EosNode.Prev; node.Prev != null; node = node.Prev)
             {
+                node.IsBest = true;
                 node.Prev.Next = node;
                 stack.Push(node);
             }
@@ -91,14 +101,34 @@ namespace NMeCab
             return stack.ToArray();
         }
 
+        /// <summary>
+        /// Nベスト解を取得します。
+        /// </summary>
+        /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
+        public IEnumerable<TNode[]> GetNBestResults()
+        {
+            return new NBestGenerator<TNode>(this.EosNode);
+        }
+
+        /// <summary>
+        /// すべての形態素を取得します。
+        /// </summary>
+        /// <returns>すべての形態素ノードの配列</returns>
         public TNode[] GetAllNodes()
         {
+            for (var node = this.EosNode.Prev; node.Prev != null; node = node.Prev)
+                node.IsBest = true;
+
+            var prev = this.BosNode;
             var list = new List<TNode>();
 
             for (int pos = 0; pos < this.BeginNodeList.Length - 1; pos++)
             {
                 for (var node = this.BeginNodeList[pos]; node != null; node = node.BNext)
                 {
+                    prev.Next = node;
+                    node.Prev = prev;
+                    prev = node;
                     list.Add(node);
 
                     for (var path = node.LPath; path != null; path = path.LNext)
@@ -111,11 +141,6 @@ namespace NMeCab
             }
 
             return list.ToArray();
-        }
-
-        public IEnumerable<TNode[]> GetNBestResults()
-        {
-            return new NBestGenerator<TNode>(this.EosNode);
         }
     }
 }
