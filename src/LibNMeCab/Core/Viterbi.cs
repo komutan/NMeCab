@@ -47,6 +47,8 @@ namespace NMeCab.Core
                 default:
                     throw new ArgumentOutOfRangeException(nameof(lattice.Param.LatticeLevel));
             }
+
+            this.BuildBestLattice(lattice);
         }
 
         #endregion
@@ -108,8 +110,6 @@ namespace NMeCab.Core
                 if (lattice.EndNodeList[pos] != null)
                 {
                     var rNode = tokenizer.Lookup(begin, end, lattice);
-                    rNode.BPos = pos;
-                    rNode.EPos = pos + rNode.RLength;
                     lattice.BeginNodeList[pos] = rNode;
                     this.Connect(pos, rNode, lattice.EndNodeList, withAllPath);
                 }
@@ -171,13 +171,35 @@ namespace NMeCab.Core
                 rNode.Prev = bestNode;
                 rNode.Cost = bestCost;
 
+                rNode.BPos = pos;
+                rNode.EPos = pos + rNode.RLength;
                 if (rNode.RLength != 0)
                 {
-                    int x = rNode.RLength + pos;
-                    rNode.ENext = endNodeList[x];
-                    endNodeList[x] = rNode;
+                    rNode.ENext = endNodeList[rNode.EPos];
+                    endNodeList[rNode.EPos] = rNode;
                 }
             }
+        }
+
+        #endregion
+
+        #region Build
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void BuildBestLattice(MeCabLattice<TNode> lattice)
+        {
+            var eos = lattice.EosNode;
+            var node = eos.Prev;
+            node.Next = eos;
+
+            for (; node.Prev != null; node = node.Prev)
+            {
+                node.IsBest = true;
+                node.Prev.Next = node;
+                lattice.BestLattice.Push(node);
+            }
+
+            lattice.BosNode.Next = node;
         }
 
         #endregion

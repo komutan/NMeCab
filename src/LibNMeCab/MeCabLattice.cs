@@ -47,13 +47,15 @@ namespace NMeCab
 
         public float Z { get; internal set; } = 0.0f;
 
+        internal Stack<TNode> BestLattice { get; } = new Stack<TNode>();
+
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="nodeAllocator"></param>
         /// <param name="param"></param>
         /// <param name="length"></param>
-        public MeCabLattice(Func<TNode> nodeAllocator, MeCabParam param, int length)
+        internal MeCabLattice(Func<TNode> nodeAllocator, MeCabParam param, int length)
         {
             this.nodeAllocator = nodeAllocator;
             this.Param = param;
@@ -89,16 +91,7 @@ namespace NMeCab
         /// <returns>ベスト解の形態素ノードの配列</returns>
         public TNode[] GetBestNodes()
         {
-            var stack = new Stack<TNode>();
-
-            for (var node = this.EosNode.Prev; node.Prev != null; node = node.Prev)
-            {
-                node.IsBest = true;
-                node.Prev.Next = node;
-                stack.Push(node);
-            }
-
-            return stack.ToArray();
+            return this.BestLattice.ToArray();
         }
 
         /// <summary>
@@ -116,9 +109,6 @@ namespace NMeCab
         /// <returns>すべての形態素ノードの配列</returns>
         public TNode[] GetAllNodes()
         {
-            for (var node = this.EosNode.Prev; node.Prev != null; node = node.Prev)
-                node.IsBest = true;
-
             var prev = this.BosNode;
             var list = new List<TNode>();
 

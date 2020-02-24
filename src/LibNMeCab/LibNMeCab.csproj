@@ -3,6 +3,23 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
+    <Authors>Tsuyoshi Komuta</Authors>
+    <Product>NMeCab</Product>
+    <Description>This package is Japanese morphological analysis library. It was developed in pure C# with reference to MeCab (developed  in C++). The dictionary is the same as MeCab, and the analysis result is the same as MeCab.
+このパッケージは日本語形態素解析ライブラリです。純粋なC#を使い、C++で開発されたMeCabを参考に開発しています。辞書はMeCabと同じものを使用し、解析結果もMeCabと同じものになります。
+
+*This NuGet package is the NMeCab developer's own.
+※これはNMeCabの開発者本人によるNuGetパッケージです。</Description>
+    <Copyright>Tsuyoshi Komuta</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
+    <Version>0.10.0-alpha3</Version>
+    <Company />
+    <PackageId>NMeCab.Original</PackageId>
+    <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0.0</FileVersion>
+    <PackageTags>morphological-analysis</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

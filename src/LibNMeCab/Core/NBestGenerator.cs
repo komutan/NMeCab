@@ -28,9 +28,6 @@ namespace NMeCab.Core
 
         public NBestGenerator(TNode eos)
         {
-            for (var node = eos.Prev; node.Prev != null; node = node.Prev)
-                node.IsBest = true;
-
             this.agenda.Push(new QueueElement()
             {
                 Node = eos,
