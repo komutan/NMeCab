@@ -104,10 +104,10 @@ namespace NMeCab
         #region Parse
 
         /// <summary>
-        /// 形態素解析を行い、最も確からしい結果を取得します。
+        /// 形態素解析を行い、最も確からしい形態素列を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
-        /// <returns>ベスト解の形態素ノードの配列</returns>
+        /// <returns>最も確からしい形態素ノードの配列</returns>
         public unsafe TNode[] Parse(string sentence)
         {
             fixed (char* pStr = sentence)
@@ -115,11 +115,11 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 形態素解析を行い、最も確からしい結果を取得します。
+        /// 形態素解析を行い、最も確からしい形態素列を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
-        /// <returns>ベスト解の形態素ノードの配列</returns>
+        /// <returns>最も確からしい形態素ノードの配列</returns>
         public unsafe TNode[] Parse(char* sentence, int length)
         {
             var param = new MeCabParam()
@@ -135,10 +135,10 @@ namespace NMeCab
         #region NBest
 
         /// <summary>
-        /// 形態素解析を行い、確からしい順に複数の結果を取得します。
+        /// 形態素解析を行い、確からしい順に複数の形態素列を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
-        /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
+        /// <returns>形態素ノードの配列を確からしい順に取得する列挙子</returns>
         public unsafe IEnumerable<TNode[]> ParseNBestToNode(string sentence)
         {
             fixed (char* pStr = sentence)
@@ -146,7 +146,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 形態素解析を行い、確からしい順に複数の結果を取得します。
+        /// 形態素解析を行い、確からしい順に複数の形態素列を取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
@@ -166,7 +166,7 @@ namespace NMeCab
         #region AllMophs
 
         /// <summary>
-        /// 形態素解析を行い、可能性があるすべての形態素を取得します。
+        /// 形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
         /// <returns>すべての形態素ノードの配列</returns>
@@ -179,7 +179,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 形態素解析を行い、可能性があるすべての形態素を取得します。
+        /// 形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>

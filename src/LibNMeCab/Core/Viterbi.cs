@@ -195,7 +195,7 @@ namespace NMeCab.Core
             {
                 node.IsBest = true;
                 node.Prev.Next = node;
-                lattice.BestNodeStack.Push(node);
+                lattice.BestResultStack.Push(node);
             }
 
             lattice.BosNode.Next = node;

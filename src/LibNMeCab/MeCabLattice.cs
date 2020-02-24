@@ -16,9 +16,15 @@ namespace NMeCab
     public class MeCabLattice<TNode>
         where TNode : MeCabNodeBase<TNode>
     {
+        /// <summary>
+        /// 形態素ノード生成デリゲート
+        /// </summary>
         private Func<TNode> nodeAllocator;
 
-        private uint seqNum = 0u;
+        /// <summary>
+        /// 次の形態素ノードのID
+        /// </summary>
+        private uint nextNodeId = 0u;
 
         /// <summary>
         /// 解析パラメータ
@@ -45,9 +51,15 @@ namespace NMeCab
         /// </summary>
         public TNode EosNode { get; }
 
-        public float Z { get; internal set; } = 0.0f;
+        /// <summary>
+        /// Alpha of EOS
+        /// </summary>
+        public float Z { get; set; } = 0.0f;
 
-        internal Stack<TNode> BestNodeStack { get; } = new Stack<TNode>();
+        /// <summary>
+        /// 最も確からしい形態素列（作業用）
+        /// </summary>
+        internal Stack<TNode> BestResultStack { get; } = new Stack<TNode>();
 
         /// <summary>
         /// コンストラクタ
@@ -81,7 +93,7 @@ namespace NMeCab
         internal TNode CreateNewNode()
         {
             var newNode = this.nodeAllocator();
-            newNode.Id = this.seqNum++;
+            newNode.Id = this.nextNodeId++;
             return newNode;
         }
 
@@ -91,7 +103,7 @@ namespace NMeCab
         /// <returns>ベスト解の形態素ノードの配列</returns>
         public TNode[] GetBestNodes()
         {
-            return this.BestNodeStack.ToArray();
+            return this.BestResultStack.ToArray();
         }
 
         /// <summary>
@@ -104,21 +116,17 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// すべての形態素を取得します。
+        /// すべての形態素を周辺確率付きで取得します。
         /// </summary>
         /// <returns>すべての形態素ノードの配列</returns>
         public TNode[] GetAllNodes()
         {
-            var prev = this.BosNode;
             var list = new List<TNode>();
 
             for (int pos = 0; pos < this.BeginNodeList.Length - 1; pos++)
             {
                 for (var node = this.BeginNodeList[pos]; node != null; node = node.BNext)
                 {
-                    prev.Next = node;
-                    node.Prev = prev;
-                    prev = node;
                     list.Add(node);
 
                     for (var path = node.LPath; path != null; path = path.LNext)

@@ -161,7 +161,7 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNodeInfo(MeCabDictionary dic, Token token, TNode node)
+        private void ReadNodeInfo(MeCabDictionary dic, in Token token, TNode node)
         {
             node.LCAttr = token.LcAttr;
             node.RCAttr = token.RcAttr;
