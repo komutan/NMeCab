@@ -188,15 +188,14 @@ namespace NMeCab.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void BuildBestLattice(MeCabLattice<TNode> lattice)
         {
-            var eos = lattice.EosNode;
-            var node = eos.Prev;
-            node.Next = eos;
+            var node = lattice.EosNode.Prev;
+            node.Next = lattice.EosNode;
 
             for (; node.Prev != null; node = node.Prev)
             {
                 node.IsBest = true;
                 node.Prev.Next = node;
-                lattice.BestLattice.Push(node);
+                lattice.BestNodeStack.Push(node);
             }
 
             lattice.BosNode.Next = node;

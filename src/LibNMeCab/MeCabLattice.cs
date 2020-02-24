@@ -47,7 +47,7 @@ namespace NMeCab
 
         public float Z { get; internal set; } = 0.0f;
 
-        internal Stack<TNode> BestLattice { get; } = new Stack<TNode>();
+        internal Stack<TNode> BestNodeStack { get; } = new Stack<TNode>();
 
         /// <summary>
         /// コンストラクタ
@@ -91,7 +91,7 @@ namespace NMeCab
         /// <returns>ベスト解の形態素ノードの配列</returns>
         public TNode[] GetBestNodes()
         {
-            return this.BestLattice.ToArray();
+            return this.BestNodeStack.ToArray();
         }
 
         /// <summary>

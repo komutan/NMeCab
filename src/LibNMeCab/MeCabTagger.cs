@@ -89,7 +89,7 @@ namespace NMeCab
             string[] ToNullTrimedArray(IEnumerable<string> target)
             {
                 if (target == null)
-                    return new string[0];
+                    return Array.Empty<string>();
                 else if (target is string[] ary)
                     return ary;
                 else if (target is List<string> list)
