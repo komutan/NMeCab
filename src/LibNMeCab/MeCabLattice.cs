@@ -75,11 +75,13 @@ namespace NMeCab
             this.EndNodeList = new TNode[length + 1];
 
             var bosNode = CreateNewNode();
+            bosNode.IsBest = true;
             bosNode.Stat = MeCabNodeStat.Bos;
             this.EndNodeList[0] = bosNode;
             this.BosNode = bosNode;
 
             var eosNode = CreateNewNode();
+            bosNode.IsBest = true;
             eosNode.Stat = MeCabNodeStat.Eos;
             this.BeginNodeList[length] = eosNode;
             this.EosNode = eosNode;
