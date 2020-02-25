@@ -75,5 +75,32 @@ namespace LibNMeCabTest
                 Assert.Equal("スモモ", node.Pronounciation);
             }
         }
+
+        [Theory]
+        [InlineData(@"a", new[] { "a" })]
+        [InlineData(@"a,b", new[] { "a", "b" })]
+        [InlineData(@"a,b,c", new[] { "a", "b", "c" })]
+        [InlineData(@"a,b,c,d,e", new[] { "a", "b", "c", "d", "e" })]
+        [InlineData(@"""a""", new[] { "a" })]
+        [InlineData(@"""a"",""b""", new[] { "a", "b" })]
+        [InlineData(@"""a"",""b"",""c""", new[] { "a", "b", "c" })]
+        [InlineData(@"""a"",""b"",""c"",""d"",""e""", new[] { "a", "b", "c", "d", "e" })]
+        [InlineData(@"""a,b"",c,d,e", new[] { "a,b", "c", "d", "e" })]
+        [InlineData(@"a,""b,c,d"",e", new[] { "a", "b,c,d", "e" })]
+        [InlineData(@"a,b,c,""d,e""", new[] { "a", "b", "c", "d,e" })]
+        [InlineData(@"""a,b,c,d,e""", new[] { "a,b,c,d,e" })]
+        [InlineData(@""""",b,c", new[] { @"""", "b", "c" })]
+        [InlineData(@"a,"""",c", new[] { "a", @"""", "c" })]
+        [InlineData(@"a,b,""""", new[] { "a", "b", @"""" })]
+        [InlineData(@"""""a,b,c", new[] { @"""a", "b", "c" })]
+        [InlineData(@"a"""",b,c", new[] { @"a""", "b", "c" })]
+        [InlineData(@"a,""""b"""",c", new[] { "a", @"""b""", "c" })]
+        [InlineData(@"a,b,""""c", new[] { "a", "b", @"""c" })]
+        [InlineData(@"a,b,c""""", new[] { "a", "b", @"c""" })]
+        public void ParseCsv(string input, string[] expected)
+        {
+            var actual = NMeCab.Core.StrUtils.SplitCsvRow(input, 1, 1);
+            Assert.Equal(expected, actual);
+        }
     }
 }

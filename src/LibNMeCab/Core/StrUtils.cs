@@ -143,14 +143,14 @@ namespace NMeCab.Core
 
             void AfterLeftWQuote(char c)
             {
-                stb.Append(c);
-
                 switch (c)
                 {
                     case '"':
+                        stb.Append(c);
                         action = Normal;
                         break;
                     default:
+                        stb.Append(c);
                         action = InsideWQuote;
                         break;
                 }
@@ -161,10 +161,30 @@ namespace NMeCab.Core
                 switch (c)
                 {
                     case '"':
-                        action = Normal;
+                        action = AfterRightWQuote;
                         break;
                     default:
                         stb.Append(c);
+                        break;
+                }
+            }
+
+            void AfterRightWQuote(char c)
+            {
+                switch (c)
+                {
+                    case ',':
+                        ret.Add(stb.ToString());
+                        stb.Clear();
+                        action = Normal;
+                        break;
+                    case '"':
+                        stb.Append(c);
+                        action = InsideWQuote;
+                        break;
+                    default:
+                        stb.Append(c);
+                        action = Normal;
                         break;
                 }
             }
