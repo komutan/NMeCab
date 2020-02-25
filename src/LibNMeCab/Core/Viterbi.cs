@@ -42,7 +42,7 @@ namespace NMeCab.Core
                     break;
                 case MeCabLatticeLevel.Two:
                     this.DoViterbi(str, len, lattice, true);
-                    this.ForwardBackward(len, lattice);
+                    this.ForwardBackward(lattice);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(lattice.Param.LatticeLevel));
@@ -130,21 +130,19 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void ForwardBackward(int len, MeCabLattice<TNode> lattice)
+        private unsafe void ForwardBackward(MeCabLattice<TNode> lattice)
         {
-            lattice.EndNodeList[0].Alpha = 0f;
-            for (int pos = 0; pos <= len; pos++)
+            for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
                 for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
                     this.CalcAlpha(node, lattice.Param.Theta);
 
-            lattice.BeginNodeList[len].Beta = 0f;
-            for (int pos = len; pos >= 0; pos--)
+            for (int pos = lattice.EndNodeList.Length - 1; pos >= 0; pos--)
                 for (var node = lattice.EndNodeList[pos]; node != null; node = node.ENext)
                     this.CalcBeta(node, lattice.Param.Theta);
 
-            lattice.Z = lattice.BeginNodeList[len].Alpha; // alpha of EOS
+            lattice.Z = lattice.EosNode.Alpha; // alpha of EOS
 
-            for (int pos = 0; pos <= len; pos++)
+            for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
                 for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
                     node.Prob = (float)Math.Exp(node.Alpha + node.Beta - lattice.Z);
         }
