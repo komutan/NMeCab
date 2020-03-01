@@ -48,13 +48,19 @@ namespace LibNMeCabTest
 
                 Assert.True(enumerator.MoveNext());
                 var nodes2 = enumerator.Current;
-                //Assert.False(nodes1[0].IsBest);
-                //Assert.False(nodes1[1].IsBest);
-                //Assert.False(nodes1[2].IsBest);
-                //Assert.False(nodes1[3].IsBest);
-                //Assert.False(nodes1[4].IsBest);
-                //Assert.False(nodes1[5].IsBest);
-                //Assert.False(nodes1[6].IsBest);
+                Assert.NotEmpty(nodes2);
+
+                Assert.True(enumerator.MoveNext());
+                var nodes3 = enumerator.Current;
+                Assert.NotEmpty(nodes3);
+
+                Assert.True(enumerator.MoveNext());
+                var nodes4 = enumerator.Current;
+                Assert.NotEmpty(nodes4);
+
+                Assert.True(enumerator.MoveNext());
+                var nodes5 = enumerator.Current;
+                Assert.NotEmpty(nodes5);
             }
         }
 
@@ -89,6 +95,8 @@ namespace LibNMeCabTest
         [InlineData(@"a,""b,c,d"",e", new[] { "a", "b,c,d", "e" })]
         [InlineData(@"a,b,c,""d,e""", new[] { "a", "b", "c", "d,e" })]
         [InlineData(@"""a,b,c,d,e""", new[] { "a,b,c,d,e" })]
+        [InlineData(@"""a."",""b."",""c.""", new[] { "a.", "b.", "c." })]
+        [InlineData(@""".a"","".b"","".c""", new[] { ".a", ".b", ".c" })]
         [InlineData(@""""",b,c", new[] { @"""", "b", "c" })]
         [InlineData(@"a,"""",c", new[] { "a", @"""", "c" })]
         [InlineData(@"a,b,""""", new[] { "a", "b", @"""" })]

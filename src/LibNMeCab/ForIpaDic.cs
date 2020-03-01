@@ -45,11 +45,12 @@ namespace NMeCab
 
         private string GetFeatureAt(int index)
         {
-            if (this.Feature == null)
-                return "";
-
             if (this.features == null)
-                this.features = StrUtils.SplitCsvRow(this.Feature, 9, 16);
+            {
+                var featureCsv = this.Feature;
+                if (featureCsv == null) return "";
+                this.features = StrUtils.SplitCsvRow(featureCsv, 9, 16);
+            }
 
             if (index >= this.features.Length)
                 return "";

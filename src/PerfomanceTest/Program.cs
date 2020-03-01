@@ -24,13 +24,13 @@ namespace PerfomanceTest
             //解析準備処理
             GC.Collect();
             sw.Start();
-            MeCabTagger tagger = MeCabTagger.Create(dicDir);
+            var tagger = MeCabIpaDicTagger.Create(dicDir);
             sw.Stop();
             Console.WriteLine("OpenTagger:\t\t{0:0.000}sec\t{1:#,000}byte",
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //ファイル読込だけの場合
-            using (StreamReader reader = new StreamReader(targetFile, encoding))
+            using (var reader = new StreamReader(targetFile, encoding))
             {
                 sw.Reset();
                 GC.Collect();
@@ -44,7 +44,7 @@ namespace PerfomanceTest
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //解析処理（Nodeの出力）
-            using (StreamReader reader = new StreamReader(targetFile, encoding))
+            using (var reader = new StreamReader(targetFile, encoding))
             {
                 sw.Reset();
                 GC.Collect();
@@ -58,9 +58,29 @@ namespace PerfomanceTest
             Console.WriteLine("ParseToNode:\t\t{0:0.000}sec\t{1:#,000}byte",
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
+            //解析処理（素性文字列分解）
+            using (var reader = new StreamReader(targetFile, encoding))
+            {
+                sw.Reset();
+                GC.Collect();
+                sw.Start();
+                for (string line = reader.ReadLine(); line != null; line = reader.ReadLine())
+                {
+                    var node = tagger.Parse(line);
+                    foreach (var item in node)
+                    {
+                        var a = item.Surface;
+                        var b = item.PartsOfSpeech;
+                        var c = item.Reading;
+                    }
+                }
+                sw.Stop();
+            }
+            Console.WriteLine("ParseToText:\t\t{0:0.000}sec\t{1:#,000}byte",
+                              sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //解析処理（Best解5件のNodeの出力）
-            using (StreamReader reader = new StreamReader(targetFile, encoding))
+            using (var reader = new StreamReader(targetFile, encoding))
             {
                 sw.Reset();
                 GC.Collect();
@@ -79,7 +99,7 @@ namespace PerfomanceTest
                               sw.Elapsed.TotalSeconds, GC.GetTotalMemory(false));
 
             //対象の情報
-            using (StreamReader reader = new StreamReader(targetFile, encoding))
+            using (var reader = new StreamReader(targetFile, encoding))
             {
                 long charCount = 0;
                 long lineCount = 0;
