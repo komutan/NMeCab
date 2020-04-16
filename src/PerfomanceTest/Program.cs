@@ -8,7 +8,7 @@ namespace PerfomanceTest
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var dicDir = "../../../../../dic/ipadic";
             var targetFile = "kokoro.txt";

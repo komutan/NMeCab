@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>NMeCab.IpaDic</RootNamespace>
+    <Authors>Tsuyoshi Komuta</Authors>
+    <Product>NMeCab liblary with IPAdic binary</Product>
+    <Description>This package is Japanese morphological analysis library NMeCab, with binary compiled dictionary data IPAdic. You can use this without preparing a sepalatary dictionary.</Description>
+    <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
+    <Version>0.10.0-alpha</Version>
+    <Company />
+    <PackageId></PackageId>
+    <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
+    <AssemblyVersion>0.10.0.0</AssemblyVersion>
+    <FileVersion>0.10.0.0</FileVersion>
+    <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\t_kom\Source\Repos\GithubNMeCab\src\LibNMeCab.IpaDic\LibNMeCab.IpaDic.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\t_kom\Source\Repos\GithubNMeCab\src\LibNMeCab.IpaDic\LibNMeCab.IpaDic.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NMeCab.Original" Version="0.10.0-alpha2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="IpaDic\*.*" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\*.*" CopyToOutputDirectory="Never" PackagePath="build/" />
+    <Content Include="buildMultiTargeting\*.*" CopyToOutputDirectory="Never" PackagePath="buildMultiTargeting/" />
+  </ItemGroup>
+
+</Project>

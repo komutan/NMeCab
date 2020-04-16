@@ -4,35 +4,33 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
     <Authors>Tsuyoshi Komuta</Authors>
-    <Product>NMeCab</Product>
-    <Description>This package is Japanese morphological analysis library. It was developed in pure C# with reference to MeCab (developed  in C++). The dictionary is the same as MeCab, and the analysis result is the same as MeCab.
-このパッケージは日本語形態素解析ライブラリです。純粋なC#を使い、C++で開発されたMeCabを参考に開発しています。辞書はMeCabと同じものを使用し、解析結果もMeCabと同じものになります。
-
-*This NuGet package is the NMeCab developer's own.
-※これはNMeCabの開発者本人によるNuGetパッケージです。</Description>
-    <Copyright>Tsuyoshi Komuta</Copyright>
-    <PackageProjectUrl></PackageProjectUrl>
+    <Product>NMeCab (Original) liblary</Product>
+    <Title>NMeCab (Original) liblary</Title>
+    <Description>This package is Japanese morphological analysis library NMeCab. It was developed in pure C# with reference to MeCab (developed in C++). This does not include a binary dictionary, so you need preparing it sepalatary.</Description>
+    <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
-    <Version>0.10.0-alpha3</Version>
-    <Company />
-    <PackageId>NMeCab.Original</PackageId>
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.0.0.0</FileVersion>
-    <PackageTags>morphological-analysis</PackageTags>
+    <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
+    <Version>0.10.0-alpha2</Version>
+    <PackageIcon>NMeCab-icon-100.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;NETSTANDARD;NETSTANDARD2_0;MMF_MTX;MMF_DIC</DefineConstants>
+    <DocumentationFile>LibNMeCab.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;MMF_MTX;MMF_DIC</DefineConstants>
+    <DocumentationFile>LibNMeCab.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="MeCabIpaDicTagger.cs" />
+    <None Include="..\..\icon\NMeCab-icon-100.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>
