@@ -48,13 +48,8 @@ namespace NMeCab.Core
                 {
                     var list = new List<TNode>();
 
-                    var n = top.Next;
-                    top.Node.Next = n.Node;
-
-                    for (; n.Next != null; n = n.Next)
+                    for (var n = top.Next; n.Next != null; n = n.Next)
                     {
-                        n.Node.Next = n.Next.Node;
-                        n.Next.Node.Prev = n.Node;
                         list.Add(n.Node);
                     }
 

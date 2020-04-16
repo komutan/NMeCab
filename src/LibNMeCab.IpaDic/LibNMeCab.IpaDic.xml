@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LibNMeCab.IpaDic</name>
+    </assembly>
+    <members>
+        <member name="T:NMeCab.IpaDic.NMeCabIpaDic">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:NMeCab.IpaDic.NMeCabIpaDic.CreateTagger">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

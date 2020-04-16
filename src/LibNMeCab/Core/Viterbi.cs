@@ -114,9 +114,7 @@ namespace NMeCab.Core
                     }
                 }
 
-                if (bestNode == null) throw new ArgumentException("too long sentence.");
-
-                rNode.Prev = bestNode;
+                rNode.Prev = bestNode ?? throw new ArgumentException("too long sentence.");
                 rNode.Cost = bestCost;
 
                 rNode.BPos = pos;
@@ -134,57 +132,59 @@ namespace NMeCab.Core
         {
             for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
                 for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
-                    this.CalcAlpha(node, lattice.Param.Theta);
+                    CalcAlpha(node, lattice.Param.Theta);
 
             for (int pos = lattice.EndNodeList.Length - 1; pos >= 0; pos--)
                 for (var node = lattice.EndNodeList[pos]; node != null; node = node.ENext)
-                    this.CalcBeta(node, lattice.Param.Theta);
+                    CalcBeta(node, lattice.Param.Theta);
 
             lattice.Z = lattice.EosNode.Alpha; // alpha of EOS
 
             for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
                 for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
                     node.Prob = (float)Math.Exp(node.Alpha + node.Beta - lattice.Z);
-        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void CalcAlpha(TNode n, double beta)
-        {
-            n.Alpha = 0f;
-            for (var path = n.LPath; path != null; path = path.LNext)
+            void CalcAlpha(TNode n, double beta)
             {
-                n.Alpha = (float)Utils.LogSumExp(n.Alpha,
-                                                 -beta * path.Cost + path.LNode.Alpha,
-                                                 path == n.LPath);
+                n.Alpha = 0f;
+                for (var path = n.LPath; path != null; path = path.LNext)
+                    n.Alpha = (float)Utils.LogSumExp(n.Alpha,
+                                                     -beta * path.Cost + path.LNode.Alpha,
+                                                     path == n.LPath);
             }
-        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void CalcBeta(TNode n, double beta)
-        {
-            n.Beta = 0f;
-            for (var path = n.RPath; path != null; path = path.RNext)
+            void CalcBeta(TNode n, double beta)
             {
-                n.Beta = (float)Utils.LogSumExp(n.Beta,
-                                                -beta * path.Cost + path.RNode.Beta,
-                                                path == n.RPath);
+                n.Beta = 0f;
+                for (var path = n.RPath; path != null; path = path.RNext)
+                    n.Beta = (float)Utils.LogSumExp(n.Beta,
+                                                    -beta * path.Cost + path.RNode.Beta,
+                                                    path == n.RPath);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void BuildBestLattice(MeCabLattice<TNode> lattice)
         {
-            var node = lattice.EosNode.Prev;
-            node.Next = lattice.EosNode;
+            var current = lattice.EosNode;
+            var prev = current.Prev;
 
-            for (; node.Prev != null; node = node.Prev)
+            prev.Next = current;
+
+            current = prev;
+            prev = current.Prev;
+
+            while (prev != null)
             {
-                node.IsBest = true;
-                node.Prev.Next = node;
-                lattice.BestResultStack.Push(node);
+                current.IsBest = true;
+                lattice.BestResultStack.Push(current);
+                prev.Next = current;
+
+                current = prev;
+                prev = current.Prev;
             }
 
-            lattice.BosNode.Next = node;
+            lattice.BosNode.Next = current;
         }
 
         #endregion

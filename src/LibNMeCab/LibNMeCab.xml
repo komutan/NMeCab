@@ -1,0 +1,951 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LibNMeCab</name>
+    </assembly>
+    <members>
+        <member name="T:NMeCab.Core.BitUtils">
+            <summary>
+            ビット値操作のユーティリティ
+            </summary>
+            <remarks>
+            BitVector32構造体より実行速度に重点を置き、シンプルな実装にする。
+            </remarks>
+        </member>
+        <member name="M:NMeCab.Core.BitUtils.GetBitField(System.UInt32,System.Int32,System.Int32)">
+            <summary>
+            指定範囲のビットフィールド値を取り出す
+            </summary>
+            <param name="bits">ビット列を表すUInt32値</param>
+            <param name="offset">開始ビット位置</param>
+            <param name="len">ビット長</param>
+            <returns>ビットフィールド値</returns>
+        </member>
+        <member name="M:NMeCab.Core.BitUtils.GetFlag(System.UInt32,System.Int32)">
+            <summary>
+            指定位置のビット値を取り出す
+            </summary>
+            <param name="bits">ビット列を表すUInt32値</param>
+            <param name="offset">ビット位置</param>
+            <returns>ビット値</returns>
+        </member>
+        <member name="M:NMeCab.Core.BitUtils.CompareAnd(System.UInt32,System.UInt32,System.Int32,System.Int32)">
+            <summary>
+            指定範囲のビット値のAND比較
+            </summary>
+            <param name="bits1">ビット列1を表すUInt32値</param>
+            <param name="bits2">ビット列2を表すUInt32値</param>
+            <param name="offset">開始ビット位置</param>
+            <param name="len">ビット長</param>
+            <returns>比較結果</returns>
+        </member>
+        <member name="P:NMeCab.Core.CharInfo.Type">
+            <summary>
+            互換カテゴリ
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.CharInfo.DefaultType">
+            <summary>
+            デフォルトカテゴリ
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.CharInfo.Length">
+            <summary>
+            長さ: 未知語の候補生成方法
+            </summary>
+            <value>
+            1: 1文字までの文字列を未知語とする
+            2: 2文字までの文字列を未知語とする
+            ...
+            n: n文字までの文字列を未知語とする
+            </value>
+        </member>
+        <member name="P:NMeCab.Core.CharInfo.Group">
+            <summary>
+            グルーピング: 未知語の候補生成方法
+            </summary>
+            <value>
+            true: 同じ字種でまとめる
+            false: 同じ字種でまとめない
+            </value>
+        </member>
+        <member name="P:NMeCab.Core.CharInfo.Invoke">
+            <summary>
+            動作タイミング
+            そのカテゴリにおいて, いつ未知語処理を動かすか
+            </summary>
+            <value>
+            true: 常に未知語処理を動かす
+            false: 既知語がある場合は, 未知語処理を動作させない
+            </value>
+        </member>
+        <member name="M:NMeCab.Core.CharInfo.IsKindOf(NMeCab.Core.CharInfo)">
+            <summary>
+            互換カテゴリ判定
+            </summary>
+            <param name="c"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NMeCab.Core.Connector`1.Dispose">
+            <summary>
+            使用中のリソースを開放する
+            </summary>
+        </member>
+        <member name="T:NMeCab.Core.DoubleArray">
+            <summary>
+            Double-Array Trie の実装
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.MeCabDictionary.CharSet">
+            <summary>
+            辞書の文字コード
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.MeCabDictionary.Version">
+            <summary>
+            バージョン
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.MeCabDictionary.Type">
+            <summary>
+            辞書のタイプ
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.MeCabDictionary.LSize">
+            <summary>
+            左文脈 ID のサイズ
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.MeCabDictionary.RSize">
+            <summary>
+            右文脈 ID のサイズ
+            </summary>
+        </member>
+        <member name="P:NMeCab.Core.MeCabDictionary.FileName">
+            <summary>
+            辞書のファイル名
+            </summary>
+        </member>
+        <member name="M:NMeCab.Core.MeCabDictionary.Dispose">
+            <summary>
+            使用されているリソースを開放する
+            </summary>
+        </member>
+        <member name="T:NMeCab.Core.PriorityQueue`1">
+            <summary>
+            優先度付き先入れ先出しコレクション（実装アルゴリズムはPairing Heap）
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte[],System.Text.Encoding)">
+            <summary>
+            バイト配列の中から終端が\0で表された文字列を取り出す。
+            </summary>
+            <remarks>
+            バイト配列の長さはInt32.MaxValueを超えていても良い。
+            </remarks>
+            <param name="bytes">バイト配列</param>
+            <param name="enc">文字エンコーディング</param>
+            <returns>文字列（\0は含まない）</returns>
+        </member>
+        <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte[],System.Int64,System.Text.Encoding)">
+            <summary>
+            バイト配列の中から終端が\0で表された文字列を取り出す。
+            </summary>
+            <remarks>
+            バイト配列の長さはInt32.MaxValueを超えていても良い。
+            </remarks>
+            <param name="bytes">バイト配列</param>
+            <param name="offset">オフセット位置</param>
+            <param name="enc">文字エンコーディング</param>
+            <returns>文字列（\0は含まない）</returns>
+        </member>
+        <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte*,System.Int64,System.Text.Encoding)">
+            <summary>
+            バイト配列の中から終端が\0で表された文字列を取り出す。
+            </summary>
+            <remarks>
+            バイト配列の長さはInt32.MaxValueを超えていても良い。
+            </remarks>
+            <param name="bytes">デコードするバイトへのポインタ</param>
+            <param name="offset">オフセット位置</param>
+            <param name="enc">文字エンコーディング</param>
+            <returns>文字列（\0は含まない）</returns>
+        </member>
+        <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte*,System.Text.Encoding)">
+            <summary>
+            バイト配列の中から終端が\0で表された文字列を取り出す。
+            </summary>
+            <remarks>
+            バイト配列の長さはInt32.MaxValueを超えていても良い。
+            </remarks>
+            <param name="bytes">デコードする最初のバイトへのポインタ</param>
+            <param name="enc">文字エンコーディング</param>
+            <returns>文字列（\0は含まない）</returns>
+        </member>
+        <member name="M:NMeCab.Core.StrUtils.GetEncoding(System.String)">
+            <summary>
+            指定の名前に対応するエンコーディングを取得する（.NET FWが対応していない名前にもアドホックに対応）
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NMeCab.Core.StrUtils.SplitCsvRow(System.String,System.Int32,System.Int32)">
+            <summary>
+            単一行のCSV形式の文字列を配列に変換する
+            </summary>
+            <param name="csvRowString">単一行のCSV形式の文字列</param>
+            <param name="defaltColumnBuffSize">配列の内部バッファの初期値</param>
+            <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
+            <returns>変換後の文字列配列</returns>
+        </member>
+        <member name="F:NMeCab.Core.Token.LcAttr">
+            <summary>
+            右文脈 id
+            </summary>
+        </member>
+        <member name="F:NMeCab.Core.Token.RcAttr">
+            <summary>
+            左文脈 id
+            </summary>
+        </member>
+        <member name="F:NMeCab.Core.Token.PosId">
+            <summary>
+            形態素 ID
+            </summary>
+        </member>
+        <member name="F:NMeCab.Core.Token.WCost">
+            <summary>
+            単語生起コスト
+            </summary>
+        </member>
+        <member name="F:NMeCab.Core.Token.Feature">
+            <summary>
+            素性情報の位置
+            </summary>
+        </member>
+        <member name="F:NMeCab.Core.Token.Compound">
+            <summary>
+            reserved for noun compound
+            </summary>
+        </member>
+        <member name="M:NMeCab.Core.Viterbi`1.Dispose">
+            <summary>
+            使用中のリソースを開放する
+            </summary>
+        </member>
+        <member name="T:NMeCab.DictionaryType">
+            <summary>
+            辞書の種別
+            </summary>
+        </member>
+        <member name="F:NMeCab.DictionaryType.Sys">
+            <summary>
+            システム辞書
+            </summary>
+        </member>
+        <member name="F:NMeCab.DictionaryType.Usr">
+            <summary>
+            ユーザー辞書
+            </summary>
+        </member>
+        <member name="F:NMeCab.DictionaryType.Unk">
+            <summary>
+            未定義
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabIpaDicNode">
+            <summary>
+            IPA形式の辞書を使用する場合の形態素ノードです。
+            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeech">
+            <summary>
+            品詞
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeechSection1">
+            <summary>
+            品詞細分類1
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeechSection2">
+            <summary>
+            品詞細分類2
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeechSection3">
+            <summary>
+            品詞細分類3
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.ConjugatedForm">
+            <summary>
+            活用形
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.Inflection">
+            <summary>
+            活用型
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.OriginalForm">
+            <summary>
+            原形
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.Reading">
+            <summary>
+            読み
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabIpaDicNode.Pronounciation">
+            <summary>
+            発音
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabIpaDicTagger">
+            <summary>
+            IPA形式の辞書を使用する場合の形態素解析処理の起点を表します。
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabIpaDicTagger.#ctor">
+            <summary>
+            コンストラクタ（非公開）
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabIpaDicTagger.Create(System.String,System.String[])">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <returns>形態素解析処理の起点</returns>
+        </member>
+        <member name="M:NMeCab.MeCabIpaDicTagger.CreateNewNode">
+            <summary>
+            形態素ノードインスタンス生成メソッドです。（内部用）
+            </summary>
+            <returns>形態素ノード</returns>
+        </member>
+        <member name="T:NMeCab.MeCabLattice`1">
+            <summary>
+            形態素解析中の情報の集合を表します。
+            </summary>
+            <typeparam name="TNode">形態素ノードの型</typeparam>
+        </member>
+        <member name="F:NMeCab.MeCabLattice`1.nodeAllocator">
+            <summary>
+            形態素ノード生成デリゲート
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabLattice`1.nextNodeId">
+            <summary>
+            次の形態素ノードのID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.Param">
+            <summary>
+            解析パラメータ
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.BeginNodeList">
+            <summary>
+            開始位置をインデックスとした形態素ノード配列
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.EndNodeList">
+            <summary>
+            終了位置をインデックスとした形態素ノード配列
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.BosNode">
+            <summary>
+            開始ノード
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.EosNode">
+            <summary>
+            終了ノード
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.Z">
+            <summary>
+            Alpha of EOS
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabLattice`1.BestResultStack">
+            <summary>
+            最も確からしい形態素列（作業用）
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabLattice`1.#ctor(System.Func{`0},NMeCab.MeCabParam,System.Int32)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="nodeAllocator"></param>
+            <param name="param"></param>
+            <param name="length"></param>
+        </member>
+        <member name="M:NMeCab.MeCabLattice`1.CreateNewNode">
+            <summary>
+            新しい形態素ノードを作成します。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NMeCab.MeCabLattice`1.GetBestNodes">
+            <summary>
+            ベスト解を取得します。
+            </summary>
+            <returns>ベスト解の形態素ノードの配列</returns>
+        </member>
+        <member name="M:NMeCab.MeCabLattice`1.GetNBestResults">
+            <summary>
+            Nベスト解を取得します。
+            </summary>
+            <returns>形態素の配列を確からしい順に取得する列挙子</returns>
+        </member>
+        <member name="M:NMeCab.MeCabLattice`1.GetAllNodes">
+            <summary>
+            すべての形態素を周辺確率付きで取得します。
+            </summary>
+            <returns>すべての形態素ノードの配列</returns>
+        </member>
+        <member name="T:NMeCab.MeCabLatticeLevel">
+            <summary>
+            ラティスレベル(どの程度のラティス情報を解析時に構築するか)
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabLatticeLevel.Zero">
+            <summary>
+            0: 最適解のみが出力可能なレベル (デフォルト, 高速) 
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabLatticeLevel.One">
+            <summary>
+            1: N-best 解が出力可能なレベル (中速) 
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabLatticeLevel.Two">
+            <summary>
+            2: ソフトわかち書きが可能なレベル (低速)
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabNode">
+            <summary>
+            形態素ノードを表します。使用する辞書の形式は限定しません。
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabNodeBase`1">
+            <summary>
+            形態素ノードを表す抽象基底クラスです。
+            </summary>
+            <typeparam name="TNode">連結する形態素ノードの具象型</typeparam>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Prev">
+            <summary>
+            一つ前の形態素
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Next">
+            <summary>
+            一つ後の形態素
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.BNext">
+            <summary>
+            同じ開始位置で始まる形態素
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.ENext">
+            <summary>
+            同じ位置で終わる形態素
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.LPath">
+            <summary>
+            前の形態素の候補へのパス
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.RPath">
+            <summary>
+            次の形態素の候補へのパス
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Surface">
+            <summary>
+            形態素の表層形
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Feature">
+            <summary>
+            CSVで表記された素性情報
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabNodeBase`1.SetFeature(System.UInt32,NMeCab.Core.MeCabDictionary)">
+            <summary>
+            素性情報を遅延読込するための値設定
+            </summary>
+            <param name="featurePos">辞書内の素性情報の位置</param>
+            <param name="dic">検索元の辞書</param>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Id">
+            <summary>
+            解析の単位で形態素に付与するユニークID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Length">
+            <summary>
+            形態素の長さ
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.RLength">
+            <summary>
+            形態素の長さ(先頭のスペースを含む)
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.LCAttr">
+            <summary>
+            左文脈ID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.RCAttr">
+            <summary>
+            右文脈ID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.PosId">
+            <summary>
+            形態素ID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.CharType">
+            <summary>
+            文字種情報
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Stat">
+            <summary>
+            形態素の種類
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.IsBest">
+            <summary>
+            ベスト解か
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Alpha">
+            <summary>
+            forward backward の foward log 確率
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Beta">
+            <summary>
+            forward backward の backward log 確率
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Prob">
+            <summary>
+            周辺確率
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.WCost">
+            <summary>
+            単語生起コスト
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.Cost">
+            <summary>
+            累積コスト
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.BPos">
+            <summary>
+            開始位置
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeBase`1.EPos">
+            <summary>
+            終了位置
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabNodeBase`1.ToString">
+            <summary>
+            インスタンスの文字列表現を返します。
+            </summary>
+            <returns>文字列表現</returns>
+        </member>
+        <member name="T:NMeCab.MeCabNodeStat">
+            <summary>
+            形態素ノードの種類
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabNodeStat.Nor">
+            <summary>
+            通常ノード
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabNodeStat.Unk">
+            <summary>
+            未知語ノード
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabNodeStat.Bos">
+            <summary>
+            文頭ノード
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabNodeStat.Eos">
+            <summary>
+            文末ノード
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabParam.LatticeLevel">
+            <summary>
+            ラティスレベル(どの程度のラティス情報を解析時に構築するか)
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabParam.Theta">
+            <summary>
+            ソフト分かち書きの温度パラメータ
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabParam.MaxGroupingSize">
+            <summary>
+            未知語の文字数の最大値
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabParam.UnkFeature">
+            <summary>
+            未知語の素性
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabPath`1">
+            <summary>
+            形態素ノード間のパスを表します。
+            </summary>
+            <typeparam name="TNode">形態素ノードの型</typeparam>
+        </member>
+        <member name="P:NMeCab.MeCabPath`1.RNode">
+            <summary>
+            右側の形態素ノード
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabPath`1.RNext">
+            <summary>
+            左側の形態素ノードが同じで、右側の形態素ノードが異なる、別のパス
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabPath`1.LNode">
+            <summary>
+            左側の形態素ノード
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabPath`1.LNext">
+            <summary>
+            右側の形態素ノードが同じで、左側の形態素ノードが異なる、別のパス
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabPath`1.Cost">
+            <summary>
+            左右の形態素ノード間の接続コスト
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabPath`1.Prob">
+            <summary>
+            周辺確率
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabPath`1.ToString">
+            <summary>
+            インスタンスの文字列表現を返します。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:NMeCab.MeCabTagger">
+            <summary>
+            形態素解析処理の起点を表します。使用する辞書の形式は限定しません。
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabTagger.#ctor">
+            <summary>
+            コンストラクタ（非公開）
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabTagger.Create(System.String,System.String[])">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <returns>形態素解析処理の起点</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTagger.CreateNewNode">
+            <summary>
+            形態素ノードインスタンス生成メソッドです。
+            </summary>
+            <returns>形態素ノード</returns>
+        </member>
+        <member name="T:NMeCab.MeCabTaggerBase`1">
+            <summary>
+            形態素解析処理の起点を表す抽象基底クラスです。
+            </summary>
+            <typeparam name="TNode">形態素ノードの型</typeparam>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.CreateNewNode">
+            <summary>
+            形態素ノードインスタンス生成メソッドです。（内部用）
+            </summary>
+            <returns>形態素ノード</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Create``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Func{``0})">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <typeparam name="TTagger">作成する形態素解析処理の起点の具象型</typeparam>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <param name="allocator">Taggetインスタンス生成メソッド</param>
+            <returns>形態素解析処理の起点</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Parse(System.String)">
+            <summary>
+            形態素解析を行い、最も確からしい形態素列を取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列</param>
+            <returns>最も確からしい形態素ノードの配列</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Parse(System.Char*,System.Int32)">
+            <summary>
+            形態素解析を行い、最も確からしい形態素列を取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列へのポインタ</param>
+            <param name="length">解析対象の文字列の長さ</param>
+            <returns>最も確からしい形態素ノードの配列</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseNBestToNode(System.String)">
+            <summary>
+            形態素解析を行い、確からしい順に複数の形態素列を取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列</param>
+            <returns>形態素ノードの配列を確からしい順に取得する列挙子</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseNBestToNode(System.Char*,System.Int32)">
+            <summary>
+            形態素解析を行い、確からしい順に複数の形態素列を取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列へのポインタ</param>
+            <param name="length">解析対象の文字列の長さ</param>
+            <returns>形態素の配列を確からしい順に取得する列挙子</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseSoftWakachi(System.String)">
+            <summary>
+            形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列</param>
+            <returns>すべての形態素ノードの配列</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseSoftWakachi(System.Char*,System.Int32)">
+            <summary>
+            形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列へのポインタ</param>
+            <param name="length">解析対象の文字列の長さ</param>
+            <returns>すべての形態素ノードの配列</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseToLattice(System.String,NMeCab.MeCabParam)">
+            <summary>
+            形態素解析を行い、結果をラティスとして取得します。
+            </summary>
+            <param name="sentence">解析対象の文字列</param>
+            <param name="param">解析パラメータ</param>
+            <returns>ラティス</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseToLattice(System.Char*,System.Int32,NMeCab.MeCabParam)">
+            <summary>
+            形態素解析を行い、結果をラティスとして取得します
+            </summary>
+            <param name="sentence">解析対象の文字列へのポインタ</param>
+            <param name="length">解析対象の文字列の長さ</param>
+            <param name="param">解析パラメータ</param>
+            <returns>ラティス</returns>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Dispose">
+            <summary>
+            使用中のリソースを開放します。
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Dispose(System.Boolean)">
+            <summary>
+            使用中のリソースを開放します。
+            </summary>
+            <param name="disposing">マネージドリソースとアンマネージドリソースの両方を解放する場合はtrue。アンマネージド リソースだけを解放する場合はfalse。</param>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Finalize">
+            <summary>
+            デストラクタ
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabUniDicNode">
+            <summary>
+            UniDic形式の辞書を使用する場合の形態素ノードです。
+            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Pos1">
+            <summary>
+            品詞大分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Pos2">
+            <summary>
+            品詞中分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Pos3">
+            <summary>
+            品詞小分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Pos4">
+            <summary>
+            品詞細分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.CType">
+            <summary>
+            活用型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.CForm">
+            <summary>
+            活用形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.LForm">
+            <summary>
+            語彙素読みを取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Lemma">
+            <summary>
+            語彙素（語彙素表記+ 語彙素細分類）を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Orth">
+            <summary>
+            書字形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Pron">
+            <summary>
+            発音形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.OrthBase">
+            <summary>
+            書字形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.PronBase">
+            <summary>
+            発音形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Goshu">
+            <summary>
+            語種を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.IType">
+            <summary>
+            語頭変化型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.IForm">
+            <summary>
+            語頭変化形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.FType">
+            <summary>
+            語末変化型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.FForm">
+            <summary>
+            語末変化形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Kana">
+            <summary>
+            仮名形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.KanaBase">
+            <summary>
+            仮名形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Form">
+            <summary>
+            語形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.FormBase">
+            <summary>
+            語形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.IConType">
+            <summary>
+            語頭変化結合形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.FConType">
+            <summary>
+            語末変化結合形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.AType">
+            <summary>
+            アクセント型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.AConType">
+            <summary>
+            アクセント結合型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.AModType">
+            <summary>
+            アクセント修飾型を取得
+            </summary>
+        </member>
+        <member name="T:NMeCab.MeCabUniDicTagger">
+            <summary>
+            UniDic形式の辞書を使用する場合の形態素解析処理の起点を表します。
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabUniDicTagger.#ctor">
+            <summary>
+            コンストラクタ（非公開）
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabUniDicTagger.Create(System.String,System.String[])">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <returns>形態素解析処理の起点</returns>
+        </member>
+        <member name="M:NMeCab.MeCabUniDicTagger.CreateNewNode">
+            <summary>
+            形態素ノードインスタンス生成メソッドです。（内部用）
+            </summary>
+            <returns>形態素ノード</returns>
+        </member>
+    </members>
+</doc>

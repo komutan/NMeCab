@@ -9,11 +9,11 @@ using System.Text;
 
 namespace NMeCab.Core
 {
-    public struct CharInfo
+    public readonly struct CharInfo
     {
         #region Const/Field/Property
 
-        private uint bits;
+        private readonly uint bits;
 
         /// <summary>
         /// 互換カテゴリ
