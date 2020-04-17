@@ -37,3 +37,9 @@ steps:
     command: 'pack'
     packagesToPack: '**/LibNMeCab.csproj'
     versioningScheme: 'off'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'LibNMeCab'
+    publishLocation: 'Container'
