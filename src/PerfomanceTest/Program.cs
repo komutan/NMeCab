@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NMeCab;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using NMeCab;
 
 namespace PerfomanceTest
 {
@@ -88,7 +88,7 @@ namespace PerfomanceTest
                 for (string line = reader.ReadLine(); line != null; line = reader.ReadLine())
                 {
                     int i = 0;
-                    foreach (var node in tagger.ParseNBestToNode(line))
+                    foreach (var node in tagger.ParseNBest(line))
                     {
                         if (++i == 5) break;
                     }

@@ -2,10 +2,10 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+using NMeCab.Core;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using NMeCab.Core;
 
 namespace NMeCab
 {
@@ -19,7 +19,7 @@ namespace NMeCab
         /// <summary>
         /// 形態素ノード生成デリゲート
         /// </summary>
-        private Func<TNode> nodeAllocator;
+        private readonly Func<TNode> nodeAllocator;
 
         /// <summary>
         /// 次の形態素ノードのID
@@ -81,7 +81,7 @@ namespace NMeCab
             this.BosNode = bosNode;
 
             var eosNode = CreateNewNode();
-            bosNode.IsBest = true;
+            eosNode.IsBest = true;
             eosNode.Stat = MeCabNodeStat.Eos;
             this.BeginNodeList[length] = eosNode;
             this.EosNode = eosNode;

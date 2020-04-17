@@ -11,7 +11,6 @@
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
-    <Version>0.10.0-alpha2</Version>
     <PackageIcon>NMeCab-icon-100.png</PackageIcon>
   </PropertyGroup>
 

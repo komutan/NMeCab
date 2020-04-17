@@ -187,7 +187,6 @@ namespace NMeCab.Core
                 newNode.Surface = new string(begin2, 0, newNode.Length);
                 newNode.CharType = cInfo.DefaultType;
                 newNode.Stat = MeCabNodeStat.Unk;
-                if (lattice.Param.UnkFeature != null) newNode.Feature = lattice.Param.UnkFeature;
                 newNode.BNext = resultNode;
                 resultNode = newNode;
             }

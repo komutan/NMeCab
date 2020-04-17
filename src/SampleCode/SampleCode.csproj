@@ -6,7 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibNMeCab.IpaDicBin" Version="0.10.0-alpha" />
+    <ProjectReference Include="..\LibNMeCab.IpaDicBin\LibNMeCab.IpaDicBin.csproj" />
+    <ProjectReference Include="..\LibNMeCab\LibNMeCab.csproj" />
   </ItemGroup>
 
 </Project>

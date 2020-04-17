@@ -11,7 +11,6 @@
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
-    <Version>0.10.0-alpha</Version>
     <PackageIcon>NMeCab-icon-100.png</PackageIcon>
   </PropertyGroup>
 
@@ -22,10 +21,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile>LibNMeCab.IpaDicBin.xml</DocumentationFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LibNMeCab" Version="0.10.0-alpha" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="..\..\dic\ipadic\char.bin" Link="IpaDic\char.bin" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
@@ -44,6 +39,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibNMeCab" Version="0.10.0-beta" />
   </ItemGroup>
 
 </Project>

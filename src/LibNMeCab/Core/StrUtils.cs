@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.CompilerServices;
+using System.Text;
 #if MMF_DIC
-using System.IO.MemoryMappedFiles;
 #endif
 
 namespace NMeCab.Core

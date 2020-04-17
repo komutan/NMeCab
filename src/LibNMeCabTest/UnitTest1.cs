@@ -1,6 +1,8 @@
-using System;
-using Xunit;
 using NMeCab;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Xunit;
 
 namespace LibNMeCabTest
 {
@@ -65,7 +67,7 @@ namespace LibNMeCabTest
         public void NBest()
         {
             using var tagger = MeCabTagger.Create("../../../../../dic/ipadic");
-            var enumerator = tagger.ParseNBestToNode("すもももももももものうち").GetEnumerator();
+            var enumerator = tagger.ParseNBest("すもももももももものうち").GetEnumerator();
 
             Assert.True(enumerator.MoveNext());
             var nodes1 = enumerator.Current;
@@ -123,6 +125,27 @@ namespace LibNMeCabTest
         }
 
         [Fact]
+        public void SoftWakachi()
+        {
+            using var tagger = MeCabTagger.Create("../../../../../dic/ipadic");
+            var nodes = tagger.ParseSoftWakachi("すもももももももものうち", 0.0007f);
+
+            foreach (var node in nodes)
+            {
+                Assert.InRange(node.Prob, 0f, 1f);
+            }
+
+            Assert.NotEmpty(nodes.Where(n => n.Prob > 0f));
+            Assert.NotEmpty(nodes.Where(n => n.Prob < 1f));
+
+            var nBestResults = tagger.ParseNBest("すもももももももものうち");
+            foreach (var node in nBestResults.Take(10).SelectMany(r => r))
+            {
+                Assert.Contains(node, nodes, new MeCabNodeComparer());
+            }
+        }
+
+        [Fact]
         public void IpaDic()
         {
             using var tagger = MeCabIpaDicTagger.Create("../../../../../dic/ipadic");
@@ -165,6 +188,19 @@ namespace LibNMeCabTest
         {
             var actual = NMeCab.Core.StrUtils.SplitCsvRow(input, 1, 1);
             Assert.Equal(expected, actual);
+        }
+
+        class MeCabNodeComparer : IEqualityComparer<MeCabNodeSuperBase>
+        {
+            public bool Equals([AllowNull] MeCabNodeSuperBase x, [AllowNull] MeCabNodeSuperBase y)
+            {
+                return x.Surface == y.Surface && x.Feature == y.Feature;
+            }
+
+            public int GetHashCode([DisallowNull] MeCabNodeSuperBase obj)
+            {
+                throw new System.NotImplementedException();
+            }
         }
     }
 }

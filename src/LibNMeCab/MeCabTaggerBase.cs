@@ -2,9 +2,9 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+using NMeCab.Core;
 using System;
 using System.Collections.Generic;
-using NMeCab.Core;
 
 namespace NMeCab
 {
@@ -107,10 +107,10 @@ namespace NMeCab
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
         /// <returns>形態素ノードの配列を確からしい順に取得する列挙子</returns>
-        public unsafe IEnumerable<TNode[]> ParseNBestToNode(string sentence)
+        public unsafe IEnumerable<TNode[]> ParseNBest(string sentence)
         {
             fixed (char* pStr = sentence)
-                return this.ParseNBestToNode(pStr, sentence.Length);
+                return this.ParseNBest(pStr, sentence.Length);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace NMeCab
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
         /// <returns>形態素の配列を確からしい順に取得する列挙子</returns>
-        public unsafe IEnumerable<TNode[]> ParseNBestToNode(char* sentence, int length)
+        public unsafe IEnumerable<TNode[]> ParseNBest(char* sentence, int length)
         {
             var param = new MeCabParam()
             {
@@ -137,13 +137,15 @@ namespace NMeCab
         /// 形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
         /// </summary>
         /// <param name="sentence">解析対象の文字列</param>
+        /// <param name="theta">ソフト分かち書きの温度パラメータ</param>
         /// <returns>すべての形態素ノードの配列</returns>
-        public unsafe TNode[] ParseSoftWakachi(string sentence)
+        public unsafe TNode[] ParseSoftWakachi(string sentence,
+                                               float theta = MeCabParam.DefaltTheta)
         {
             if (sentence == null) throw new ArgumentNullException(nameof(sentence));
 
             fixed (char* pStr = sentence)
-                return this.ParseSoftWakachi(pStr, sentence.Length);
+                return this.ParseSoftWakachi(pStr, sentence.Length, theta);
         }
 
         /// <summary>
@@ -151,12 +153,15 @@ namespace NMeCab
         /// </summary>
         /// <param name="sentence">解析対象の文字列へのポインタ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
+        /// <param name="theta">ソフト分かち書きの温度パラメータ</param>
         /// <returns>すべての形態素ノードの配列</returns>
-        public unsafe TNode[] ParseSoftWakachi(char* sentence, int length)
+        public unsafe TNode[] ParseSoftWakachi(char* sentence, int length,
+                                               float theta = MeCabParam.DefaltTheta)
         {
             var param = new MeCabParam()
             {
-                LatticeLevel = MeCabLatticeLevel.Two
+                LatticeLevel = MeCabLatticeLevel.Two,
+                Theta = theta
             };
 
             return this.ParseToLattice(sentence, length, param).GetAllNodes();

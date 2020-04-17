@@ -473,109 +473,6 @@
             次の形態素の候補へのパス
             </summary>
         </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Surface">
-            <summary>
-            形態素の表層形
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Feature">
-            <summary>
-            CSVで表記された素性情報
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabNodeBase`1.SetFeature(System.UInt32,NMeCab.Core.MeCabDictionary)">
-            <summary>
-            素性情報を遅延読込するための値設定
-            </summary>
-            <param name="featurePos">辞書内の素性情報の位置</param>
-            <param name="dic">検索元の辞書</param>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Id">
-            <summary>
-            解析の単位で形態素に付与するユニークID
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Length">
-            <summary>
-            形態素の長さ
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.RLength">
-            <summary>
-            形態素の長さ(先頭のスペースを含む)
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.LCAttr">
-            <summary>
-            左文脈ID
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.RCAttr">
-            <summary>
-            右文脈ID
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.PosId">
-            <summary>
-            形態素ID
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.CharType">
-            <summary>
-            文字種情報
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Stat">
-            <summary>
-            形態素の種類
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.IsBest">
-            <summary>
-            ベスト解か
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Alpha">
-            <summary>
-            forward backward の foward log 確率
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Beta">
-            <summary>
-            forward backward の backward log 確率
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Prob">
-            <summary>
-            周辺確率
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.WCost">
-            <summary>
-            単語生起コスト
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.Cost">
-            <summary>
-            累積コスト
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.BPos">
-            <summary>
-            開始位置
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabNodeBase`1.EPos">
-            <summary>
-            終了位置
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabNodeBase`1.ToString">
-            <summary>
-            インスタンスの文字列表現を返します。
-            </summary>
-            <returns>文字列表現</returns>
-        </member>
         <member name="T:NMeCab.MeCabNodeStat">
             <summary>
             形態素ノードの種類
@@ -601,9 +498,127 @@
             文末ノード
             </summary>
         </member>
+        <member name="T:NMeCab.MeCabNodeSuperBase">
+            <summary>
+            形態素ノードを表す抽象基底クラスです
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Surface">
+            <summary>
+            形態素の表層形
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Feature">
+            <summary>
+            CSVで表記された素性情報
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabNodeSuperBase.SetFeature(System.UInt32,NMeCab.Core.MeCabDictionary)">
+            <summary>
+            素性情報を遅延読込するための値設定
+            </summary>
+            <param name="featurePos">辞書内の素性情報の位置</param>
+            <param name="dic">検索元の辞書</param>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Id">
+            <summary>
+            解析の単位で形態素に付与するユニークID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Length">
+            <summary>
+            形態素の長さ
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.RLength">
+            <summary>
+            形態素の長さ(先頭のスペースを含む)
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.LCAttr">
+            <summary>
+            左文脈ID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.RCAttr">
+            <summary>
+            右文脈ID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.PosId">
+            <summary>
+            形態素ID
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.CharType">
+            <summary>
+            文字種情報
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Stat">
+            <summary>
+            形態素の種類
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.IsBest">
+            <summary>
+            ベスト解か
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Alpha">
+            <summary>
+            forward backward の foward log 確率
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Beta">
+            <summary>
+            forward backward の backward log 確率
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Prob">
+            <summary>
+            周辺確率
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.WCost">
+            <summary>
+            単語生起コスト
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.Cost">
+            <summary>
+            累積コスト
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.BPos">
+            <summary>
+            開始位置
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabNodeSuperBase.EPos">
+            <summary>
+            終了位置
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabNodeSuperBase.ToString">
+            <summary>
+            インスタンスの文字列表現を返します。
+            </summary>
+            <returns>文字列表現</returns>
+        </member>
+        <member name="T:NMeCab.MeCabParam">
+            <summary>
+            形態素解析処理のパラメータを表します。
+            </summary>
+        </member>
         <member name="P:NMeCab.MeCabParam.LatticeLevel">
             <summary>
             ラティスレベル(どの程度のラティス情報を解析時に構築するか)
+            </summary>
+        </member>
+        <member name="F:NMeCab.MeCabParam.DefaltTheta">
+            <summary>
+            ソフト分かち書きの温度パラメータの初期値
             </summary>
         </member>
         <member name="P:NMeCab.MeCabParam.Theta">
@@ -614,11 +629,6 @@
         <member name="P:NMeCab.MeCabParam.MaxGroupingSize">
             <summary>
             未知語の文字数の最大値
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabParam.UnkFeature">
-            <summary>
-            未知語の素性
             </summary>
         </member>
         <member name="T:NMeCab.MeCabPath`1">
@@ -724,14 +734,14 @@
             <param name="length">解析対象の文字列の長さ</param>
             <returns>最も確からしい形態素ノードの配列</returns>
         </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.ParseNBestToNode(System.String)">
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseNBest(System.String)">
             <summary>
             形態素解析を行い、確からしい順に複数の形態素列を取得します。
             </summary>
             <param name="sentence">解析対象の文字列</param>
             <returns>形態素ノードの配列を確からしい順に取得する列挙子</returns>
         </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.ParseNBestToNode(System.Char*,System.Int32)">
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseNBest(System.Char*,System.Int32)">
             <summary>
             形態素解析を行い、確からしい順に複数の形態素列を取得します。
             </summary>
@@ -739,19 +749,21 @@
             <param name="length">解析対象の文字列の長さ</param>
             <returns>形態素の配列を確からしい順に取得する列挙子</returns>
         </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.ParseSoftWakachi(System.String)">
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseSoftWakachi(System.String,System.Single)">
             <summary>
             形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
             </summary>
             <param name="sentence">解析対象の文字列</param>
+            <param name="theta">ソフト分かち書きの温度パラメータ</param>
             <returns>すべての形態素ノードの配列</returns>
         </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.ParseSoftWakachi(System.Char*,System.Int32)">
+        <member name="M:NMeCab.MeCabTaggerBase`1.ParseSoftWakachi(System.Char*,System.Int32,System.Single)">
             <summary>
             形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
             </summary>
             <param name="sentence">解析対象の文字列へのポインタ</param>
             <param name="length">解析対象の文字列の長さ</param>
+            <param name="theta">ソフト分かち書きの温度パラメータ</param>
             <returns>すべての形態素ノードの配列</returns>
         </member>
         <member name="M:NMeCab.MeCabTaggerBase`1.ParseToLattice(System.String,NMeCab.MeCabParam)">

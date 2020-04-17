@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using NMeCab.Core;
+﻿using NMeCab.Core;
 
 namespace NMeCab
 {

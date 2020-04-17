@@ -43,7 +43,7 @@ namespace NMeCab.Core
 
             byte* ptr = null;
             this.mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
-            
+
             using (var stream = mmf.CreateViewStream(0L, 0L, MemoryMappedFileAccess.Read))
             using (var reader = new BinaryReader(stream))
             {
