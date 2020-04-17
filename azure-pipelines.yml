@@ -43,3 +43,15 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'LibNMeCab'
     publishLocation: 'Container'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/LibNMeCab.IpaDicBin.csproj'
+    versioningScheme: 'off'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'LibNMeCab.IpaDicBin'
+    publishLocation: 'Container'
