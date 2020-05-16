@@ -125,6 +125,41 @@ namespace LibNMeCabTest
         }
 
         [Fact]
+        public void Spaceprocessing()
+        {
+            using var tagger = MeCabTagger.Create("../../../../../dic/ipadic");
+            var nodes = tagger.Parse("ようこそ ");
+
+            Assert.Single(nodes);
+            Assert.Equal("ようこそ", nodes[0].Surface);
+            Assert.Equal(0, nodes[0].BPos);
+            Assert.Equal(4, nodes[0].EPos);
+            Assert.Equal(4, nodes[0].Length);
+            Assert.Equal(4, nodes[0].RLength);
+
+            nodes = tagger.Parse("XXXYYYZZZ ");
+            Assert.Single(nodes);
+            Assert.Equal("XXXYYYZZZ", nodes[0].Surface);
+            Assert.Equal(0, nodes[0].BPos);
+            Assert.Equal(9, nodes[0].EPos);
+            Assert.Equal(9, nodes[0].Length);
+            Assert.Equal(9, nodes[0].RLength);
+
+            nodes = tagger.Parse(" ようこそ XXXYYYZZZ ");
+            Assert.Equal(2, nodes.Length);
+            Assert.Equal("ようこそ", nodes[0].Surface);
+            Assert.Equal(0, nodes[0].BPos);
+            Assert.Equal(5, nodes[0].EPos);
+            Assert.Equal(4, nodes[0].Length);
+            Assert.Equal(5, nodes[0].RLength);
+            Assert.Equal("XXXYYYZZZ", nodes[1].Surface);
+            Assert.Equal(5, nodes[1].BPos);
+            Assert.Equal(15, nodes[1].EPos);
+            Assert.Equal(9, nodes[1].Length);
+            Assert.Equal(10, nodes[1].RLength);
+        }
+
+        [Fact]
         public void SoftWakachi()
         {
             using var tagger = MeCabTagger.Create("../../../../../dic/ipadic");
