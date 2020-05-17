@@ -1,3 +1,7 @@
+スターがリセットされてしまいました。
+なぜかgoogleにインデックスされないので、リポジトリ設定を一度privateにしたのですが、それが原因です。
+失敗でした。すみません。もう一度スターを頂けたらありがたいです。
+
 # 形態素解析エンジンNMeCab
 <img src="icon/NMeCab-icon-100.png">
 
@@ -9,7 +13,8 @@
 
 NMeCabは.NETで開発した日本語形態素解析エンジンです。  
 その名の通り、元々はMeCabというOSSの形態素解析エンジンをC++からC#へ移植したものですが、独自の機能追加も行っています。  
-辞書データはMeCabに対応したものをそのまま使用できます。
+辞書データはMeCabに対応したものをそのまま使用できます。  
+NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあります。（.NET Core 2.0 以上、.NET Framework 4.6.1 以上 などで使用できます）
 
 ## そもそも形態素解析とは？
 
@@ -22,9 +27,11 @@ NMeCabは.NETで開発した日本語形態素解析エンジンです。
 | [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | [![NuGet LibNMeCab](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ |
 | [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | [![NuGet LibNMeCab.IpaDicBin](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ |
 
-辞書パッケージをNuGetパッケージマネージャーでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
+辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
 
 ## 使い方
+
+以下はC#によるサンプルコードで説明します。
 
 ### 辞書を意識しないで使用する
 
@@ -101,9 +108,10 @@ VisualStudioのIntelliSenseなどにより閲覧できるよう、XML文書化�
 
 `LibNMeCab` だけをNuGetでインストールし、辞書は自分で用意したものを使うこともできます。
 
-NMeCabで使う辞書は、MeCabの `mecab-dict-index` コマンドを使って 「解析用バイナリ辞書」 にしておく必要があります。
+NMeCabで使う辞書は、MeCabの `mecab-dict-index` コマンドを使って 「解析用バイナリ辞書」にしたものである必要があります。
+最初から解析用バイナリ辞書の状態で配布されているものを入手できれば簡単です。
 MeCabのインストール方法と使用方法については、[MeCabのサイト](https://taku910.github.io/mecab/)などを参照してください。
-なお、解析用バイナリ辞書の文字コードが選べるときは、「utf-8」にしておくことが無難です。
+なお、文字コードが選べるときは「utf-8」にしておくことが無難です。
 
 結果として以下のファイルが必要になりますので、任意のディレクトリにまとめて配置してください。
 - char.bin
@@ -170,12 +178,13 @@ class Program
 }
 ```
 
-- 指定する辞書の素性フォーマットがIPA辞書と同じであるならば、このサンプルのように`MeCabIpaDicTagger.Create(string dicDir, string[] userDics = null)` によって、IPA辞書用のTaggarインスタンスを生成し、個別の素性情報をプロパティで取得することができます。
-- あるいはUniDicと同じであるならば、`MeCabUniDicTagger.Create(string dicDir, string[] userDics = null)` により同様のことができます。
+指定する辞書の素性フォーマットがIPA辞書と同じであるならば、上のサンプルのように`MeCabIpaDicTagger.Create(string dicDir, string[] userDics = null)` によって、IPA辞書用のTaggarインスタンスを生成し、個別の素性情報をプロパティで取得することができます。
+
+あるいはUniDicと同じであるならば、`MeCabUniDicTagger.Create(string dicDir, string[] userDics = null)` により同様のことができます。
 
 ### ユーザー辞書を使用する
 
-辞書を自分で用意する場合、まずシステム辞書が必要ですが、そこに含まれていない単語を追加したいとき、ユーザー辞書を使うことも可能です。
+辞書を自分で用意する場合、まずシステム辞書が必要ですが、そこに含まれていない単語を追加したいときに、ユーザー辞書を使うことも可能です。
 
 やはりMeCabで解析用バイナリ辞書にしたファイルを、システム辞書と同じディレクトリに配置してください。
 ファイル名は任意です。
@@ -197,8 +206,8 @@ Taggerインスタンス生成メソッドの第2引数にユーザー辞書フ�
 ### Nベスト解
 
 ここまでで説明してきた `Parse(string sentence)` メソッドでは、最も確からしい形態素解析結果だけが取得できました。
-`ParseNBest(string sentence)` メソッドでは、確からしい順番に複数の形態素解析結果を取得できます。
-下のサンプルでは、上位5件の結果を取得し表示しています。（LINQの `Take` も使っています）
+`ParseNBest(string sentence)` メソッドでは、確からしい順番に複数の形態素解析結果を取得できます。結果はIEnumerable<T>型です。
+下のサンプルでは、LinqのTakeにより上位5件の結果を取得し表示しています。
 
 サンプルコード:
 ``` csharp

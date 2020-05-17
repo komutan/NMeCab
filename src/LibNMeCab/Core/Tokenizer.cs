@@ -86,12 +86,13 @@ namespace NMeCab.Core
         public unsafe TNode Lookup(char* begin, char* end, MeCabLattice<TNode> lattice)
         {
             CharInfo cInfo;
-            TNode resultNode = null;
             int cLen;
 
             if (end - begin > ushort.MaxValue) end = begin + ushort.MaxValue;
             char* begin2 = property.SeekToOtherType(begin, end, this.space, &cInfo, &cLen);
+            if (begin2 >= end) return null;
 
+            TNode resultNode = null;
             var daResults = stackalloc DoubleArray.ResultPair[DAResultSize];
 
             foreach (MeCabDictionary it in this.dic)
@@ -127,12 +128,6 @@ namespace NMeCab.Core
 
             char* begin3 = begin2 + 1;
             char* groupBegin3 = null;
-
-            if (begin3 > end)
-            {
-                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
-                return resultNode;
-            }
 
             if (cInfo.Group)
             {
