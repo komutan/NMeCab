@@ -1,9 +1,29 @@
 スターがリセットされてしまいました。
-なぜかgoogleにインデックスされないので、リポジトリ設定を一度privateにしたのですが、それが原因です。
-失敗でした。すみません。もう一度スターを頂けたらありがたいです。
+なぜかgoogleにインデックスされないので、試しにリポジトリ設定を一度privateにしたのですが、それが原因です。
+失敗でした。すみません。もう一度スターを頂けたらありがたいです。  
+（その後、因果関係は分かりませんが、googleにはインデックスされるようになりました。）
 
 # 形態素解析エンジンNMeCab
-<img src="icon/NMeCab-icon-100.png">
+<div style="float:right;">
+<!-- TOC -->
+
+- [形態素解析エンジンNMeCab](#形態素解析エンジンnmecab)
+    - [リポジトリ移転について](#リポジトリ移転について)
+    - [これは何？](#これは何)
+    - [そもそも形態素解析とは？](#そもそも形態素解析とは)
+    - [NuGet](#nuget)
+    - [使い方](#使い方)
+        - [辞書を意識しないで使用する](#辞書を意識しないで使用する)
+        - [辞書を自分で用意して使用する](#辞書を自分で用意して使用する)
+        - [ユーザー辞書を使用する](#ユーザー辞書を使用する)
+        - [Nベスト解](#nベスト解)
+        - [ソフトわかち書き](#ソフトわかち書き)
+        - [ラティス出力](#ラティス出力)
+        - [新しい素性フォーマットへの対応](#新しい素性フォーマットへの対応)
+
+<!-- /TOC -->
+</div>
+<img src="icon/NMeCab-icon.svg">
 
 ## リポジトリ移転について
 
@@ -18,14 +38,14 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 
 ## そもそも形態素解析とは？
 
-文章を形態素（日本語では単語と同じ）に分割し、品詞・読み・活用型などの情報も付加することです。
+文章を形態素（日本語では単語と同じ）に分割し、品詞・読み・活用型などの情報も付与することです。
 
 ## NuGet
 
-| NuGet ID | ステータス | 説明 |
-| --- | --- | --- |
-| [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | [![NuGet LibNMeCab](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ |
-| [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | [![NuGet LibNMeCab.IpaDicBin](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ |
+| NuGet ID / Status | 説明 |
+| --- | --- |
+| [LibNMeCab](https://www.nuget.org/packages/LibNMeCab)<br>![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg) | NMeCabライブラリ単体パッケージ |
+| [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin)<br>![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg) | IPA辞書パッケージ |
 
 辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
 
@@ -110,16 +130,14 @@ VisualStudioのIntelliSenseなどにより閲覧できるよう、XML文書化�
 
 NMeCabで使う辞書は、MeCabの `mecab-dict-index` コマンドを使って 「解析用バイナリ辞書」にしたものである必要があります。
 最初から解析用バイナリ辞書の状態で配布されているものを入手できれば簡単です。
-MeCabのインストール方法と使用方法については、[MeCabのサイト](https://taku910.github.io/mecab/)などを参照してください。
+バイナリ化する前の辞書しか入手できないときや、自分で辞書を作成するときは、[MeCabのサイト](https://taku910.github.io/mecab/)などを参照してください。
 なお、文字コードが選べるときは「utf-8」にしておくことが無難です。
 
-結果として以下のファイルが必要になりますので、任意のディレクトリにまとめて配置してください。
+結果として以下のファイルが必要になりますので、任意のディレクトリにまとめて配置してください。これ以外のファイルは、同じディレクトリにあってもなくてもNMeCabの動作には影響しません。
 - char.bin
 - matrix.bin
 - sys.dic
 - uni.dic
-
-上記以外のファイルは、同じディレクトリにあってもなくても、NMeCabの動作に影響しません。
 
 サンプルコード：
 ```csharp
