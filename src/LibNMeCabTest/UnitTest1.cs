@@ -146,6 +146,66 @@ namespace LibNMeCabTest
         }
 
         [Fact]
+        public void SpaceProcessing()
+        {
+            using var tagger = MeCabTagger.Create("../../../../../dic/ipadic");
+
+            // スペースのみ
+            var nodes = tagger.Parse(" ");
+            Assert.Empty(nodes);
+
+            // 既知語 後ろスペース
+            nodes = tagger.Parse("ようこそ ");
+            Assert.Single(nodes);
+            Assert.Equal("ようこそ", nodes[0].Surface);
+            Assert.Equal(0, nodes[0].BPos);
+            Assert.Equal(4, nodes[0].EPos);
+            Assert.Equal(4, nodes[0].Length);
+            Assert.Equal(4, nodes[0].RLength);
+
+            // 未知語 後ろスペース
+            nodes = tagger.Parse("XXXYYYZZZ ");
+            Assert.Single(nodes);
+            Assert.Equal("XXXYYYZZZ", nodes[0].Surface);
+            Assert.Equal(0, nodes[0].BPos);
+            Assert.Equal(9, nodes[0].EPos);
+            Assert.Equal(9, nodes[0].Length);
+            Assert.Equal(9, nodes[0].RLength);
+
+            // 既知語 前スペース
+            nodes = tagger.Parse(" ようこそ");
+            Assert.Single(nodes);
+            Assert.Equal("ようこそ", nodes[0].Surface);
+            Assert.Equal(1 - 1, nodes[0].BPos);
+            Assert.Equal(5, nodes[0].EPos);
+            Assert.Equal(4, nodes[0].Length);
+            Assert.Equal(4 + 1, nodes[0].RLength);
+
+            // 未知語 前スペース
+            nodes = tagger.Parse(" XXXYYYZZZ");
+            Assert.Single(nodes);
+            Assert.Equal("XXXYYYZZZ", nodes[0].Surface);
+            Assert.Equal(1 - 1, nodes[0].BPos);
+            Assert.Equal(10, nodes[0].EPos);
+            Assert.Equal(9, nodes[0].Length);
+            Assert.Equal(10, nodes[0].RLength);
+
+            // 複合
+            nodes = tagger.Parse(" ようこそ XXXYYYZZZ ");
+            Assert.Equal(2, nodes.Length);
+            Assert.Equal("ようこそ", nodes[0].Surface);
+            Assert.Equal(1 - 1, nodes[0].BPos);
+            Assert.Equal(5, nodes[0].EPos);
+            Assert.Equal(4, nodes[0].Length);
+            Assert.Equal(4 + 1, nodes[0].RLength);
+            Assert.Equal("XXXYYYZZZ", nodes[1].Surface);
+            Assert.Equal(6 - 1, nodes[1].BPos);
+            Assert.Equal(15, nodes[1].EPos);
+            Assert.Equal(9, nodes[1].Length);
+            Assert.Equal(9 + 1, nodes[1].RLength);
+        }
+
+        [Fact]
         public void IpaDic()
         {
             using var tagger = MeCabIpaDicTagger.Create("../../../../../dic/ipadic");
