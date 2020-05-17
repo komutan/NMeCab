@@ -4,7 +4,9 @@
 （その後、因果関係は分かりませんが、googleにはインデックスされるようになりました。）
 
 # 形態素解析エンジンNMeCab
-<div style="float:right;">
+
+<img src="icon/NMeCab-icon.svg">
+
 <!-- TOC -->
 
 - [形態素解析エンジンNMeCab](#形態素解析エンジンnmecab)
@@ -22,8 +24,6 @@
         - [新しい素性フォーマットへの対応](#新しい素性フォーマットへの対応)
 
 <!-- /TOC -->
-</div>
-<img src="icon/NMeCab-icon.svg">
 
 ## リポジトリ移転について
 
@@ -44,8 +44,8 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 
 | NuGet ID / Status | 説明 |
 | --- | --- |
-| [LibNMeCab](https://www.nuget.org/packages/LibNMeCab)<br>![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg) | NMeCabライブラリ単体パッケージ |
-| [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin)<br>![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg) | IPA辞書パッケージ |
+| [LibNMeCab<br>![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ |
+| [LibNMeCab.IpaDicBin<br>![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ |
 
 辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
 
