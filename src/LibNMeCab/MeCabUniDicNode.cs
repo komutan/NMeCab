@@ -166,7 +166,7 @@ namespace NMeCab
         /// </summary>
         public string Kana
         {
-            get { return this.GetFeatureAt(17); }
+            get { return this.GetFeatureAt(20); }
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace NMeCab
         /// </summary>
         public string KanaBase
         {
-            get { return this.GetFeatureAt(18); }
+            get { return this.GetFeatureAt(21); }
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace NMeCab
         /// </summary>
         public string Form
         {
-            get { return this.GetFeatureAt(19); }
+            get { return this.GetFeatureAt(22); }
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace NMeCab
         /// </summary>
         public string FormBase
         {
-            get { return this.GetFeatureAt(20); }
+            get { return this.GetFeatureAt(23); }
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace NMeCab
         /// </summary>
         public string IConType
         {
-            get { return this.GetFeatureAt(21); }
+            get { return this.GetFeatureAt(17); }
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace NMeCab
         /// </summary>
         public string FConType
         {
-            get { return this.GetFeatureAt(22); }
+            get { return this.GetFeatureAt(18); }
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace NMeCab
         /// </summary>
         public string AType
         {
-            get { return this.GetFeatureAt(23); }
+            get { return this.GetFeatureAt(24); }
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace NMeCab
         /// </summary>
         public string AConType
         {
-            get { return this.GetFeatureAt(24); }
+            get { return this.GetFeatureAt(25); }
         }
 
         /// <summary>
@@ -230,7 +230,31 @@ namespace NMeCab
         /// </summary>
         public string AModType
         {
-            get { return this.GetFeatureAt(25); }
+            get { return this.GetFeatureAt(26); }
+        }
+
+        /// <summary>
+        /// 語彙素類を取得
+        /// </summary>
+        public string LType
+        {
+            get { return this.GetFeatureAt(19); }
+        }
+
+        /// <summary>
+        /// 語彙表IDを取得
+        /// </summary>
+        public string Lid
+        {
+            get { return this.GetFeatureAt(27); }
+        }
+
+        /// <summary>
+        /// 語彙素IDを取得
+        /// </summary>
+        public string Lemma_id
+        {
+            get { return this.GetFeatureAt(28); }
         }
     }
 }
