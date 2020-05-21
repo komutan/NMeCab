@@ -236,6 +236,11 @@ namespace NMeCab
         /// <summary>
         /// 語彙素類を取得
         /// </summary>
+        /// <remarks>
+        /// この項目の「英語」の名前は、
+        /// UniDic 2.2.0 や 2.3.0 の配布物に含まれる dicrc ファイルでは「type」となっているが、
+        /// UniDic の FAQ (https://unidic.ninjal.ac.jp/faq#col_name) には「lType」と記載されている。
+        /// </remarks>
         public string LType
         {
             get { return this.GetFeatureAt(19); }
