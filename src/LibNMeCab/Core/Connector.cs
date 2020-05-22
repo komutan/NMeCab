@@ -38,7 +38,16 @@ namespace NMeCab.Core
             string fileName = Path.Combine(dicDir, MatrixFile);
 
 #if MMF_MTX
-            this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, null, 0L, MemoryMappedFileAccess.Read);
+            var sourceFileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            try
+            {
+                this.mmf = MemoryMappedFile.CreateFromFile(sourceFileStream, null, 0L, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
+            }
+            catch (Exception)
+            {
+                sourceFileStream.Dispose();
+                throw;
+            }
             this.mmva = this.mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
 
             byte* ptr = null;
