@@ -67,7 +67,7 @@ namespace NMeCab.Core
                 this.matrix = (short*)ptr;
             }
 #else
-            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var reader = new BinaryReader(stream))
             {
                 this.LSize = reader.ReadUInt16();

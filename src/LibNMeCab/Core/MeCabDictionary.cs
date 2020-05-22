@@ -134,7 +134,7 @@ namespace NMeCab.Core
         {
             this.FileName = fileName;
 
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (BinaryReader reader = new BinaryReader(fileStream))
             {
                 this.Open(reader);
