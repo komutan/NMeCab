@@ -3,10 +3,10 @@
 namespace NMeCab
 {
     /// <summary>
-    /// UniDic形式の辞書を使用する場合の形態素ノードです。
+    /// UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素ノードです。
     /// 素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
     /// </summary>
-    public class MeCabUniDicNode : MeCabNodeBase<MeCabUniDicNode>
+    public class MeCabUniDic22Node : MeCabNodeBase<MeCabUniDic22Node>
     {
         private string[] features = null;
 
@@ -16,7 +16,7 @@ namespace NMeCab
             {
                 var featureCsv = this.Feature;
                 if (featureCsv == null) return "";
-                this.features = StrUtils.SplitCsvRow(featureCsv, 9, 16);
+                this.features = StrUtils.SplitCsvRow(featureCsv, 29, 16);
             }
 
             if (index >= this.features.Length)
@@ -82,7 +82,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 語彙素（語彙素表記+ 語彙素細分類）を取得
+        /// 語彙素（語彙素表記＋語彙素細分類）を取得
         /// </summary>
         public string Lemma
         {
@@ -162,6 +162,35 @@ namespace NMeCab
         }
 
         /// <summary>
+        /// 語頭変化結合形を取得
+        /// </summary>
+        public string IConType
+        {
+            get { return this.GetFeatureAt(17); }
+        }
+
+        /// <summary>
+        /// 語末変化結合形を取得
+        /// </summary>
+        public string FConType
+        {
+            get { return this.GetFeatureAt(18); }
+        }
+
+        /// <summary>
+        /// 語彙素類を取得
+        /// </summary>
+        /// <remarks>
+        /// この項目の「英語」の名前は、
+        /// UniDic 2.2.0 や 2.3.0 の配布物に含まれる dicrc ファイルでは「type」となっているが、
+        /// UniDic の FAQ (https://unidic.ninjal.ac.jp/faq#col_name) には「lType」と記載されている。
+        /// </remarks>
+        public string LType
+        {
+            get { return this.GetFeatureAt(19); }
+        }
+
+        /// <summary>
         /// 仮名形出現形を取得
         /// </summary>
         public string Kana
@@ -194,22 +223,6 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 語頭変化結合形を取得
-        /// </summary>
-        public string IConType
-        {
-            get { return this.GetFeatureAt(17); }
-        }
-
-        /// <summary>
-        /// 語末変化結合形を取得
-        /// </summary>
-        public string FConType
-        {
-            get { return this.GetFeatureAt(18); }
-        }
-
-        /// <summary>
         /// アクセント型を取得
         /// </summary>
         public string AType
@@ -234,22 +247,9 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 語彙素類を取得
-        /// </summary>
-        /// <remarks>
-        /// この項目の「英語」の名前は、
-        /// UniDic 2.2.0 や 2.3.0 の配布物に含まれる dicrc ファイルでは「type」となっているが、
-        /// UniDic の FAQ (https://unidic.ninjal.ac.jp/faq#col_name) には「lType」と記載されている。
-        /// </remarks>
-        public string LType
-        {
-            get { return this.GetFeatureAt(19); }
-        }
-
-        /// <summary>
         /// 語彙表IDを取得
         /// </summary>
-        public string Lid
+        public string LId
         {
             get { return this.GetFeatureAt(27); }
         }
@@ -257,7 +257,7 @@ namespace NMeCab
         /// <summary>
         /// 語彙素IDを取得
         /// </summary>
-        public string Lemma_id
+        public string LemmaId
         {
             get { return this.GetFeatureAt(28); }
         }

@@ -221,6 +221,67 @@ namespace LibNMeCabTest
             Assert.Equal("スモモ", node.Pronounciation);
         }
 
+        [Fact]
+        public void UniDic21()
+        {
+            using var tagger = MeCabUniDic21Tagger.Create("../../../../../dic/unidic-2.1.2");
+            var node = tagger.Parse("こおりつけ！")[0];
+
+            Assert.Equal("動詞", node.Pos1); // 品詞大分類
+            Assert.Equal("一般", node.Pos2); // 品詞中分類
+            Assert.Equal("*", node.Pos3); // 品詞小分類
+            Assert.Equal("*", node.Pos4); // 品詞細分類
+
+            Assert.Equal("五段-カ行", node.CType); // 活用型
+            Assert.Equal("命令形", node.CForm); // 活用形
+
+            Assert.Equal("コオリツク", node.LForm); // 語彙素読み
+            Assert.Equal("凍り付く", node.Lemma); // 語彙素
+
+            Assert.Equal("こおりつけ", node.Orth); // 書字形出現形 平仮名表記
+            Assert.Equal("コーリツケ", node.Pron); // 発音形出現形 発音形だと「コーリ」と長音記号を使って表記
+            Assert.Equal("コオリツケ", node.Kana); // 仮名形出現形 「凍り」の仮名形は「コオリ」
+
+            Assert.Equal("和", node.Goshu); // 語種
+
+            Assert.Equal("こおりつく", node.OrthBase); // 書字形基本形
+            Assert.Equal("コーリツク", node.PronBase); // 発音形基本形
+            Assert.Equal("コオリツク", node.KanaBase); // 仮名形基本形
+            Assert.Equal("コオリツク", node.FormBase); // 語形基本形
+        }
+
+        [Fact]
+        public void UniDic22()
+        {
+            using var tagger = MeCabUniDic22Tagger.Create("../../../../../dic/unidic-cwj-2.3.0");
+            var node = tagger.Parse("こおりつけ！")[0];
+
+            Assert.Equal("動詞", node.Pos1); // 品詞大分類
+            Assert.Equal("一般", node.Pos2); // 品詞中分類
+            Assert.Equal("*", node.Pos3); // 品詞小分類
+            Assert.Equal("*", node.Pos4); // 品詞細分類
+
+            Assert.Equal("五段-カ行", node.CType); // 活用型
+            Assert.Equal("命令形", node.CForm); // 活用形
+
+            Assert.Equal("コオリツク", node.LForm); // 語彙素読み
+            Assert.Equal("凍り付く", node.Lemma); // 語彙素
+
+            Assert.Equal("こおりつけ", node.Orth); // 書字形出現形 平仮名表記
+            Assert.Equal("コーリツケ", node.Pron); // 発音形出現形 発音形だと「コーリ」と長音記号を使って表記
+            Assert.Equal("コオリツケ", node.Kana); // 仮名形出現形 「凍り」の仮名形は「コオリ」
+
+            Assert.Equal("和", node.Goshu); // 語種
+
+            Assert.Equal("こおりつく", node.OrthBase); // 書字形基本形
+            Assert.Equal("コーリツク", node.PronBase); // 発音形基本形
+            Assert.Equal("コオリツク", node.KanaBase); // 仮名形基本形
+            Assert.Equal("コオリツク", node.FormBase); // 語形基本形
+
+            Assert.Matches(@"^\d+$", node.LId); // 語彙表ID
+            Assert.Matches(@"^\d+$", node.LemmaId); // 語彙素ID
+        }
+
         [Theory]
         [InlineData(@"a", new[] { "a" })]
         [InlineData(@"a,b", new[] { "a", "b" })]
