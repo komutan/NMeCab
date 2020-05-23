@@ -1,0 +1,43 @@
+2013-01-26	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 2.1.2 release
+	Customized lex.csv for kana and accent information added
+
+2012-12-12	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 2.1.1 release
+	Adjusted to MeCab-0.994
+
+2011-02-27	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 2.1.0 release
+	New release based on UniDic2
+
+2009-07-31	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 1.3.12 release
+	Some minor changes
+
+2009-04-30	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 1.3.11 release
+	New POS tag `Ascii-Art' added
+
+2008-07-15	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 1.3.9 release
+	Bug fix
+
+2008-04-25	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 1.3.8 release
+	Goshu information added
+
+2007-10-12	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 1.3.5 release
+	The conjugation system changed: Kihon -> Syusi/Rentai
+
+2007-04-06	Yasuharu DEN <den@cogsci.L.chiba-u.ac.jp>
+
+	* ver. 1.3.0 release

@@ -1,0 +1,53 @@
+; List of features
+; f[0]:  pos1
+; f[1]:  pos2
+; f[2]:  pos3
+; f[3]:  pos4
+; f[4]:  cType
+; f[5]:  cForm
+; f[6]:  lForm
+; f[7]:  lemma
+; f[8]:  orth
+; f[9]:  pron
+; f[10]: orthBase
+; f[11]: pronBase
+; f[12]: goshu
+; f[13]: iType
+; f[14]: iForm
+; f[15]: fType
+; f[16]: fForm
+; f[17]: iConType
+; f[18]: fConType
+; f[19]: type
+; f[20]: kana
+; f[21]: kanaBase
+; f[22]: form
+; f[23]: formBase
+; f[24]: aType
+; f[25]: aConType
+; f[26]: aModType
+; f[27]: lid
+; f[28]: lemma_id
+
+cost-factor = 700
+bos-feature = BOS/EOS,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*
+eval-size = 10
+unk-eval-size = 4
+config-charset = utf8
+
+output-format-type = unidic22
+
+node-format-unidic22 = %m\t%f[0],%f[1],%f[2],%f[3],%f[4],%f[5],%f[6],%f[7],%f[8],%f[9],%f[10],%f[11],%f[12],%f[13],%f[14],%f[15],%f[16],%f[17],%f[18],%f[19],%f[20],%f[21],%f[22],%f[23],%f[24],%f[25],%f[26],%f[27],%f[28]\n
+unk-format-unidic22 = %m\t%f[0],%f[1],%f[2],%f[3],%f[4],%f[5]\n
+bos-format-unidic22 =
+eos-format-unidic22 = EOS\n
+
+node-format-verbose = surface:%m\tpos1:%f[0]\tpos2:%f[1]\tpos3:%f[2]\tpos4:%f[3]\tcType:%f[4]\tcForm:%f[5]\tlForm:%f[6]\tlemma:%f[7]\torth:%f[8]\tpron:%f[9]\torthBase:%f[10]\tpronBase:%f[11]\tgoshu:%f[12]\tiType:%f[13]\tiForm:%f[14]\tfType:%f[15]\tfForm:%f[16]\tiConType:%f[17]\tfConType:%f[18]\tlType:%f[19]\tkana:%f[20]\tkanaBase:%f[21]\tform:%f[22]\tformBase:%f[23]\taType:%f[24]\taConType:%f[25]\taModType:%f[26]\tlid:%f[27]\tlemma_id:%f[28]\n
+unk-format-verbose = surface:%m\tpos1:%f[0]\tpos2:%f[1]\tpos3:%f[2]\tpos4:%f[3]\tcType:%f[4]\tcForm:%f[5]\n
+bos-format-verbose =
+eos-format-verbose = EOS\n
+
+node-format-chamame = \t%m\t%f[9]\t%f[6]\t%f[7]\t%F-[0,1,2,3]\t%f[4]\t%f[5]\t%f[23]\t%f[12]\n\n
+unk-format-chamame = \t%m\t\t\t%m\t未知語\t\t\t\t\n
+bos-format-chamame = B
+eos-format-chamame =
