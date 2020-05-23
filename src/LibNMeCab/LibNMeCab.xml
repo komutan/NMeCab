@@ -935,6 +935,21 @@
             アクセント修飾型を取得
             </summary>
         </member>
+        <member name="P:NMeCab.MeCabUniDicNode.LType">
+            <summary>
+            語彙素類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Lid">
+            <summary>
+            語彙表IDを取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.MeCabUniDicNode.Lemma_id">
+            <summary>
+            語彙素IDを取得
+            </summary>
+        </member>
         <member name="T:NMeCab.MeCabUniDicTagger">
             <summary>
             UniDic形式の辞書を使用する場合の形態素解析処理の起点を表します。
