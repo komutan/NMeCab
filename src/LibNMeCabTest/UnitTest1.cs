@@ -253,7 +253,7 @@ namespace LibNMeCabTest
         [Fact]
         public void UniDic22()
         {
-            using var tagger = MeCabUniDic22Tagger.Create("../../../../../dic/unidic-cwj-2.3.0");
+            using var tagger = MeCabUniDic22Tagger.Create("../../../../../dic/unidic-cwj-2.2.0");
             var node = tagger.Parse("こおりつけ！")[0];
 
             Assert.Equal("動詞", node.Pos1); // 品詞大分類
