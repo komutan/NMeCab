@@ -78,7 +78,16 @@ namespace NMeCab.Core
         {
             this.FileName = fileName;
 
-            this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, null, 0L, MemoryMappedFileAccess.Read);
+            var sourceFileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            try
+            {
+                this.mmf = MemoryMappedFile.CreateFromFile(sourceFileStream, null, 0L, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
+            }
+            catch (Exception)
+            {
+                sourceFileStream.Dispose();
+                throw;
+            }
             this.mmva = mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
 
             byte* ptr = null;
@@ -125,7 +134,7 @@ namespace NMeCab.Core
         {
             this.FileName = fileName;
 
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (BinaryReader reader = new BinaryReader(fileStream))
             {
                 this.Open(reader);
