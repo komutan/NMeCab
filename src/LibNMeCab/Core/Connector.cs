@@ -19,8 +19,7 @@ namespace NMeCab.Core
         private const string MatrixFile = "matrix.bin";
 
 #if MMF_MTX
-        private MemoryMappedFile mmf;
-        private MemoryMappedViewAccessor mmva;
+        private readonly MemoryMappedFileLoader mmfLoader = new MemoryMappedFileLoader();
         private unsafe short* matrix;
 #else
         private short[] matrix;
@@ -38,34 +37,16 @@ namespace NMeCab.Core
             string fileName = Path.Combine(dicDir, MatrixFile);
 
 #if MMF_MTX
-            var sourceFileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            try
-            {
-                this.mmf = MemoryMappedFile.CreateFromFile(sourceFileStream, null, 0L, MemoryMappedFileAccess.Read, HandleInheritability.None, false);
-            }
-            catch (Exception)
-            {
-                sourceFileStream.Dispose();
-                throw;
-            }
-            this.mmva = this.mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
+            ushort* ptr = (ushort*)this.mmfLoader.Invoke(fileName);
 
-            byte* ptr = null;
-            this.mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+            this.LSize = *ptr++;
+            this.RSize = *ptr++;
 
-            using (var stream = mmf.CreateViewStream(0L, 0L, MemoryMappedFileAccess.Read))
-            using (var reader = new BinaryReader(stream))
-            {
-                this.LSize = reader.ReadUInt16();
-                this.RSize = reader.ReadUInt16();
+            long fSize = sizeof(short) * (2 + this.LSize * this.RSize);
+            if (this.mmfLoader.FileSize != fSize)
+                throw new InvalidDataException($"File size is invalid. {fileName}");
 
-                long fSize = stream.Position + sizeof(short) * this.LSize * this.RSize;
-                if (this.mmva.Capacity < fSize)
-                    throw new InvalidDataException($"File size is invalid. {fileName}");
-
-                ptr += stream.Position;
-                this.matrix = (short*)ptr;
-            }
+            this.matrix = (short*)ptr;
 #else
             using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (var reader = new BinaryReader(stream))
@@ -118,14 +99,7 @@ namespace NMeCab.Core
             if (disposing)
             {
 #if MMF_MTX
-                if (this.mmva != null)
-                {
-                    this.mmva.SafeMemoryMappedViewHandle.ReleasePointer();
-                    this.mmva.Dispose();
-                }
-
-                if (this.mmf != null)
-                    this.mmf.Dispose();
+                this.mmfLoader.Dispose();
 #endif
             }
 
