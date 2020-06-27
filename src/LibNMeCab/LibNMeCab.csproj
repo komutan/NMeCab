@@ -6,13 +6,14 @@
     <Authors>Tsuyoshi Komuta</Authors>
     <Product>NMeCab (Original) liblary</Product>
     <Title>NMeCab (Original) liblary</Title>
-    <Description>This package is Japanese morphological analysis library NMeCab. It was developed in pure C# with reference to MeCab (developed in C++). This does not include a binary dictionary, so you need preparing it sepalatary.</Description>
+    <Description>This package is Japanese morphological analysis library NMeCab. It was developed on .NET (C#), with reference to MeCab (developed in C++). This does not include a binary dictionary, so you need preparing it sepalatary.</Description>
     <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
     <PackageIcon>NMeCab-icon-100.png</PackageIcon>
-    <Version>0.10.0-bata2</Version>
+    <Version>0.10.0-RC1</Version>
+    <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
