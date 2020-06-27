@@ -20,8 +20,7 @@ namespace NMeCab.Core
         private const uint DicVersion = 102u;
 
 #if MMF_DIC
-        private MemoryMappedFile mmf;
-        private MemoryMappedViewAccessor mmva;
+        private MemoryMappedFileLoader mmfLoader = new MemoryMappedFileLoader();
         private unsafe Token* tokens;
         private unsafe byte* features;
 #else
@@ -78,45 +77,38 @@ namespace NMeCab.Core
         {
             this.FileName = fileName;
 
-            this.mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.Open, null, 0L, MemoryMappedFileAccess.Read);
-            this.mmva = mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
+            uint* uintPtr = (uint*)this.mmfLoader.Invoke(fileName);
 
-            byte* ptr = null;
-            this.mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
+            uint magic = *uintPtr++;
+            if (this.mmfLoader.FileSize != (magic ^ DictionaryMagicID))
+                throw new InvalidDataException($"dictionary file is broken. {fileName}");
 
-            using (var stream = this.mmf.CreateViewStream(0L, 0L, MemoryMappedFileAccess.Read))
-            using (var reader = new BinaryReader(stream))
-            {
-                uint magic = reader.ReadUInt32();
-                if (this.mmva.Capacity < (magic ^ DictionaryMagicID))
-                    throw new InvalidDataException($"dictionary file is broken. {fileName}");
+            this.Version = *uintPtr++;
+            if (this.Version != DicVersion)
+                throw new InvalidDataException($"incompatible version dictionaly. {fileName}");
 
-                this.Version = reader.ReadUInt32();
-                if (this.Version != DicVersion)
-                    throw new InvalidDataException($"incompatible version dictionaly. {fileName}");
+            this.Type = (DictionaryType)(*uintPtr++);
+            this.LexSize = *uintPtr++;
+            this.LSize = *uintPtr++;
+            this.RSize = *uintPtr++;
+            uint dSize = *uintPtr++;
+            uint tSize = *uintPtr++;
+            uint fSize = *uintPtr++;
+            uintPtr++; // dummy
 
-                this.Type = (DictionaryType)reader.ReadUInt32();
-                this.LexSize = reader.ReadUInt32();
-                this.LSize = reader.ReadUInt32();
-                this.RSize = reader.ReadUInt32();
-                uint dSize = reader.ReadUInt32();
-                uint tSize = reader.ReadUInt32();
-                uint fSize = reader.ReadUInt32();
-                reader.ReadUInt32(); //dummy
+            byte* bytePtr = (byte*)uintPtr;
 
-                string charSet = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
-                this.encoding = StrUtils.GetEncoding(charSet);
+            string charSet = StrUtils.GetString(bytePtr, Encoding.ASCII);
+            this.encoding = StrUtils.GetEncoding(charSet);
+            bytePtr += 32;
 
-                ptr += stream.Position;
+            this.da.Open(bytePtr, (int)dSize);
+            bytePtr += dSize;
 
-                this.da.Open(ptr, (int)dSize);
-                ptr += dSize;
+            this.tokens = (Token*)bytePtr;
+            bytePtr += tSize;
 
-                this.tokens = (Token*)ptr;
-                ptr += tSize;
-
-                this.features = ptr;
-            }
+            this.features = bytePtr;
         }
 
 #else
@@ -125,7 +117,7 @@ namespace NMeCab.Core
         {
             this.FileName = fileName;
 
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             using (BinaryReader reader = new BinaryReader(fileStream))
             {
                 this.Open(reader);
@@ -309,14 +301,7 @@ namespace NMeCab.Core
             if (disposing)
             {
 #if MMF_DIC
-                if (this.mmva != null)
-                {
-                    this.mmva.SafeMemoryMappedViewHandle.ReleasePointer();
-                    this.mmva.Dispose();
-                }
-
-                if (this.mmf != null)
-                    this.mmf.Dispose();
+                this.mmfLoader.Dispose();
 #endif
             }
 
