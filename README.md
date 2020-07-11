@@ -162,7 +162,7 @@ class Program
 }
 ```
 
-まずは汎用のTaggerインスタンスを生成して使うサンプルを示します。
+これは汎用のTaggerインスタンスを生成して使うサンプルです。
 `MeCabTagger.Create(string dicDir, string[] userDics = null)` により、辞書のあるディレクトリへのパスを指定してTaggerインスタンスを生成しています。
 - 補足
   - ここでは、WindowsでMeCabインストーラーを使いデフォルト設定でインストールしたときにIPA辞書ファイルが置かれるパスにしてみましたが、当然、任意のパスを指定できます。
@@ -195,11 +195,12 @@ class Program
 }
 ```
 
-次はIPA辞書用のTaggarインスタンスを生成して使うサンプルを示します。使用する辞書の素性フォーマットがIPA辞書と同じであるならば、  `MeCabIpaDicTagger.Create(string dicDir, string[] userDics = null)` により生成したIPA辞書用のTaggerインスタンスを用いることで、形態素ノードのプロパティから個別の素性情報を取得できます。
+こちらはIPA辞書用のTaggarインスタンスを生成して使うサンプルです。
+使用する辞書の素性フォーマットがIPA辞書と同じであるならば、 `MeCabIpaDicTagger.Create(string dicDir, string[] userDics = null)` により生成したIPA辞書用のTaggerインスタンスを用いることで、形態素ノードのプロパティから個別の素性情報を取得できます。
 
 | 素性フォーマット | Taggarクラス |
 | --- | --- |
-| 汎用（連結された素性文字列のみ取得） | `MeCabagger` |
+| 汎用 | `MeCabTagger` |
 | IPA辞書 | `MeCabIpaDicTagger` |
 | UniDic ver 2.1.x | `MeCabUniDic21Tagger` |
 | UniDic ver 2.2.x | `MeCabUniDic22Tagger` |
