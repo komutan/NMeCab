@@ -5,18 +5,22 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <Optimize>false</Optimize>
-  </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\LibNMeCab\LibNMeCab.csproj" />
+    <None Remove="kokoro.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="kokoro.txt">
+    <Content Include="kokoro.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibNMeCab\LibNMeCab.csproj" />
   </ItemGroup>
 
 </Project>
