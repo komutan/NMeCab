@@ -151,7 +151,7 @@ namespace NMeCab.Core
 
             this.tokens = new Token[tSize / sizeof(Token)];
             for (int i = 0; i < this.tokens.Length; i++)
-                this.tokens[i] = Token.Create(reader);
+                this.tokens[i] = new Token(reader);
 
             this.features = reader.ReadBytes((int)fSize);
         }

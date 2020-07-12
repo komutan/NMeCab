@@ -111,15 +111,20 @@ namespace NMeCab.Core
 #endif
                     {
                         var newNode = lattice.CreateNewNode();
-                        this.ReadNodeInfo(it, tokens[j], newNode);
+                        newNode.Surface = new string(begin2, 0, daResults->Length);
                         newNode.Length = daResults->Length;
                         newNode.RLength = (int)(begin2 - begin) + daResults->Length;
-                        newNode.Surface = new string(begin2, 0, newNode.Length);
+#if MMF_DIC
+                        newNode.SetTokenInfo(tokens++, it);
+#else
+                        newNode.SetTokenInfo(in tokens[j], it);
+#endif
                         newNode.Stat = MeCabNodeStat.Nor;
                         newNode.CharType = cInfo.DefaultType;
                         newNode.BNext = resultNode;
                         resultNode = newNode;
                     }
+
                     daResults++;
                 }
             }
@@ -156,30 +161,22 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void ReadNodeInfo(MeCabDictionary dic, in Token token, TNode node)
-        {
-            node.LCAttr = token.LcAttr;
-            node.RCAttr = token.RcAttr;
-            node.PosId = token.PosId;
-            node.WCost = token.WCost;
-            //node.Token = token;
-            //node.Feature = dic.GetFeature(token); // この段階では素性情報を取得しない
-            node.SetFeature(token.Feature, dic); // そのかわり遅延取得を可能にする
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe void AddUnknown(ref TNode resultNode, CharInfo cInfo,
                                        char* begin, char* begin2, char* begin3,
                                        MeCabLattice<TNode> lattice)
         {
             var token = this.unkTokens[cInfo.DefaultType];
+            var length = (int)(begin3 - begin2);
+            var rLength = (int)(begin3 - begin);
+            var surface = new string(begin2, 0, length);
+
             for (int i = 0; i < token.Length; i++)
             {
                 var newNode = lattice.CreateNewNode();
-                this.ReadNodeInfo(this.unkDic, token[i], newNode);
-                newNode.Length = (int)(begin3 - begin2);
-                newNode.RLength = (int)(begin3 - begin);
-                newNode.Surface = new string(begin2, 0, newNode.Length);
+                newNode.Surface = surface;
+                newNode.Length = length;
+                newNode.RLength = rLength;
+                newNode.SetTokenInfo(in token[i], this.unkDic);
                 newNode.CharType = cInfo.DefaultType;
                 newNode.Stat = MeCabNodeStat.Unk;
                 newNode.BNext = resultNode;
@@ -187,9 +184,9 @@ namespace NMeCab.Core
             }
         }
 
-        #endregion
+#endregion
 
-        #region Dispose
+#region Dispose
 
         private bool disposed;
 
@@ -220,6 +217,6 @@ namespace NMeCab.Core
             this.Dispose(false);
         }
 
-        #endregion
+#endregion
     }
 }

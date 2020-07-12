@@ -8,23 +8,6 @@ namespace NMeCab
     /// </summary>
     public class MeCabIpaDicNode : MeCabNodeBase<MeCabIpaDicNode>
     {
-        private string[] features = null;
-
-        private string GetFeatureAt(int index)
-        {
-            if (this.features == null)
-            {
-                var featureCsv = this.Feature;
-                if (featureCsv == null) return "";
-                this.features = StrUtils.SplitCsvRow(featureCsv, 9, 16);
-            }
-
-            if (index >= this.features.Length)
-                return "";
-
-            return this.features[index];
-        }
-
         /// <summary>
         /// 品詞
         /// </summary>
