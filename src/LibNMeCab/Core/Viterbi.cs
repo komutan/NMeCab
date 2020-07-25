@@ -54,18 +54,24 @@ namespace NMeCab.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe void DoViterbi(char* str, int len, MeCabLattice<TNode> lattice, bool withAllPath)
         {
-            var begin = str;
-            var end = str + len;
+            var enc = this.tokenizer.Encoding;
+            int bytesLen = enc.GetByteCount(str, len);
+            byte* bytesBegin = stackalloc byte[bytesLen];
+            if (len > 0) enc.GetBytes(str, len, bytesBegin, bytesLen);
+            byte* bytesEnd = bytesBegin + bytesLen;
+            char* begin = str;
+            char* end = str + len;
 
             for (int pos = 0; pos < len; pos++)
             {
                 if (lattice.EndNodeList[pos] != null)
                 {
-                    var rNode = tokenizer.Lookup(begin, end, lattice);
+                    var rNode = tokenizer.Lookup(begin, end, bytesBegin, bytesEnd, lattice);
                     lattice.BeginNodeList[pos] = rNode;
                     this.Connect(pos, rNode, lattice.EndNodeList, withAllPath);
                 }
 
+                bytesBegin += enc.GetByteCount(begin, 1);
                 begin++;
             }
 

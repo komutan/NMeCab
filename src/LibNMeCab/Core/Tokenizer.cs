@@ -5,6 +5,7 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace NMeCab.Core
 {
@@ -19,7 +20,7 @@ namespace NMeCab.Core
 
         #endregion
 
-        #region Field
+        #region Field/Property
 
         private MeCabDictionary[] dic;
         private readonly MeCabDictionary unkDic = new MeCabDictionary();
@@ -27,11 +28,13 @@ namespace NMeCab.Core
         private CharInfo space;
         private readonly CharProperty property = new CharProperty();
 
+        public Encoding Encoding { get; private set; }
+
         #endregion
 
         #region Open/Clear
 
-        public void Open(string dicDir, string[] userDics)
+        public unsafe void Open(string dicDir, string[] userDics)
         {
             this.property.Open(dicDir);
 
@@ -61,45 +64,46 @@ namespace NMeCab.Core
             this.unkTokens = new Token[this.property.Size][];
             for (int i = 0; i < this.unkTokens.Length; i++)
             {
-                string key = this.property.Name(i);
-                var n = this.unkDic.ExactMatchSearch(key);
-                if (n.Value == -1)
-                    throw new InvalidDataException($"cannot find UNK category: {key} {this.unkDic.FileName ?? ""}");
+                fixed (byte* key = this.property.Name(i))
+                {
+                    var n = this.unkDic.ExactMatchSearch(key, StrUtils.GetLength(key));
+                    if (n.Value == -1)
+                        throw new InvalidDataException($"cannot find UNK category: {StrUtils.GetString(key, this.Encoding)} {this.unkDic.FileName ?? ""}");
 
-                this.unkTokens[i] = this.unkDic.GetTokensArray(n.Value);
+                    this.unkTokens[i] = this.unkDic.GetTokensArray(n.Value);
+                }
             }
 
             this.space = this.property.GetCharInfo(' ');
-        }
 
-#if NeedId
-        public void Clear()
-        {
-            Tokenizer.id = 0u;
+            this.Encoding = StrUtils.GetEncoding(sysDic.CharSet);
         }
-#endif
 
         #endregion
 
         #region Lookup
 
-        public unsafe TNode Lookup(char* begin, char* end, MeCabLattice<TNode> lattice)
+        public unsafe TNode Lookup(char* begin, char* end, byte* bytesBegin, byte* bytesEnd, MeCabLattice<TNode> lattice)
         {
             CharInfo cInfo;
-            int cLen;
 
             if (end - begin > ushort.MaxValue) end = begin + ushort.MaxValue;
-            char* begin2 = property.SeekToOtherType(begin, end, this.space, &cInfo, &cLen);
+
+            int leftSpaceLen;
+            char* begin2 = property.SeekToOtherType(begin, end, this.space, &cInfo, &leftSpaceLen);
             if (begin2 >= end) return null;
+            byte* beginBytes2 = bytesBegin + this.Encoding.GetByteCount(begin, leftSpaceLen);
 
             TNode resultNode = null;
             var daResults = stackalloc DoubleArray.ResultPair[DAResultSize];
 
             foreach (MeCabDictionary it in this.dic)
             {
-                int n = it.CommonPrefixSearch(begin2, (int)(end - begin2), daResults, DAResultSize);
+                int n = it.CommonPrefixSearch(beginBytes2, (int)(bytesEnd - beginBytes2), daResults, DAResultSize);
                 for (int i = 0; i < n; i++)
                 {
+                    int length = this.Encoding.GetCharCount(beginBytes2, daResults->Length);
+                    int rLength = (int)(begin2 - begin) + length;
 #if MMF_DIC
                     var tokenSize = it.GetTokenSize(daResults->Value);
                     var tokens = it.GetTokens(daResults->Value);
@@ -111,14 +115,20 @@ namespace NMeCab.Core
 #endif
                     {
                         var newNode = lattice.CreateNewNode();
-                        newNode.Surface = new string(begin2, 0, daResults->Length);
-                        newNode.Length = daResults->Length;
-                        newNode.RLength = (int)(begin2 - begin) + daResults->Length;
+                        newNode.Surface = new string(begin2, 0, length);
+                        newNode.Length = length;
+                        newNode.RLength = rLength;
 #if MMF_DIC
-                        newNode.SetTokenInfo(tokens++, it);
+                        newNode.LCAttr = tokens->LcAttr;
+                        newNode.RCAttr = tokens->RcAttr;
+                        newNode.PosId = tokens->PosId;
+                        newNode.WCost = tokens->WCost;
+                        newNode.PFeature = it.GetFeature(tokens->Feature);
+                        tokens++;
 #else
                         newNode.SetTokenInfo(in tokens[j], it);
 #endif
+                        newNode.Encoding = this.Encoding;
                         newNode.Stat = MeCabNodeStat.Nor;
                         newNode.CharType = cInfo.DefaultType;
                         newNode.BNext = resultNode;
@@ -138,6 +148,7 @@ namespace NMeCab.Core
             {
                 char* tmp = begin3;
                 CharInfo fail;
+                int cLen;
                 begin3 = this.property.SeekToOtherType(begin3, end, cInfo, &fail, &cLen);
                 if (cLen <= lattice.Param.MaxGroupingSize)
                     this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
@@ -149,7 +160,6 @@ namespace NMeCab.Core
             {
                 if (begin3 > end) break;
                 if (begin3 == groupBegin3) continue;
-                cLen = i;
                 this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
                 if (!cInfo.IsKindOf(this.property.GetCharInfo(*begin3))) break;
                 begin3 += 1;
@@ -165,28 +175,38 @@ namespace NMeCab.Core
                                        char* begin, char* begin2, char* begin3,
                                        MeCabLattice<TNode> lattice)
         {
-            var token = this.unkTokens[cInfo.DefaultType];
-            var length = (int)(begin3 - begin2);
-            var rLength = (int)(begin3 - begin);
-            var surface = new string(begin2, 0, length);
-
-            for (int i = 0; i < token.Length; i++)
+            var tokens = this.unkTokens[cInfo.DefaultType];
+            fixed (Token* fpTokens = tokens)
             {
-                var newNode = lattice.CreateNewNode();
-                newNode.Surface = surface;
-                newNode.Length = length;
-                newNode.RLength = rLength;
-                newNode.SetTokenInfo(in token[i], this.unkDic);
-                newNode.CharType = cInfo.DefaultType;
-                newNode.Stat = MeCabNodeStat.Unk;
-                newNode.BNext = resultNode;
-                resultNode = newNode;
+                Token* pTokens = fpTokens;
+                var length = (int)(begin3 - begin2);
+                var rLength = (int)(begin3 - begin);
+                var surface = new string(begin2, 0, length);
+
+                for (int i = 0; i < tokens.Length; i++)
+                {
+                    var newNode = lattice.CreateNewNode();
+                    newNode.Surface = surface;
+                    newNode.Length = length;
+                    newNode.RLength = rLength;
+                    newNode.LCAttr = pTokens->LcAttr;
+                    newNode.RCAttr = pTokens->RcAttr;
+                    newNode.PosId = pTokens->PosId;
+                    newNode.WCost = pTokens->WCost;
+                    newNode.PFeature = this.unkDic.GetFeature(pTokens->Feature);
+                    newNode.Encoding = this.Encoding;
+                    newNode.CharType = cInfo.DefaultType;
+                    newNode.Stat = MeCabNodeStat.Unk;
+                    newNode.BNext = resultNode;
+                    resultNode = newNode;
+                    pTokens++;
+                }
             }
         }
 
-#endregion
+        #endregion
 
-#region Dispose
+        #region Dispose
 
         private bool disposed;
 
@@ -217,6 +237,6 @@ namespace NMeCab.Core
             this.Dispose(false);
         }
 
-#endregion
+        #endregion
     }
 }

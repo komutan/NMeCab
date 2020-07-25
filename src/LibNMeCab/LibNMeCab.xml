@@ -137,16 +137,12 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte[],System.Text.Encoding)">
+        <member name="M:NMeCab.Core.StrUtils.GetLength(System.Byte*)">
             <summary>
-            バイト配列の中から終端が\0で表された文字列を取り出す。
+            終端が\0で表されたバイト配列の長さを取得する
             </summary>
-            <remarks>
-            バイト配列の長さはInt32.MaxValueを超えていても良い。
-            </remarks>
-            <param name="bytes">バイト配列</param>
-            <param name="enc">文字エンコーディング</param>
-            <returns>文字列（\0は含まない）</returns>
+            <param name="bytes"></param>
+            <returns></returns>
         </member>
         <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte[],System.Int64,System.Text.Encoding)">
             <summary>

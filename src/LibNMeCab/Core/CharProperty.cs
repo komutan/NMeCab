@@ -14,7 +14,7 @@ namespace NMeCab.Core
 
         private const string CharPropertyFile = "char.bin";
 
-        private string[] cList;
+        private byte[][] cList;
 
         private readonly CharInfo[] charInfoList = new CharInfo[0xFFFF];
 
@@ -49,10 +49,10 @@ namespace NMeCab.Core
                     throw new InvalidDataException($"invalid file size. {fileName ?? ""}");
             }
 
-            this.cList = new string[cSize];
+            this.cList = new byte[cSize][];
             for (int i = 0; i < this.cList.Length; i++)
             {
-                this.cList[i] = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
+                this.cList[i] = reader.ReadBytes(32);
             }
 
             for (int i = 0; i < this.charInfoList.Length; i++)
@@ -66,7 +66,7 @@ namespace NMeCab.Core
         #region Get Infometion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string Name(int i)
+        public byte[] Name(int i)
         {
             return this.cList[i];
         }

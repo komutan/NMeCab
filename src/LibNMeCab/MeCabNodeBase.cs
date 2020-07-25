@@ -3,6 +3,7 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 
+using System;
 using System.Runtime.CompilerServices;
 using System.Text;
 using NMeCab.Core;
@@ -106,32 +107,6 @@ namespace NMeCab
         /// </summary>
         public short WCost { get; set; }
 
-        private uint featurePos;
-
-        private MeCabDictionary dictionary;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void SetTokenInfo(Token* token, MeCabDictionary dictionary)
-        {
-            this.LCAttr = token->LcAttr;
-            this.RCAttr = token->RcAttr;
-            this.PosId = token->PosId;
-            this.WCost = token->WCost;
-            this.featurePos = token->Feature;
-            this.dictionary = dictionary;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetTokenInfo(in Token token, MeCabDictionary dictionary)
-        {
-            this.LCAttr = token.LcAttr;
-            this.RCAttr = token.RcAttr;
-            this.PosId = token.PosId;
-            this.WCost = token.WCost;
-            this.featurePos = token.Feature;
-            this.dictionary = dictionary;
-        }
-
         #endregion
 
         #region vitebi info
@@ -178,19 +153,24 @@ namespace NMeCab
         #endregion
 
         #region get feature
+                
+        public unsafe byte* PFeature { get; set; }
+
+        public Encoding Encoding { get; set; }
 
         private string feature;
+
         private string[] features;
 
         /// <summary>
         /// CSVで表記された素性情報
         /// </summary>
-        public string Feature
+        public unsafe string Feature
         {
             get
             {
-                if (this.feature == null && this.dictionary != null)
-                    this.feature = this.dictionary.GetFeature(this.featurePos);
+                if (this.feature == null && this.Encoding != null && this.PFeature != null)
+                    this.feature = StrUtils.GetString(this.PFeature, this.Encoding);
 
                 return this.feature;
             }
