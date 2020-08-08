@@ -2,6 +2,9 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+
+#pragma warning disable CS1591
+
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -31,6 +34,7 @@ namespace NMeCab.Core
 
         #region Open
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Open(string dicDir)
         {
             string fileName = Path.Combine(dicDir, MatrixFile);

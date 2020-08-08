@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS1591
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;

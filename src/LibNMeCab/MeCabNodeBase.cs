@@ -152,9 +152,9 @@ namespace NMeCab
 
         #region get feature
 
-        public unsafe byte* PFeature { get; set; }
+        internal unsafe byte* PFeature { get; set; }
 
-        public Encoding Encoding { get; set; }
+        internal Encoding Encoding { get; set; }
 
         private string feature;
 
