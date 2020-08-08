@@ -311,11 +311,6 @@
             コンストラクタ（非公開）
             </summary>
         </member>
-        <member name="P:NMeCab.MeCabIpaDicTagger.DefaltDicDir">
-            <summary>
-            使用する辞書ディレクトリ名の初期値
-            </summary>
-        </member>
         <member name="M:NMeCab.MeCabIpaDicTagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -667,11 +662,6 @@
             コンストラクタ（非公開）
             </summary>
         </member>
-        <member name="P:NMeCab.MeCabTagger.DefaltDicDir">
-            <summary>
-            使用する辞書ディレクトリ名の初期値
-            </summary>
-        </member>
         <member name="M:NMeCab.MeCabTagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -692,12 +682,7 @@
             </summary>
             <returns>形態素ノード</returns>
         </member>
-        <member name="P:NMeCab.MeCabTaggerBase`1.DefaltDicDir">
-            <summary>
-            使用する辞書のディレクトリへのパスの初期値です。
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.Create``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Func{``0},System.Func{`0})">
+        <member name="M:NMeCab.MeCabTaggerBase`1.Create``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Func{``0},System.Func{`0},System.String)">
             <summary>
             形態素解析処理の起点を作成します。
             </summary>
@@ -706,6 +691,7 @@
             <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
             <param name="taggerAllocator">Taggetインスタンス生成メソッド</param>
             <param name="nodeAllocator">Nodeインスタンス生成メソッド</param>
+            <param name="defaultDicDirName">使用する辞書のディレクトリ名の初期値</param>
             <returns>形態素解析処理の起点</returns>
         </member>
         <member name="M:NMeCab.MeCabTaggerBase`1.Parse(System.String)">
@@ -934,11 +920,6 @@
             コンストラクタ（非公開）
             </summary>
         </member>
-        <member name="P:NMeCab.MeCabUniDic21Tagger.DefaltDicDir">
-            <summary>
-            使用する辞書ディレクトリ名の初期値
-            </summary>
-        </member>
         <member name="M:NMeCab.MeCabUniDic21Tagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -1111,11 +1092,6 @@
         <member name="M:NMeCab.MeCabUniDic22Tagger.#ctor">
             <summary>
             コンストラクタ（非公開）
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Tagger.DefaltDicDir">
-            <summary>
-            使用する辞書ディレクトリ名の初期値
             </summary>
         </member>
         <member name="M:NMeCab.MeCabUniDic22Tagger.Create(System.String,System.String[])">

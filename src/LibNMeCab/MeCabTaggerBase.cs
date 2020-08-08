@@ -5,7 +5,9 @@
 using NMeCab.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace NMeCab
 {
@@ -24,11 +26,6 @@ namespace NMeCab
         /// <returns>形態素ノード</returns>
         private Func<TNode> nodeAllocator;
 
-        /// <summary>
-        /// 使用する辞書のディレクトリへのパスの初期値です。
-        /// </summary>
-        protected abstract string DefaltDicDir { get; }
-
         #region Static Create
 
         /// <summary>
@@ -39,22 +36,26 @@ namespace NMeCab
         /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
         /// <param name="taggerAllocator">Taggetインスタンス生成メソッド</param>
         /// <param name="nodeAllocator">Nodeインスタンス生成メソッド</param>
+        /// <param name="defaultDicDirName">使用する辞書のディレクトリ名の初期値</param>
         /// <returns>形態素解析処理の起点</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static TTagger Create<TTagger>(string dicDir,
                                                  IEnumerable<string> userDics,
                                                  Func<TTagger> taggerAllocator,
-                                                 Func<TNode> nodeAllocator)
+                                                 Func<TNode> nodeAllocator,
+                                                 string defaultDicDirName)
             where TTagger : MeCabTaggerBase<TNode>
         {
-            if (taggerAllocator == null) throw new ArgumentNullException(nameof(taggerAllocator));
-            if (nodeAllocator == null) throw new ArgumentNullException(nameof(nodeAllocator));
+            Debug.Assert(taggerAllocator != null);
+            Debug.Assert(nodeAllocator != null);
+            Debug.Assert(defaultDicDirName != null);
 
             TTagger tagger = null;
             try
             {
                 tagger = taggerAllocator();
                 tagger.nodeAllocator = nodeAllocator;
-                var dicDir2 = dicDir ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, tagger.DefaltDicDir);
+                var dicDir2 = dicDir ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultDicDirName);
                 var userDics2 = ToNullTrimedArray(userDics);
                 tagger.viterbi.Open(dicDir2, userDics2);
                 return tagger;
@@ -252,6 +253,7 @@ namespace NMeCab
             this.Dispose(false);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfDisposed()
         {
             if (this.disposed)

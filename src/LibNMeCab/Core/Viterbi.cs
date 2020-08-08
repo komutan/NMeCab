@@ -3,6 +3,8 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace NMeCab.Core
@@ -48,7 +50,7 @@ namespace NMeCab.Core
                     throw new ArgumentOutOfRangeException(nameof(lattice.Param.LatticeLevel));
             }
 
-            BuildBestLattice(lattice);
+            BuildBestLattice(lattice.BosNode, lattice.EosNode, lattice.BestResultStack);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -130,7 +132,7 @@ namespace NMeCab.Core
 
                 rNode.BPos = pos;
                 rNode.EPos = pos + rNode.RLength;
-                if (rNode.RLength != 0)
+                if (rNode.Stat != MeCabNodeStat.Eos)
                 {
                     rNode.ENext = endNodeList[rNode.EPos];
                     endNodeList[rNode.EPos] = rNode;
@@ -175,9 +177,9 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void BuildBestLattice(MeCabLattice<TNode> lattice)
+        private static void BuildBestLattice(TNode bos, TNode eos, Stack<TNode> stack)
         {
-            var current = lattice.EosNode;
+            var current = eos;
             var prev = current.Prev;
 
             prev.Next = current;
@@ -188,14 +190,14 @@ namespace NMeCab.Core
             while (prev != null)
             {
                 current.IsBest = true;
-                lattice.BestResultStack.Push(current);
                 prev.Next = current;
+                stack.Push(current);
 
                 current = prev;
                 prev = current.Prev;
             }
 
-            lattice.BosNode.Next = current;
+            bos.Next = current;
         }
 
         #endregion

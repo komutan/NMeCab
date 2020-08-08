@@ -129,6 +129,7 @@ namespace NMeCab
                 }
             }
 
+            // 全ての周辺確率の算出が終わってから返却する
             return list.ToArray();
         }
     }

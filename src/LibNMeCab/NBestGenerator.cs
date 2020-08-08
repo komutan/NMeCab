@@ -2,12 +2,17 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+using NMeCab.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NMeCab.Core
+namespace NMeCab
 {
+    /// <summary>
+    /// 確からしい順に形態素列を取得する列挙子を公開します。
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
     public class NBestGenerator<TNode> : IEnumerable<TNode[]>
         where TNode : MeCabNodeBase<TNode>
     {
@@ -26,6 +31,10 @@ namespace NMeCab.Core
 
         private readonly PriorityQueue<QueueElement> agenda = new PriorityQueue<QueueElement>();
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="eos">末尾の形態素ノード</param>
         public NBestGenerator(TNode eos)
         {
             this.agenda.Push(new QueueElement()
@@ -37,6 +46,10 @@ namespace NMeCab.Core
             });
         }
 
+        /// <summary>
+        /// 形態素列の列挙子を返します。
+        /// </summary>
+        /// <returns>形態素列の列挙子</returns>
         public IEnumerator<TNode[]> GetEnumerator()
         {
             while (this.agenda.Count != 0)
