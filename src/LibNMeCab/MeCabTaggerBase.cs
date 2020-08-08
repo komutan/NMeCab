@@ -36,7 +36,7 @@ namespace NMeCab
         /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
         /// <param name="taggerAllocator">Taggetインスタンス生成メソッド</param>
         /// <param name="nodeAllocator">Nodeインスタンス生成メソッド</param>
-        /// <param name="defaultDicDirName">使用する辞書のディレクトリ名の初期値</param>
+        /// <param name="defaultDicDirName">使用する辞書のディレクトリへのパスが無いときに使用するディレクトリ名の初期値</param>
         /// <returns>形態素解析処理の起点</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static TTagger Create<TTagger>(string dicDir,
