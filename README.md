@@ -1,44 +1,46 @@
-# 形態素解析エンジンNMeCab
+# 1. 形態素解析エンジンNMeCab
 
 <img src="icon/NMeCab-icon.svg">
 
-## 目次
+## 1.1. 目次
+
 <!-- TOC -->
 
-- [形態素解析エンジンNMeCab](#形態素解析エンジンnmecab)
-    - [目次](#目次)
-    - [リポジトリ移転について](#リポジトリ移転について)
-    - [これは何？](#これは何)
-    - [そもそも形態素解析とは？](#そもそも形態素解析とは)
-    - [NuGet](#nuget)
-    - [使い方](#使い方)
-        - [辞書もNuGetで取得して使用する](#辞書もNuGetで取得して使用する)
-        - [辞書を自分で用意して使用する](#辞書を自分で用意して使用する)
-        - [ユーザー辞書を使用する](#ユーザー辞書を使用する)
-        - [Nベスト解](#nベスト解)
-        - [ソフトわかち書き](#ソフトわかち書き)
-        - [ラティス出力](#ラティス出力)
-        - [新しい素性フォーマットへの対応](#新しい素性フォーマットへの対応)
-    - [スター！](#スター！)
+- [1. 形態素解析エンジンNMeCab](#1-形態素解析エンジンnmecab)
+    - [1.1. 目次](#11-目次)
+    - [1.2. リポジトリ移転について](#12-リポジトリ移転について)
+    - [1.3. これは何？](#13-これは何)
+    - [1.4. そもそも形態素解析とは？](#14-そもそも形態素解析とは)
+    - [1.5. NuGet](#15-nuget)
+    - [1.6. 使い方](#16-使い方)
+        - [1.6.1. 最も簡単な使い方](#161-最も簡単な使い方)
+        - [1.6.2. 辞書を自分で用意して使用する](#162-辞書を自分で用意して使用する)
+        - [1.6.3. ユーザー辞書を使用する](#163-ユーザー辞書を使用する)
+        - [1.6.4. Nベスト解](#164-nベスト解)
+        - [1.6.5. ソフトわかち書き](#165-ソフトわかち書き)
+        - [1.6.6. ラティス出力](#166-ラティス出力)
+        - [1.6.7. 新しい素性フォーマットへの対応](#167-新しい素性フォーマットへの対応)
+    - [1.7. 謝辞](#17-謝辞)
+    - [1.8. スター!](#18-スター)
 
 <!-- /TOC -->
 
-## リポジトリ移転について
+## 1.2. リポジトリ移転について
 
 2010年から[OSDN](https://ja.osdn.net/projects/nmecab)で開発し公開してきたNMeCabですが、バージョン0.10.0からは、こちらGitHubで開発し公開していきます。
 
-## これは何？
+## 1.3. これは何？
 
 NMeCabは.NETで開発した日本語形態素解析エンジンです。  
 その名の通り、元々はMeCabというOSSの形態素解析エンジンをC++からC#へ移植したものですが、独自の機能追加も行っています。  
 辞書データはMeCabに対応したものをそのまま使用できます。  
 NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあります。（.NET Core 2.0 以上、.NET Framework 4.6.1 以上 などで使用できます）
 
-## そもそも形態素解析とは？
+## 1.4. そもそも形態素解析とは？
 
 文章を形態素（日本語では単語と同じ）に分割し、品詞・読み・活用型などの情報も付与することです。
 
-## NuGet
+## 1.5. NuGet
 
 | NuGet ID / Status | 説明 |
 | --- | --- |
@@ -47,11 +49,11 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 
 辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
 
-## 使い方
+## 1.6. 使い方
 
 以下はC#によるサンプルコードで説明します。
 
-### 辞書もNuGetで取得して使用する
+### 1.6.1. 最も簡単な使い方
 
 `LibNMeCab.IpaDicBin` をNuGetでインストールするだけで、必要なライブラリと辞書ファイルが一括でプロジェクトに追加され、形態素解析エンジンの準備が整います。
 
@@ -64,8 +66,8 @@ class Program
 {
     static void Main()
     {
-        using (var tagger = NMeCabIpaDic.CreateTagger()) // Taggerインスタンスを生成
-        {
+       using (var tagger = MeCabIpaDicTagger.Create()) // Taggerインスタンスを生成
+       {
             var nodes = tagger.Parse("皇帝の新しい心"); // 形態素解析を実行
             foreach (var node in nodes) // 形態素ノード配列を順に処理
             {
@@ -79,15 +81,15 @@ class Program
 }
 ```
 
-まず `NMeCabIpaDic.CreateTagger()` メソッドにより、形態素解析処理の起点となるTaggerインスタンス（MeCabTaggerBase継承クラスのインスタンス）を生成します。
+まず `MeCabIpaDicTagger.Create()` により、形態素解析処理の起点となるTaggerインスタンス（MeCabTaggerBase継承クラスのインスタンス）を生成します。
 
 このTaggerインスタンスはIDisposableを実装しており、使用後に必ず `Dispose()` メソッドを呼び出す必要があります。
 そのため、このサンプルでは `using` ステートメントを記述しています。
 - 補足
   - Taggerインスタンスは生成時に辞書リソースを確保しており、`Dispose()` メソッドによりそれが解放されます。
-  - .NETにある程度習熟している方であれば、「一度確保した辞書リソースを使い続けたいので、すぐにはDispose()したくない」という場合にusingステートメントを記述せず、Taggerインスタンスを使いまわすこともできます。
+  - .NETにある程度習熟している方であれば言うまでもありませんが、usingステートメントを記述せず、Taggerインスタンスをスコープの広い変数に保持して使い回すなどして、一度確保した辞書リソースを再利用することもできます。なお、NMeCabTaggerインスタンスはスレッドセーフです。
 
-そのTaggerインスタンスの `Parse(string sentence)` メソッドにより、任意の文字列の形態素解析を実行できます。
+そのTaggerインスタンスを使い `tagger.Parse("皇帝の新しい心")` のように任意の文字列を渡すだけで、形態素解析を実行できます。
 
 結果は、形態素ノード（MeCabNodeBase継承クラスのインスタンス）の配列の形で返却されます。
 - 補足
@@ -122,7 +124,7 @@ VisualStudioのIntelliSenseなどにより閲覧できるよう、XML文書化�
 品詞　：名詞
 ```
 
-### 辞書を自分で用意して使用する
+### 1.6.2. 辞書を自分で用意して使用する
 
 `LibNMeCab` だけをNuGetでインストールし、辞書は自分で用意したものを使うこともできます。
 
@@ -136,6 +138,8 @@ NMeCabで使う辞書は、MeCabの `mecab-dict-index` コマンドを使って 
 - matrix.bin
 - sys.dic
 - uni.dic
+
+まずは、汎用のTaggerインスタンスを生成して使うサンプルを示します。
 
 サンプルコード：
 ```csharp
@@ -162,12 +166,13 @@ class Program
 }
 ```
 
-これは汎用のTaggerインスタンスを生成して使うサンプルです。
-`MeCabTagger.Create(string dicDir, string[] userDics = null)` により、辞書のあるディレクトリへのパスを指定してTaggerインスタンスを生成しています。
+`MeCabTagger.Create(dicDir)` により、辞書のあるディレクトリへのパスを指定してTaggerインスタンスを生成しています。
 - 補足
   - ここでは、WindowsでMeCabインストーラーを使いデフォルト設定でインストールしたときにIPA辞書ファイルが置かれるパスにしてみましたが、当然、任意のパスを指定できます。
   - このパス文字列は、その環境のランタイムの仕様に従っていれば大丈夫であり、相対パスなども指定可能です。（ちなみにパスの区切り文字をスラッシュにすれば、Windows/Unix系共通で使えるためお勧めです）
   - もし、パスが不正な時や、辞書ファイルがない時・壊れている時などは、I/O系の例外がスローされます。
+
+次にIPA辞書用のTaggarインスタンスを生成して使うサンプルを示します。
 
 サンプルコード:
 ``` csharp
@@ -195,21 +200,23 @@ class Program
 }
 ```
 
-こちらはIPA辞書用のTaggarインスタンスを生成して使うサンプルです。
-使用する辞書の素性フォーマットがIPA辞書と同じであるならば、 `MeCabIpaDicTagger.Create(string dicDir, string[] userDics = null)` により生成したIPA辞書用のTaggerインスタンスを用いることで、形態素ノードのプロパティから個別の素性情報を取得できます。
+ `MeCabIpaDicTagger.Create(dicDir)` により、辞書のパスを指定しながら、IPA辞書用のTaggerインスタンスを生成し、形態素ノードのプロパティから個別の素性情報を取得しています。
 
-| 素性フォーマット | Taggarクラス |
-| --- | --- |
-| 汎用 | `MeCabTagger` |
-| IPA辞書 | `MeCabIpaDicTagger` |
-| UniDic ver 2.1.x | `MeCabUniDic21Tagger` |
-| UniDic ver 2.2.x | `MeCabUniDic22Tagger` |
+下の表の通り、素性フォーマット別にTaggerクラスを準備してあります。
 
-上の表の通り、素性フォーマット毎にTaggerクラスを準備してあり、使用する辞書に合わせて使用することができます。
+| 素性フォーマット | Taggarクラス | デフォルトの辞書パス |
+| --- | --- | --- |
+| 汎用 | `MeCabTagger` | dic |
+| IPA辞書 | `MeCabIpaDicTagger` | IpaDic |
+| UniDic ver 2.1.x | `MeCabUniDic21Tagger` | UniDic |
+| UniDic ver 2.2.x | `MeCabUniDic22Tagger` | UniDic |
 
-### ユーザー辞書を使用する
+- 補足
+  - 上記のデフォルトの辞書パスは、 `MeCabTagger.create()` のように、辞書のパスを指定しなかった場合に適用されます。パスのルートはNMeCabのDLLの配置先です。
 
-辞書を自分で用意する場合、まずシステム辞書が必要ですが、そこに含まれていない単語を追加したいときに、ユーザー辞書を使うことも可能です。
+### 1.6.3. ユーザー辞書を使用する
+
+システム辞書は必ず必要ですが、システム辞書に含まれていない単語を追加したいときに、ユーザー辞書を使うことも可能です。
 
 やはりMeCabで解析用バイナリ辞書にしたファイルを、システム辞書と同じディレクトリに配置してください。
 ファイル名は任意です。
@@ -228,10 +235,10 @@ class Program
 
 Taggerインスタンス生成メソッドの第2引数にユーザー辞書ファイル名の配列を渡すと、システム辞書と同時にそれらのユーザー辞書が読み込まれます。
 
-### Nベスト解
+### 1.6.4. Nベスト解
 
-ここまでで説明してきた `Parse(string sentence)` メソッドでは、最も確からしい形態素解析結果だけが取得できました。
-`ParseNBest(string sentence)` メソッドでは、確からしい順番に複数の形態素解析結果を取得できます。結果はIEnumerable<T>型です。
+ここまでの解説では、Taggerインスタンスの `Parse(string sentence)` メソッドにより、最も確からしい形態素解析結果だけを取得していました。
+Taggerインスタンスの `ParseNBest(string sentence)` メソッドを使うと、確からしい順番に複数の形態素解析結果を取得できます。結果はIEnumerable<T>型です。
 下のサンプルでは、LinqのTakeにより上位5件の結果を取得し表示しています。
 
 サンプルコード:
@@ -264,7 +271,7 @@ class Program
 }
 ```
 
-### ソフトわかち書き
+### 1.6.5. ソフトわかち書き
 
 Taggerインスタンスの `ParseSoftWakachi(string sentence, float theta)` メソッドでは、その文章に含まれる可能性がある形態素を洗いざらい取得できます。
 また取得した形態素ノードの `Prob` プロパティにより「その形態素の含まれる確率＝周辺確率」も取得できます。
@@ -338,7 +345,7 @@ class Program
 上位ワード：本部,長,部長,本,部
 ```
 
-### ラティス出力
+### 1.6.6. ラティス出力
 
 Taggerインスタンスの `ParseToLattice(string sentence)` メソッドでは、「解析情報の束＝ラティス」のインスタンスを取得できます。
 
@@ -444,11 +451,112 @@ class Program
 3620
 ```
 
-### 新しい素性フォーマットへの対応
+### 1.6.7. 新しい素性フォーマットへの対応
 
-coming soon..
+ポリモーフィズムを知る方ならすぐに想像される通りだと思いますが、 `MeCabNodeBase` 、 `MeCabTaggerBase` を継承させた独自のクラスをコーディングすることになります。
+ただし、キャスト処理を無くしたり、実行パフォーマンスを向上させる目的から、少し変わって見えるかもしれないコードが必要となりますので、以下を参考にしてください。
 
-## スター！
+形態素ノードには素性フォーマットに合わせた独自のプロパティをコーディングしてください。
+それぞれのプロパティ内で、素性情報の任意の列の値を `GetFeatureAt(1)` のようにインデックス番号を指定して取得します。
+
+```csharp
+using NMeCab;
+
+namespace MyApp
+{
+    /// <summary>
+    /// MyDicの形態素ノードです。
+    /// </summary>
+    public class MyDicNode : MeCabNodeBase<MyDicNode>
+    {
+        /// <summary>
+        /// 素性情報1
+        /// </summary>
+        public string Feature1
+        {
+            get { return this.GetFeatureAt(0); }
+        }
+
+        /// <summary>
+        /// 素性情報2
+        /// </summary>
+        public string Feature2
+        {
+            get { return this.GetFeatureAt(1); }
+        }
+    }
+}
+```
+
+Taggerクラスは定型的なコードとなります。
+下記をコピーして「MyApp」「MyDic」の部分を書き換えるだけでOKです。
+
+```csharp
+using NMeCab;
+
+namespace MyApp
+{
+    /// <summary>
+    /// MyDicを使用する場合の形態素解析処理の起点を表します。
+    /// </summary>
+    public class MyDicTagger : MeCabTaggerBase<MyDicNode>
+    {
+        /// <summary>
+        /// コンストラクタ（非公開）
+        /// </summary>
+        private MeCabTagger()
+        { }
+
+        /// <summary>
+        /// 形態素解析処理の起点を作成します。
+        /// </summary>
+        /// <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+        /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+        /// <returns>形態素解析処理の起点</returns>
+        public static MyDicTagger Create(string dicDir = null,
+                                         string[] userDics = null)
+        {
+            return Create(dicDir,
+                          userDics,
+                          () => new MyDicTagger(), // Tagger生成関数
+                          () => new MyDicNode(), // 形態素ノード生成関数
+                          "MyDic"); // デフォルトの辞書ディレクトリ名
+        }
+    }
+}
+```
+
+上の2クラスができたら、作成したTaggerクラスのCreateメソッドを呼び出して使用できます。
+
+```csharp
+using System;
+using NMeCab;
+
+class Program
+{
+    static void Main()
+    {
+        var dicDir = @"C:\Program Files (x86)\MeCab\dic\mydic"; // 辞書のパス
+
+        using (var tagger = MyDicTagger.Create(dicDir)) // MyDic形式用のTaggerインスタンスを生成
+        {
+            var nodes = tagger.Parse("皇帝の新しい心"); // 形態素解析を実行
+            foreach (var node in nodes) // 形態素ノード配列を順に処理
+            {
+                Console.WriteLine($"素性情報1：{node.Feature1}");
+                Console.WriteLine($"素性情報2：{node.Feature2}");
+            }
+        }
+    }
+}
+```
+
+## 1.7. 謝辞
+
+LibNMeCab.IpaDicBin に使用しているコードは、 Kouji Matsui ( ＠kekyo ) 氏のオープンソースをほぼそのまま使用させて頂いたものです。
+＠kekyo 氏の素晴らしい情報とコードの公開に感謝いたします。
+
+## 1.8. スター!
 
 スターを頂ければ励みになりますので、よろしくお願いいたします。
 
