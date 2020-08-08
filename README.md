@@ -204,15 +204,15 @@ class Program
 
 下の表の通り、素性フォーマット別にTaggerクラスを準備してあります。
 
-| 素性フォーマット | Taggarクラス | デフォルトの辞書パス |
+| 素性フォーマット | Taggarクラス | デフォルトの辞書ディレクトリ名 |
 | --- | --- | --- |
-| 汎用 | `MeCabTagger` | dic |
-| IPA辞書 | `MeCabIpaDicTagger` | IpaDic |
-| UniDic ver 2.1.x | `MeCabUniDic21Tagger` | UniDic |
-| UniDic ver 2.2.x | `MeCabUniDic22Tagger` | UniDic |
+| 汎用 | MeCabTagger | dic |
+| IPA辞書 | MeCabIpaDicTagger | IpaDic |
+| UniDic ver 2.1.x | MeCabUniDic21Tagger | UniDic |
+| UniDic ver 2.2.x | MeCabUniDic22Tagger | UniDic |
 
 - 補足
-  - 上記のデフォルトの辞書パスは、 `MeCabTagger.create()` のように、辞書のパスを指定しなかった場合に適用されます。パスのルートはNMeCabのDLLの配置先です。
+  - 上記のデフォルトの辞書ディレクトリ名は、 `MeCabTagger.create()` のように、辞書のパスを指定しなかった場合に適用されます。パスのルートはNMeCabのDLLの配置先です。
 
 ### 1.6.3. ユーザー辞書を使用する
 
@@ -553,8 +553,8 @@ class Program
 
 ## 1.7. 謝辞
 
-LibNMeCab.IpaDicBin に使用しているコードは、 Kouji Matsui ( ＠kekyo ) 氏のオープンソースをほぼそのまま使用させて頂いたものです。
-＠kekyo 氏の素晴らしい情報とコードの公開に感謝いたします。
+Kouji Matsui ( ＠kekyo ) 氏の素晴らしい情報とコードの公開に感謝いたします。
+LibNMeCab.IpaDicBin に使用している辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo 氏のオープンソースをほぼそのまま使用させて頂いたものです。
 
 ## 1.8. スター!
 
