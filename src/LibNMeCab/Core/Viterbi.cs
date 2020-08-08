@@ -42,13 +42,13 @@ namespace NMeCab.Core
                     break;
                 case MeCabLatticeLevel.Two:
                     this.DoViterbi(str, len, lattice, true);
-                    this.ForwardBackward(lattice);
+                    ForwardBackward(lattice);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(lattice.Param.LatticeLevel));
             }
 
-            this.BuildBestLattice(lattice);
+            BuildBestLattice(lattice);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -66,7 +66,12 @@ namespace NMeCab.Core
             {
                 if (lattice.EndNodeList[pos] != null)
                 {
-                    var rNode = tokenizer.Lookup(begin, end, bytesBegin, bytesEnd, lattice);
+                    var rNode = tokenizer.Lookup(begin,
+                                                 end,
+                                                 bytesBegin,
+                                                 bytesEnd,
+                                                 lattice.Param,
+                                                 lattice.nodeAllocator);
                     lattice.BeginNodeList[pos] = rNode;
                     this.Connect(pos, rNode, lattice.EndNodeList, withAllPath);
                 }
@@ -134,7 +139,7 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void ForwardBackward(MeCabLattice<TNode> lattice)
+        private static unsafe void ForwardBackward(MeCabLattice<TNode> lattice)
         {
             for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
                 for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
@@ -170,7 +175,7 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void BuildBestLattice(MeCabLattice<TNode> lattice)
+        private static void BuildBestLattice(MeCabLattice<TNode> lattice)
         {
             var current = lattice.EosNode;
             var prev = current.Prev;

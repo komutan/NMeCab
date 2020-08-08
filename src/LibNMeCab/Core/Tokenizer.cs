@@ -83,7 +83,12 @@ namespace NMeCab.Core
 
         #region Lookup
 
-        public unsafe TNode Lookup(char* begin, char* end, byte* bytesBegin, byte* bytesEnd, MeCabLattice<TNode> lattice)
+        public unsafe TNode Lookup(char* begin,
+                                   char* end,
+                                   byte* bytesBegin,
+                                   byte* bytesEnd,
+                                   MeCabParam param,
+                                   Func<TNode> nodeAllocator)
         {
             CharInfo cInfo;
 
@@ -92,17 +97,17 @@ namespace NMeCab.Core
             int leftSpaceLen;
             char* begin2 = property.SeekToOtherType(begin, end, this.space, &cInfo, &leftSpaceLen);
             if (begin2 >= end) return null;
-            byte* beginBytes2 = bytesBegin + this.Encoding.GetByteCount(begin, leftSpaceLen);
+            byte* bytesBegin2 = bytesBegin + this.Encoding.GetByteCount(begin, leftSpaceLen);
 
             TNode resultNode = null;
             var daResults = stackalloc DoubleArray.ResultPair[DAResultSize];
 
             foreach (MeCabDictionary it in this.dic)
             {
-                int n = it.CommonPrefixSearch(beginBytes2, (int)(bytesEnd - beginBytes2), daResults, DAResultSize);
+                int n = it.CommonPrefixSearch(bytesBegin2, (int)(bytesEnd - bytesBegin2), daResults, DAResultSize);
                 for (int i = 0; i < n; i++)
                 {
-                    int length = this.Encoding.GetCharCount(beginBytes2, daResults->Length);
+                    int length = this.Encoding.GetCharCount(bytesBegin2, daResults->Length);
                     int rLength = (int)(begin2 - begin) + length;
 #if MMF_DIC
                     var tokenSize = it.GetTokenSize(daResults->Value);
@@ -114,7 +119,7 @@ namespace NMeCab.Core
                     for (int j = seg.Offset; j < seg.Offset + seg.Count; j++)
 #endif
                     {
-                        var newNode = lattice.CreateNewNode();
+                        var newNode = nodeAllocator();
                         newNode.Surface = new string(begin2, 0, length);
                         newNode.Length = length;
                         newNode.RLength = rLength;
@@ -150,8 +155,8 @@ namespace NMeCab.Core
                 CharInfo fail;
                 int cLen;
                 begin3 = this.property.SeekToOtherType(begin3, end, cInfo, &fail, &cLen);
-                if (cLen <= lattice.Param.MaxGroupingSize)
-                    this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
+                if (cLen <= param.MaxGroupingSize)
+                    this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, nodeAllocator);
                 groupBegin3 = begin3;
                 begin3 = tmp;
             }
@@ -160,12 +165,12 @@ namespace NMeCab.Core
             {
                 if (begin3 > end) break;
                 if (begin3 == groupBegin3) continue;
-                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
+                this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, nodeAllocator);
                 if (!cInfo.IsKindOf(this.property.GetCharInfo(*begin3))) break;
                 begin3 += 1;
             }
 
-            if (resultNode == null) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, lattice);
+            if (resultNode == null) this.AddUnknown(ref resultNode, cInfo, begin, begin2, begin3, nodeAllocator);
 
             return resultNode;
         }
@@ -173,7 +178,7 @@ namespace NMeCab.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe void AddUnknown(ref TNode resultNode, CharInfo cInfo,
                                        char* begin, char* begin2, char* begin3,
-                                       MeCabLattice<TNode> lattice)
+                                       Func<TNode> nodeAllocator)
         {
             var tokens = this.unkTokens[cInfo.DefaultType];
             fixed (Token* fpTokens = tokens)
@@ -185,7 +190,7 @@ namespace NMeCab.Core
 
                 for (int i = 0; i < tokens.Length; i++)
                 {
-                    var newNode = lattice.CreateNewNode();
+                    var newNode = nodeAllocator();
                     newNode.Surface = surface;
                     newNode.Length = length;
                     newNode.RLength = rLength;

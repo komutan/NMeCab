@@ -1,7 +1,7 @@
 ﻿using NMeCab.Core;
 using Xunit;
 
-namespace LibNMeCabTest
+namespace LibNMeCab.Test
 {
     public class CsvParseTest
     {

@@ -311,6 +311,11 @@
             コンストラクタ（非公開）
             </summary>
         </member>
+        <member name="P:NMeCab.MeCabIpaDicTagger.DefaltDicDir">
+            <summary>
+            使用する辞書ディレクトリ名の初期値
+            </summary>
+        </member>
         <member name="M:NMeCab.MeCabIpaDicTagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -318,12 +323,6 @@
             <param name="dicDir">使用する辞書のディレクトリへのパス</param>
             <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
             <returns>形態素解析処理の起点</returns>
-        </member>
-        <member name="M:NMeCab.MeCabIpaDicTagger.CreateNewNode">
-            <summary>
-            形態素ノードインスタンス生成メソッドです。（内部用）
-            </summary>
-            <returns>形態素ノード</returns>
         </member>
         <member name="T:NMeCab.MeCabLattice`1">
             <summary>
@@ -334,11 +333,6 @@
         <member name="F:NMeCab.MeCabLattice`1.nodeAllocator">
             <summary>
             形態素ノード生成デリゲート
-            </summary>
-        </member>
-        <member name="F:NMeCab.MeCabLattice`1.nextNodeId">
-            <summary>
-            次の形態素ノードのID
             </summary>
         </member>
         <member name="P:NMeCab.MeCabLattice`1.Param">
@@ -380,15 +374,9 @@
             <summary>
             コンストラクタ
             </summary>
-            <param name="nodeAllocator"></param>
-            <param name="param"></param>
-            <param name="length"></param>
-        </member>
-        <member name="M:NMeCab.MeCabLattice`1.CreateNewNode">
-            <summary>
-            新しい形態素ノードを作成します。
-            </summary>
-            <returns></returns>
+            <param name="nodeAllocator">形態素ノード生成関数</param>
+            <param name="param">形態素解析処理のパラメータ</param>
+            <param name="length">解析対象の文字列の長さ</param>
         </member>
         <member name="M:NMeCab.MeCabLattice`1.GetBestNodes">
             <summary>
@@ -617,6 +605,11 @@
             ソフト分かち書きの温度パラメータ
             </summary>
         </member>
+        <member name="F:NMeCab.MeCabParam.DefaltMaxGroupingSize">
+            <summary>
+            未知語の文字数の最大値の初期値
+            </summary>
+        </member>
         <member name="P:NMeCab.MeCabParam.MaxGroupingSize">
             <summary>
             未知語の文字数の最大値
@@ -674,6 +667,11 @@
             コンストラクタ（非公開）
             </summary>
         </member>
+        <member name="P:NMeCab.MeCabTagger.DefaltDicDir">
+            <summary>
+            使用する辞書ディレクトリ名の初期値
+            </summary>
+        </member>
         <member name="M:NMeCab.MeCabTagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -682,32 +680,32 @@
             <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
             <returns>形態素解析処理の起点</returns>
         </member>
-        <member name="M:NMeCab.MeCabTagger.CreateNewNode">
-            <summary>
-            形態素ノードインスタンス生成メソッドです。
-            </summary>
-            <returns>形態素ノード</returns>
-        </member>
         <member name="T:NMeCab.MeCabTaggerBase`1">
             <summary>
             形態素解析処理の起点を表す抽象基底クラスです。
             </summary>
             <typeparam name="TNode">形態素ノードの型</typeparam>
         </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.CreateNewNode">
+        <member name="F:NMeCab.MeCabTaggerBase`1.nodeAllocator">
             <summary>
-            形態素ノードインスタンス生成メソッドです。（内部用）
+            形態素ノードインスタンス生成関数です。
             </summary>
             <returns>形態素ノード</returns>
         </member>
-        <member name="M:NMeCab.MeCabTaggerBase`1.Create``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Func{``0})">
+        <member name="P:NMeCab.MeCabTaggerBase`1.DefaltDicDir">
+            <summary>
+            使用する辞書のディレクトリへのパスの初期値です。
+            </summary>
+        </member>
+        <member name="M:NMeCab.MeCabTaggerBase`1.Create``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Func{``0},System.Func{`0})">
             <summary>
             形態素解析処理の起点を作成します。
             </summary>
             <typeparam name="TTagger">作成する形態素解析処理の起点の具象型</typeparam>
             <param name="dicDir">使用する辞書のディレクトリへのパス</param>
             <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
-            <param name="allocator">Taggetインスタンス生成メソッド</param>
+            <param name="taggerAllocator">Taggetインスタンス生成メソッド</param>
+            <param name="nodeAllocator">Nodeインスタンス生成メソッド</param>
             <returns>形態素解析処理の起点</returns>
         </member>
         <member name="M:NMeCab.MeCabTaggerBase`1.Parse(System.String)">
@@ -936,6 +934,11 @@
             コンストラクタ（非公開）
             </summary>
         </member>
+        <member name="P:NMeCab.MeCabUniDic21Tagger.DefaltDicDir">
+            <summary>
+            使用する辞書ディレクトリ名の初期値
+            </summary>
+        </member>
         <member name="M:NMeCab.MeCabUniDic21Tagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -943,12 +946,6 @@
             <param name="dicDir">使用する辞書のディレクトリへのパス</param>
             <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
             <returns>形態素解析処理の起点</returns>
-        </member>
-        <member name="M:NMeCab.MeCabUniDic21Tagger.CreateNewNode">
-            <summary>
-            形態素ノードインスタンス生成メソッドです。（内部用）
-            </summary>
-            <returns>形態素ノード</returns>
         </member>
         <member name="T:NMeCab.MeCabUniDic22Node">
             <summary>
@@ -1116,6 +1113,11 @@
             コンストラクタ（非公開）
             </summary>
         </member>
+        <member name="P:NMeCab.MeCabUniDic22Tagger.DefaltDicDir">
+            <summary>
+            使用する辞書ディレクトリ名の初期値
+            </summary>
+        </member>
         <member name="M:NMeCab.MeCabUniDic22Tagger.Create(System.String,System.String[])">
             <summary>
             形態素解析処理の起点を作成します。
@@ -1123,12 +1125,6 @@
             <param name="dicDir">使用する辞書のディレクトリへのパス</param>
             <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
             <returns>形態素解析処理の起点</returns>
-        </member>
-        <member name="M:NMeCab.MeCabUniDic22Tagger.CreateNewNode">
-            <summary>
-            形態素ノードインスタンス生成メソッドです。（内部用）
-            </summary>
-            <returns>形態素ノード</returns>
         </member>
     </members>
 </doc>

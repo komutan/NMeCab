@@ -4,7 +4,6 @@
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace NMeCab.Core
 {

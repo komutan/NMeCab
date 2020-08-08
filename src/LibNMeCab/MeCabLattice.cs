@@ -5,7 +5,6 @@
 using NMeCab.Core;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace NMeCab
 {
@@ -19,12 +18,7 @@ namespace NMeCab
         /// <summary>
         /// 形態素ノード生成デリゲート
         /// </summary>
-        private readonly Func<TNode> nodeAllocator;
-
-        /// <summary>
-        /// 次の形態素ノードのID
-        /// </summary>
-        private uint nextNodeId = 0u;
+        internal readonly Func<TNode> nodeAllocator;
 
         /// <summary>
         /// 解析パラメータ
@@ -64,39 +58,34 @@ namespace NMeCab
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        /// <param name="nodeAllocator"></param>
-        /// <param name="param"></param>
-        /// <param name="length"></param>
+        /// <param name="nodeAllocator">形態素ノード生成関数</param>
+        /// <param name="param">形態素解析処理のパラメータ</param>
+        /// <param name="length">解析対象の文字列の長さ</param>
         internal MeCabLattice(Func<TNode> nodeAllocator, MeCabParam param, int length)
         {
-            this.nodeAllocator = nodeAllocator;
+            uint nextNodeId = 0;
+            this.nodeAllocator = () =>
+            {
+                var newNode = nodeAllocator();
+                newNode.Id = nextNodeId++;
+                return newNode;
+            };
+
             this.Param = param;
             this.BeginNodeList = new TNode[length + 1];
             this.EndNodeList = new TNode[length + 1];
 
-            var bosNode = CreateNewNode();
+            var bosNode = this.nodeAllocator();
             bosNode.IsBest = true;
             bosNode.Stat = MeCabNodeStat.Bos;
             this.EndNodeList[0] = bosNode;
             this.BosNode = bosNode;
 
-            var eosNode = CreateNewNode();
+            var eosNode = this.nodeAllocator();
             eosNode.IsBest = true;
             eosNode.Stat = MeCabNodeStat.Eos;
             this.BeginNodeList[length] = eosNode;
             this.EosNode = eosNode;
-        }
-
-        /// <summary>
-        /// 新しい形態素ノードを作成します。
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal TNode CreateNewNode()
-        {
-            var newNode = this.nodeAllocator();
-            newNode.Id = this.nextNodeId++;
-            return newNode;
         }
 
         /// <summary>

@@ -6,7 +6,6 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 #if MMF_MTX
-using System.IO.MemoryMappedFiles;
 #endif
 
 namespace NMeCab.Core

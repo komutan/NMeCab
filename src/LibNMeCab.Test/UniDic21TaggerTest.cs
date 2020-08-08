@@ -2,7 +2,7 @@
 using System;
 using Xunit;
 
-namespace LibNMeCabTest
+namespace LibNMeCab.Test
 {
     public class UniDic21TaggerTest
     {

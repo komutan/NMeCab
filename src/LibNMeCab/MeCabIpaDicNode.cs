@@ -1,6 +1,4 @@
-﻿using NMeCab.Core;
-
-namespace NMeCab
+﻿namespace NMeCab
 {
     /// <summary>
     /// IPA形式の辞書を使用する場合の形態素ノードです。

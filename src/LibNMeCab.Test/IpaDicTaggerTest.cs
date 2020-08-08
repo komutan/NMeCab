@@ -1,7 +1,7 @@
 ﻿using NMeCab;
 using Xunit;
 
-namespace LibNMeCabTest
+namespace LibNMeCab.Test
 {
     public class IpaDicTaggerTest
     {
