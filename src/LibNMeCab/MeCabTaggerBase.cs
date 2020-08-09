@@ -20,10 +20,6 @@ namespace NMeCab
     {
         private readonly Viterbi<TNode> viterbi = new Viterbi<TNode>();
 
-        /// <summary>
-        /// 形態素ノードインスタンス生成関数です。
-        /// </summary>
-        /// <returns>形態素ノード</returns>
         private Func<TNode> nodeAllocator;
 
         #region Static Create
