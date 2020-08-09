@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibNMeCab" Version="0.10.0-RC1" />
+    <PackageReference Include="LibNMeCab" Version="0.10.0-RC2" />
   </ItemGroup>
 
 </Project>
