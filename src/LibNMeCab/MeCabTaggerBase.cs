@@ -42,10 +42,6 @@ namespace NMeCab
                                                  string defaultDicDirName)
             where TTagger : MeCabTaggerBase<TNode>
         {
-            Debug.Assert(taggerAllocator != null);
-            Debug.Assert(nodeAllocator != null);
-            Debug.Assert(defaultDicDirName != null);
-
             TTagger tagger = null;
             try
             {
