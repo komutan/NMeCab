@@ -179,7 +179,7 @@ namespace NMeCab
         }
 
         /// <summary>
-        /// 素性情報から指定したインテックスの要素を取得
+        /// 素性情報から指定したインデックスの要素を取得
         /// </summary>
         /// <param name="index">要素のインデックス</param>
         /// <returns>素性情報の要素</returns>
@@ -188,9 +188,10 @@ namespace NMeCab
             if (this.features == null)
             {
                 var featureCsv = this.Feature;
-                if (featureCsv == null) return string.Empty;
-
-                this.features = StrUtils.SplitCsvRow(featureCsv, 32, 16);
+                if (featureCsv == null)
+                    this.features = new string[0];
+                else
+                    this.features = StrUtils.SplitCsvRow(featureCsv, 32, 16);
             }
 
             if (index >= this.features.Length) return string.Empty;
