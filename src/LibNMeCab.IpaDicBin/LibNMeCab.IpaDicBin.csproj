@@ -12,7 +12,7 @@
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
     <PackageIcon>NMeCab-icon-100.png</PackageIcon>
-    <Version>0.10.0-RC1</Version>
+    <Version>0.10.0-RC2</Version>
     <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
   </PropertyGroup>
 

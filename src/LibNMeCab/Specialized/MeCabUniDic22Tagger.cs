@@ -1,14 +1,14 @@
-﻿namespace NMeCab
+﻿namespace NMeCab.Specialized
 {
     /// <summary>
-    /// IPA形式の辞書を使用する場合の形態素解析処理の起点を表します。
+    /// UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素解析処理の起点を表します。
     /// </summary>
-    public class MeCabIpaDicTagger : MeCabTaggerBase<MeCabIpaDicNode>
+    public class MeCabUniDic22Tagger : MeCabTaggerBase<MeCabUniDic22Node>
     {
         /// <summary>
         /// コンストラクタ（非公開）
         /// </summary>
-        private MeCabIpaDicTagger()
+        private MeCabUniDic22Tagger()
         { }
 
         /// <summary>
@@ -17,14 +17,14 @@
         /// <param name="dicDir">使用する辞書のディレクトリへのパス</param>
         /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
         /// <returns>形態素解析処理の起点</returns>
-        public static MeCabIpaDicTagger Create(string dicDir = null,
-                                               string[] userDics = null)
+        public static MeCabUniDic22Tagger Create(string dicDir = null,
+                                                 string[] userDics = null)
         {
             return Create(dicDir,
                           userDics,
-                          () => new MeCabIpaDicTagger(),
-                          () => new MeCabIpaDicNode(),
-                          "IpaDic");
+                          () => new MeCabUniDic22Tagger(),
+                          () => new MeCabUniDic22Node(),
+                          "UniDic");
         }
     }
 }

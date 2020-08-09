@@ -250,75 +250,6 @@
             未定義
             </summary>
         </member>
-        <member name="T:NMeCab.MeCabIpaDicNode">
-            <summary>
-            IPA形式の辞書を使用する場合の形態素ノードです。
-            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeech">
-            <summary>
-            品詞
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeechSection1">
-            <summary>
-            品詞細分類1
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeechSection2">
-            <summary>
-            品詞細分類2
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.PartsOfSpeechSection3">
-            <summary>
-            品詞細分類3
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.ConjugatedForm">
-            <summary>
-            活用形
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.Inflection">
-            <summary>
-            活用型
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.OriginalForm">
-            <summary>
-            原形
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.Reading">
-            <summary>
-            読み
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabIpaDicNode.Pronounciation">
-            <summary>
-            発音
-            </summary>
-        </member>
-        <member name="T:NMeCab.MeCabIpaDicTagger">
-            <summary>
-            IPA形式の辞書を使用する場合の形態素解析処理の起点を表します。
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabIpaDicTagger.#ctor">
-            <summary>
-            コンストラクタ（非公開）
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabIpaDicTagger.Create(System.String,System.String[])">
-            <summary>
-            形態素解析処理の起点を作成します。
-            </summary>
-            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
-            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
-            <returns>形態素解析処理の起点</returns>
-        </member>
         <member name="T:NMeCab.MeCabLattice`1">
             <summary>
             形態素解析中の情報の集合を表します。
@@ -774,334 +705,6 @@
             デストラクタ
             </summary>
         </member>
-        <member name="T:NMeCab.MeCabUniDic21Node">
-            <summary>
-            UniDic（ver2.1.0以後）形式の辞書を使用する場合の形態素ノードです。
-            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Pos1">
-            <summary>
-            品詞大分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Pos2">
-            <summary>
-            品詞中分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Pos3">
-            <summary>
-            品詞小分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Pos4">
-            <summary>
-            品詞細分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.CType">
-            <summary>
-            活用型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.CForm">
-            <summary>
-            活用形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.LForm">
-            <summary>
-            語彙素読みを取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Lemma">
-            <summary>
-            語彙素（語彙素表記+ 語彙素細分類）を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Orth">
-            <summary>
-            書字形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Pron">
-            <summary>
-            発音形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.OrthBase">
-            <summary>
-            書字形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.PronBase">
-            <summary>
-            発音形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Goshu">
-            <summary>
-            語種を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.IType">
-            <summary>
-            語頭変化型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.IForm">
-            <summary>
-            語頭変化形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.FType">
-            <summary>
-            語末変化型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.FForm">
-            <summary>
-            語末変化形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Kana">
-            <summary>
-            仮名形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.KanaBase">
-            <summary>
-            仮名形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.Form">
-            <summary>
-            語形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.FormBase">
-            <summary>
-            語形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.IConType">
-            <summary>
-            語頭変化結合形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.FConType">
-            <summary>
-            語末変化結合形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.AType">
-            <summary>
-            アクセント型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.AConType">
-            <summary>
-            アクセント結合型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic21Node.AModType">
-            <summary>
-            アクセント修飾型を取得
-            </summary>
-        </member>
-        <member name="T:NMeCab.MeCabUniDic21Tagger">
-            <summary>
-            UniDic（ver2.1.0以後）形式の辞書を使用する場合の形態素解析処理の起点を表します。
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabUniDic21Tagger.#ctor">
-            <summary>
-            コンストラクタ（非公開）
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabUniDic21Tagger.Create(System.String,System.String[])">
-            <summary>
-            形態素解析処理の起点を作成します。
-            </summary>
-            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
-            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
-            <returns>形態素解析処理の起点</returns>
-        </member>
-        <member name="T:NMeCab.MeCabUniDic22Node">
-            <summary>
-            UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素ノードです。
-            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Pos1">
-            <summary>
-            品詞大分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Pos2">
-            <summary>
-            品詞中分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Pos3">
-            <summary>
-            品詞小分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Pos4">
-            <summary>
-            品詞細分類を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.CType">
-            <summary>
-            活用型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.CForm">
-            <summary>
-            活用形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.LForm">
-            <summary>
-            語彙素読みを取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Lemma">
-            <summary>
-            語彙素（語彙素表記＋語彙素細分類）を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Orth">
-            <summary>
-            書字形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Pron">
-            <summary>
-            発音形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.OrthBase">
-            <summary>
-            書字形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.PronBase">
-            <summary>
-            発音形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Goshu">
-            <summary>
-            語種を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.IType">
-            <summary>
-            語頭変化型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.IForm">
-            <summary>
-            語頭変化形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.FType">
-            <summary>
-            語末変化型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.FForm">
-            <summary>
-            語末変化形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.IConType">
-            <summary>
-            語頭変化結合形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.FConType">
-            <summary>
-            語末変化結合形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.LType">
-            <summary>
-            語彙素類を取得
-            </summary>
-            <remarks>
-            この項目の「英語」の名前は、
-            UniDic 2.2.0 や 2.3.0 の配布物に含まれる dicrc ファイルでは「type」となっているが、
-            UniDic の FAQ (https://unidic.ninjal.ac.jp/faq#col_name) には「lType」と記載されている。
-            </remarks>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Kana">
-            <summary>
-            仮名形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.KanaBase">
-            <summary>
-            仮名形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.Form">
-            <summary>
-            語形出現形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.FormBase">
-            <summary>
-            語形基本形を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.AType">
-            <summary>
-            アクセント型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.AConType">
-            <summary>
-            アクセント結合型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.AModType">
-            <summary>
-            アクセント修飾型を取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.LId">
-            <summary>
-            語彙表IDを取得
-            </summary>
-        </member>
-        <member name="P:NMeCab.MeCabUniDic22Node.LemmaId">
-            <summary>
-            語彙素IDを取得
-            </summary>
-        </member>
-        <member name="T:NMeCab.MeCabUniDic22Tagger">
-            <summary>
-            UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素解析処理の起点を表します。
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabUniDic22Tagger.#ctor">
-            <summary>
-            コンストラクタ（非公開）
-            </summary>
-        </member>
-        <member name="M:NMeCab.MeCabUniDic22Tagger.Create(System.String,System.String[])">
-            <summary>
-            形態素解析処理の起点を作成します。
-            </summary>
-            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
-            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
-            <returns>形態素解析処理の起点</returns>
-        </member>
         <member name="T:NMeCab.NBestGenerator`1">
             <summary>
             確からしい順に形態素列を取得する列挙子を公開します。
@@ -1119,6 +722,403 @@
             形態素列の列挙子を返します。
             </summary>
             <returns>形態素列の列挙子</returns>
+        </member>
+        <member name="T:NMeCab.Specialized.MeCabIpaDicNode">
+            <summary>
+            IPA形式の辞書を使用する場合の形態素ノードです。
+            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.PartsOfSpeech">
+            <summary>
+            品詞
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.PartsOfSpeechSection1">
+            <summary>
+            品詞細分類1
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.PartsOfSpeechSection2">
+            <summary>
+            品詞細分類2
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.PartsOfSpeechSection3">
+            <summary>
+            品詞細分類3
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.ConjugatedForm">
+            <summary>
+            活用形
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.Inflection">
+            <summary>
+            活用型
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.OriginalForm">
+            <summary>
+            原形
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.Reading">
+            <summary>
+            読み
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabIpaDicNode.Pronounciation">
+            <summary>
+            発音
+            </summary>
+        </member>
+        <member name="T:NMeCab.Specialized.MeCabIpaDicTagger">
+            <summary>
+            IPA形式の辞書を使用する場合の形態素解析処理の起点を表します。
+            </summary>
+        </member>
+        <member name="M:NMeCab.Specialized.MeCabIpaDicTagger.#ctor">
+            <summary>
+            コンストラクタ（非公開）
+            </summary>
+        </member>
+        <member name="M:NMeCab.Specialized.MeCabIpaDicTagger.Create(System.String,System.String[])">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <returns>形態素解析処理の起点</returns>
+        </member>
+        <member name="T:NMeCab.Specialized.MeCabUniDic21Node">
+            <summary>
+            UniDic（ver2.1.0以後）形式の辞書を使用する場合の形態素ノードです。
+            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos1">
+            <summary>
+            品詞大分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos2">
+            <summary>
+            品詞中分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos3">
+            <summary>
+            品詞小分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos4">
+            <summary>
+            品詞細分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.CType">
+            <summary>
+            活用型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.CForm">
+            <summary>
+            活用形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.LForm">
+            <summary>
+            語彙素読みを取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Lemma">
+            <summary>
+            語彙素（語彙素表記+ 語彙素細分類）を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Orth">
+            <summary>
+            書字形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pron">
+            <summary>
+            発音形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.OrthBase">
+            <summary>
+            書字形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.PronBase">
+            <summary>
+            発音形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Goshu">
+            <summary>
+            語種を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.IType">
+            <summary>
+            語頭変化型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.IForm">
+            <summary>
+            語頭変化形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FType">
+            <summary>
+            語末変化型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FForm">
+            <summary>
+            語末変化形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Kana">
+            <summary>
+            仮名形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.KanaBase">
+            <summary>
+            仮名形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Form">
+            <summary>
+            語形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FormBase">
+            <summary>
+            語形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.IConType">
+            <summary>
+            語頭変化結合形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FConType">
+            <summary>
+            語末変化結合形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.AType">
+            <summary>
+            アクセント型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.AConType">
+            <summary>
+            アクセント結合型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic21Node.AModType">
+            <summary>
+            アクセント修飾型を取得
+            </summary>
+        </member>
+        <member name="T:NMeCab.Specialized.MeCabUniDic21Tagger">
+            <summary>
+            UniDic（ver2.1.0以後）形式の辞書を使用する場合の形態素解析処理の起点を表します。
+            </summary>
+        </member>
+        <member name="M:NMeCab.Specialized.MeCabUniDic21Tagger.#ctor">
+            <summary>
+            コンストラクタ（非公開）
+            </summary>
+        </member>
+        <member name="M:NMeCab.Specialized.MeCabUniDic21Tagger.Create(System.String,System.String[])">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <returns>形態素解析処理の起点</returns>
+        </member>
+        <member name="T:NMeCab.Specialized.MeCabUniDic22Node">
+            <summary>
+            UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素ノードです。
+            素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos1">
+            <summary>
+            品詞大分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos2">
+            <summary>
+            品詞中分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos3">
+            <summary>
+            品詞小分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos4">
+            <summary>
+            品詞細分類を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.CType">
+            <summary>
+            活用型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.CForm">
+            <summary>
+            活用形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LForm">
+            <summary>
+            語彙素読みを取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Lemma">
+            <summary>
+            語彙素（語彙素表記＋語彙素細分類）を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Orth">
+            <summary>
+            書字形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pron">
+            <summary>
+            発音形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.OrthBase">
+            <summary>
+            書字形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.PronBase">
+            <summary>
+            発音形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Goshu">
+            <summary>
+            語種を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.IType">
+            <summary>
+            語頭変化型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.IForm">
+            <summary>
+            語頭変化形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FType">
+            <summary>
+            語末変化型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FForm">
+            <summary>
+            語末変化形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.IConType">
+            <summary>
+            語頭変化結合形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FConType">
+            <summary>
+            語末変化結合形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LType">
+            <summary>
+            語彙素類を取得
+            </summary>
+            <remarks>
+            この項目の「英語」の名前は、
+            UniDic 2.2.0 や 2.3.0 の配布物に含まれる dicrc ファイルでは「type」となっているが、
+            UniDic の FAQ (https://unidic.ninjal.ac.jp/faq#col_name) には「lType」と記載されている。
+            </remarks>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Kana">
+            <summary>
+            仮名形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.KanaBase">
+            <summary>
+            仮名形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Form">
+            <summary>
+            語形出現形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FormBase">
+            <summary>
+            語形基本形を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.AType">
+            <summary>
+            アクセント型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.AConType">
+            <summary>
+            アクセント結合型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.AModType">
+            <summary>
+            アクセント修飾型を取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LId">
+            <summary>
+            語彙表IDを取得
+            </summary>
+        </member>
+        <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LemmaId">
+            <summary>
+            語彙素IDを取得
+            </summary>
+        </member>
+        <member name="T:NMeCab.Specialized.MeCabUniDic22Tagger">
+            <summary>
+            UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素解析処理の起点を表します。
+            </summary>
+        </member>
+        <member name="M:NMeCab.Specialized.MeCabUniDic22Tagger.#ctor">
+            <summary>
+            コンストラクタ（非公開）
+            </summary>
+        </member>
+        <member name="M:NMeCab.Specialized.MeCabUniDic22Tagger.Create(System.String,System.String[])">
+            <summary>
+            形態素解析処理の起点を作成します。
+            </summary>
+            <param name="dicDir">使用する辞書のディレクトリへのパス</param>
+            <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
+            <returns>形態素解析処理の起点</returns>
         </member>
     </members>
 </doc>

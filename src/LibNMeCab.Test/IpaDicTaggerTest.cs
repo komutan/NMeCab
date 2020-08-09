@@ -1,4 +1,4 @@
-﻿using NMeCab;
+﻿using NMeCab.Specialized;
 using Xunit;
 
 namespace LibNMeCab.Test

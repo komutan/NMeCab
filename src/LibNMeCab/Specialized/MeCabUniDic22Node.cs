@@ -1,10 +1,10 @@
-﻿namespace NMeCab
+﻿namespace NMeCab.Specialized
 {
     /// <summary>
-    /// UniDic（ver2.1.0以後）形式の辞書を使用する場合の形態素ノードです。
+    /// UniDic（ver2.2.0以後）形式の辞書を使用する場合の形態素ノードです。
     /// 素性情報CSVを分解して各項目の情報を取得するプロパティも備えています。
     /// </summary>
-    public class MeCabUniDic21Node : MeCabNodeBase<MeCabUniDic21Node>
+    public class MeCabUniDic22Node : MeCabNodeBase<MeCabUniDic22Node>
     {
         /// <summary>
         /// 品詞大分類を取得
@@ -63,7 +63,7 @@
         }
 
         /// <summary>
-        /// 語彙素（語彙素表記+ 語彙素細分類）を取得
+        /// 語彙素（語彙素表記＋語彙素細分類）を取得
         /// </summary>
         public string Lemma
         {
@@ -143,43 +143,11 @@
         }
 
         /// <summary>
-        /// 仮名形出現形を取得
-        /// </summary>
-        public string Kana
-        {
-            get { return this.GetFeatureAt(17); }
-        }
-
-        /// <summary>
-        /// 仮名形基本形を取得
-        /// </summary>
-        public string KanaBase
-        {
-            get { return this.GetFeatureAt(18); }
-        }
-
-        /// <summary>
-        /// 語形出現形を取得
-        /// </summary>
-        public string Form
-        {
-            get { return this.GetFeatureAt(19); }
-        }
-
-        /// <summary>
-        /// 語形基本形を取得
-        /// </summary>
-        public string FormBase
-        {
-            get { return this.GetFeatureAt(20); }
-        }
-
-        /// <summary>
         /// 語頭変化結合形を取得
         /// </summary>
         public string IConType
         {
-            get { return this.GetFeatureAt(21); }
+            get { return this.GetFeatureAt(17); }
         }
 
         /// <summary>
@@ -187,7 +155,52 @@
         /// </summary>
         public string FConType
         {
+            get { return this.GetFeatureAt(18); }
+        }
+
+        /// <summary>
+        /// 語彙素類を取得
+        /// </summary>
+        /// <remarks>
+        /// この項目の「英語」の名前は、
+        /// UniDic 2.2.0 や 2.3.0 の配布物に含まれる dicrc ファイルでは「type」となっているが、
+        /// UniDic の FAQ (https://unidic.ninjal.ac.jp/faq#col_name) には「lType」と記載されている。
+        /// </remarks>
+        public string LType
+        {
+            get { return this.GetFeatureAt(19); }
+        }
+
+        /// <summary>
+        /// 仮名形出現形を取得
+        /// </summary>
+        public string Kana
+        {
+            get { return this.GetFeatureAt(20); }
+        }
+
+        /// <summary>
+        /// 仮名形基本形を取得
+        /// </summary>
+        public string KanaBase
+        {
+            get { return this.GetFeatureAt(21); }
+        }
+
+        /// <summary>
+        /// 語形出現形を取得
+        /// </summary>
+        public string Form
+        {
             get { return this.GetFeatureAt(22); }
+        }
+
+        /// <summary>
+        /// 語形基本形を取得
+        /// </summary>
+        public string FormBase
+        {
+            get { return this.GetFeatureAt(23); }
         }
 
         /// <summary>
@@ -195,7 +208,7 @@
         /// </summary>
         public string AType
         {
-            get { return this.GetFeatureAt(23); }
+            get { return this.GetFeatureAt(24); }
         }
 
         /// <summary>
@@ -203,7 +216,7 @@
         /// </summary>
         public string AConType
         {
-            get { return this.GetFeatureAt(24); }
+            get { return this.GetFeatureAt(25); }
         }
 
         /// <summary>
@@ -211,7 +224,23 @@
         /// </summary>
         public string AModType
         {
-            get { return this.GetFeatureAt(25); }
+            get { return this.GetFeatureAt(26); }
+        }
+
+        /// <summary>
+        /// 語彙表IDを取得
+        /// </summary>
+        public string LId
+        {
+            get { return this.GetFeatureAt(27); }
+        }
+
+        /// <summary>
+        /// 語彙素IDを取得
+        /// </summary>
+        public string LemmaId
+        {
+            get { return this.GetFeatureAt(28); }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using NMeCab;
+using NMeCab.Specialized;
 using System;
 using System.Linq;
 
@@ -12,6 +13,7 @@ class Program
         Program.UseNBest();
         Program.UseSoftWakachi();
         Program.UseLattice();
+
         Console.Read();
     }
 
@@ -40,7 +42,7 @@ class Program
         Console.WriteLine("Example of using user prepared dictionaly 1 (for general dic) :");
         Console.WriteLine();
 
-        var dicDir = "../../../../dic/ipadic"; // 辞書のパス
+        var dicDir = "../../../../../dic/ipadic"; // 辞書のパス
 
         using (var tagger = MeCabTagger.Create(dicDir)) // 汎用のTaggerインスタンスを生成
         {
@@ -60,7 +62,7 @@ class Program
         Console.WriteLine("Example of using user prepared dictionaly 2 (for IPAdic) :");
         Console.WriteLine();
 
-        var dicDir = "../../../../dic/ipadic"; // 辞書のパス
+        var dicDir = "../../../../../dic/ipadic"; // 辞書のパス
 
         using (var tagger = MeCabIpaDicTagger.Create(dicDir)) // IPAdic形式用のTaggerインスタンスを生成
         {

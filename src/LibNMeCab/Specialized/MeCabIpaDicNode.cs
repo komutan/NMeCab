@@ -1,4 +1,4 @@
-﻿namespace NMeCab
+﻿namespace NMeCab.Specialized
 {
     /// <summary>
     /// IPA形式の辞書を使用する場合の形態素ノードです。

@@ -1,4 +1,4 @@
-﻿using NMeCab;
+﻿using NMeCab.Specialized;
 using System;
 using Xunit;
 
