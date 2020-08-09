@@ -47,8 +47,8 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 
 | ID | 説明 | Status |
 | --- | --- | --- |
-| [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ | ![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg) |
-| [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ | ![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg) |
+| [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) |
+| [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) |
 
 辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
 
