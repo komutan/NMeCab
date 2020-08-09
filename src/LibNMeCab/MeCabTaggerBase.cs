@@ -51,9 +51,7 @@ namespace NMeCab
             {
                 tagger = taggerAllocator();
                 tagger.nodeAllocator = nodeAllocator;
-                var dicDir2 = dicDir ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultDicDirName);
-                var userDics2 = ToNullTrimedArray(userDics);
-                tagger.viterbi.Open(dicDir2, userDics2);
+                tagger.viterbi.Open(GetTrimedDicDir(), GetTirmedUserDics());
                 return tagger;
             }
             catch (Exception)
@@ -62,16 +60,21 @@ namespace NMeCab
                 throw;
             }
 
-            string[] ToNullTrimedArray(IEnumerable<string> target)
+            string GetTrimedDicDir()
             {
-                if (target == null)
+                return dicDir ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultDicDirName);
+            }
+
+            string[] GetTirmedUserDics()
+            {
+                if (userDics == null)
                     return Array.Empty<string>();
-                else if (target is string[] ary)
+                else if (userDics is string[] ary)
                     return ary;
-                else if (target is List<string> list)
+                else if (userDics is List<string> list)
                     return list.ToArray();
                 else
-                    return (new List<string>(target)).ToArray();
+                    return (new List<string>(userDics)).ToArray();
             }
         }
 
