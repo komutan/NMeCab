@@ -475,7 +475,7 @@
         </member>
         <member name="M:NMeCab.MeCabNodeBase`1.GetFeatureAt(System.Int32)">
             <summary>
-            素性情報から指定したインテックスの要素を取得
+            素性情報から指定したインデックスの要素を取得
             </summary>
             <param name="index">要素のインデックス</param>
             <returns>素性情報の要素</returns>
@@ -606,12 +606,6 @@
             形態素解析処理の起点を表す抽象基底クラスです。
             </summary>
             <typeparam name="TNode">形態素ノードの型</typeparam>
-        </member>
-        <member name="F:NMeCab.MeCabTaggerBase`1.nodeAllocator">
-            <summary>
-            形態素ノードインスタンス生成関数です。
-            </summary>
-            <returns>形態素ノード</returns>
         </member>
         <member name="M:NMeCab.MeCabTaggerBase`1.Create``1(System.String,System.Collections.Generic.IEnumerable{System.String},System.Func{``0},System.Func{`0},System.String)">
             <summary>
