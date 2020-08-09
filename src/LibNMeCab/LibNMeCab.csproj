@@ -12,7 +12,7 @@
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
     <PackageIcon>NMeCab-icon-100.png</PackageIcon>
-    <Version>0.10.0</Version>
+    <Version>0.10.0-RC2</Version>
     <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
   </PropertyGroup>
 
