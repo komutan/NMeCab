@@ -20,8 +20,11 @@
         - [ソフトわかち書き](#ソフトわかち書き)
         - [ラティス出力](#ラティス出力)
         - [新しい素性フォーマットへの対応](#新しい素性フォーマットへの対応)
+            - [MeCabNode](#mecabnode)
+            - [MeCabTagger](#mecabtagger)
+            - [使う！](#使う)
     - [謝辞](#謝辞)
-    - [スター!](#スター)
+    - [スター！](#スター)
 
 <!-- /TOC -->
 
@@ -42,10 +45,10 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 
 ## NuGet
 
-| NuGet ID / Status | 説明 |
-| --- | --- |
-| [LibNMeCab ![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ |
-| [LibNMeCab.IpaDicBin ![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ |
+| ID | 説明 | Status |
+| --- | --- | --- |
+| [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | NMeCabライブラリ単体パッケージ | ![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg) |
+| [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | IPA辞書パッケージ | ![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg) |
 
 辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
 
@@ -457,8 +460,11 @@ class Program
 
 ### 新しい素性フォーマットへの対応
 
-ポリモーフィズムを知る方ならすぐに想像される通りだと思いますが、 `MeCabNodeBase` 、 `MeCabTaggerBase` を継承させた独自のクラスをコーディングすることになります。
+ポリモーフィズムを知る方ならすぐに想像される通りです。
+`MeCabNodeBase` 、 `MeCabTaggerBase` を継承させた独自のクラスをコーディングしてください。
 ただし、キャスト処理を無くしたり、実行パフォーマンスを向上させる目的から、少し変わって見えるかもしれないコードが必要となりますので、以下を参考にしてください。
+
+#### MeCabNode
 
 `MeCabNodeBase` を継承した形態素ノードクラスに、素性フォーマットに合わせた独自のプロパティをコーディングしてください。
 それぞれのプロパティ内で、素性情報の任意の列の値を `GetFeatureAt(1)` のようにインデックス番号を指定して取得します。
@@ -492,7 +498,10 @@ namespace MyApp
 }
 ```
 
-`MeCabTaggerBase` を継承したTaggerクラスは、定型的なコードとなります。
+#### MeCabTagger
+
+`MeCabTaggerBase` を継承したTaggerクラスをコーディングします。
+これは定型的なコードとなります。
 下記をコピーして「MyApp」「MyDic」の部分を書き換えるだけでOKです。
 
 ```csharp
@@ -530,6 +539,8 @@ namespace MyApp
 }
 ```
 
+#### 使う！
+
 上の2クラスができたら、作成したTaggerクラスのCreateメソッドを呼び出して使用できます。
 
 ```csharp
@@ -560,7 +571,7 @@ class Program
 Kouji Matsui ( ＠kekyo ) 氏の素晴らしい情報とコードの公開に感謝いたします。
 LibNMeCab.IpaDicBin に使用している辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo 氏のオープンソースをほぼそのまま使用させて頂いたものです。
 
-## スター!
+## スター！
 
 スターを頂ければ励みになりますので、よろしくお願いいたします。
 
