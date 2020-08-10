@@ -2,7 +2,12 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+
+#pragma warning disable CS1591
+
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace NMeCab.Core
@@ -19,6 +24,7 @@ namespace NMeCab.Core
 
         #region Open/Clear
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Open(string dicDir, string[] userDics)
         {
             this.tokenizer.Open(dicDir, userDics);
@@ -42,30 +48,41 @@ namespace NMeCab.Core
                     break;
                 case MeCabLatticeLevel.Two:
                     this.DoViterbi(str, len, lattice, true);
-                    this.ForwardBackward(lattice);
+                    ForwardBackward(lattice);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(lattice.Param.LatticeLevel));
             }
 
-            this.BuildBestLattice(lattice);
+            BuildBestLattice(lattice.BosNode, lattice.EosNode, lattice.BestResultStack);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe void DoViterbi(char* str, int len, MeCabLattice<TNode> lattice, bool withAllPath)
         {
-            var begin = str;
-            var end = str + len;
+            var enc = this.tokenizer.Encoding;
+            int bytesLen = enc.GetByteCount(str, len);
+            byte* bytesBegin = stackalloc byte[bytesLen];
+            if (len > 0) enc.GetBytes(str, len, bytesBegin, bytesLen);
+            byte* bytesEnd = bytesBegin + bytesLen;
+            char* begin = str;
+            char* end = str + len;
 
             for (int pos = 0; pos < len; pos++)
             {
                 if (lattice.EndNodeList[pos] != null)
                 {
-                    var rNode = tokenizer.Lookup(begin, end, lattice);
+                    var rNode = tokenizer.Lookup(begin,
+                                                 end,
+                                                 bytesBegin,
+                                                 bytesEnd,
+                                                 lattice.Param,
+                                                 lattice.nodeAllocator);
                     lattice.BeginNodeList[pos] = rNode;
                     this.Connect(pos, rNode, lattice.EndNodeList, withAllPath);
                 }
 
+                bytesBegin += enc.GetByteCount(begin, 1);
                 begin++;
             }
 
@@ -119,7 +136,7 @@ namespace NMeCab.Core
 
                 rNode.BPos = pos;
                 rNode.EPos = pos + rNode.RLength;
-                if (rNode.RLength != 0)
+                if (rNode.Stat != MeCabNodeStat.Eos)
                 {
                     rNode.ENext = endNodeList[rNode.EPos];
                     endNodeList[rNode.EPos] = rNode;
@@ -128,7 +145,7 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void ForwardBackward(MeCabLattice<TNode> lattice)
+        private static unsafe void ForwardBackward(MeCabLattice<TNode> lattice)
         {
             for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
                 for (var node = lattice.BeginNodeList[pos]; node != null; node = node.BNext)
@@ -164,9 +181,9 @@ namespace NMeCab.Core
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void BuildBestLattice(MeCabLattice<TNode> lattice)
+        private static void BuildBestLattice(TNode bos, TNode eos, Stack<TNode> stack)
         {
-            var current = lattice.EosNode;
+            var current = eos;
             var prev = current.Prev;
 
             prev.Next = current;
@@ -177,14 +194,14 @@ namespace NMeCab.Core
             while (prev != null)
             {
                 current.IsBest = true;
-                lattice.BestResultStack.Push(current);
                 prev.Next = current;
+                stack.Push(current);
 
                 current = prev;
                 prev = current.Prev;
             }
 
-            lattice.BosNode.Next = current;
+            bos.Next = current;
         }
 
         #endregion

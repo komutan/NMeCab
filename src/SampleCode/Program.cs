@@ -1,6 +1,6 @@
 ﻿using NMeCab;
+using NMeCab.Specialized;
 using System;
-using System.ComponentModel;
 using System.Linq;
 
 class Program
@@ -13,6 +13,8 @@ class Program
         Program.UseNBest();
         Program.UseSoftWakachi();
         Program.UseLattice();
+
+        Console.Read();
     }
 
     static void UseNotBeAwareOfDictionaly()
@@ -21,7 +23,7 @@ class Program
         Console.WriteLine("Example of using not be aware of dictionary :");
         Console.WriteLine();
 
-        using (var tagger = NMeCabIpaDic.CreateTagger()) // Taggerインスタンスを生成
+        using (var tagger = MeCabIpaDicTagger.Create()) // Taggerインスタンスを生成
         {
             var nodes = tagger.Parse("皇帝の新しい心"); // 形態素解析を実行
             foreach (var node in nodes) // 形態素ノード配列を順に処理
@@ -81,7 +83,7 @@ class Program
         Console.WriteLine("Example of using N-Best :");
         Console.WriteLine();
 
-        using (var tagger = NMeCabIpaDic.CreateTagger())
+        using (var tagger = MeCabIpaDicTagger.Create())
         {
             var results = tagger.ParseNBest("東京大学"); // Nベスト解を取得
             foreach (var nodes in results.Take(5)) // 上位から5件までの解を処理
@@ -105,7 +107,7 @@ class Program
         Console.WriteLine("Example of using Soft-Wakachi :");
         Console.WriteLine();
 
-        using (var tagger = NMeCabIpaDic.CreateTagger())
+        using (var tagger = MeCabIpaDicTagger.Create())
         {
             var theta = 1f / 800f / 2f; // 温度パラメータ
             var nodes = tagger.ParseSoftWakachi("本部長", theta); // ソフトわかち解を取得
@@ -134,7 +136,7 @@ class Program
         Console.WriteLine("Example of using Lattice :");
         Console.WriteLine();
 
-        using (var tagger = NMeCabIpaDic.CreateTagger())
+        using (var tagger = MeCabIpaDicTagger.Create())
         {
             var prm = new MeCabParam()
             {

@@ -2,13 +2,13 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+
+#pragma warning disable CS1591
+
 using System;
-using System.Text;
 using System.IO;
 using System.Runtime.CompilerServices;
-#if MMF_DIC
-using System.IO.MemoryMappedFiles;
-#endif
+using System.Text;
 
 namespace NMeCab.Core
 {
@@ -20,7 +20,7 @@ namespace NMeCab.Core
         private const uint DicVersion = 102u;
 
 #if MMF_DIC
-        private MemoryMappedFileLoader mmfLoader = new MemoryMappedFileLoader();
+        private readonly MemoryMappedFileLoader mmfLoader = new MemoryMappedFileLoader();
         private unsafe Token* tokens;
         private unsafe byte* features;
 #else
@@ -30,15 +30,10 @@ namespace NMeCab.Core
 
         private readonly DoubleArray da = new DoubleArray();
 
-        private Encoding encoding;
-
         /// <summary>
         /// 辞書の文字コード
         /// </summary>
-        public string CharSet
-        {
-            get { return this.encoding.WebName; }
-        }
+        public string CharSet { get; private set; }
 
         /// <summary>
         /// バージョン
@@ -98,8 +93,7 @@ namespace NMeCab.Core
 
             byte* bytePtr = (byte*)uintPtr;
 
-            string charSet = StrUtils.GetString(bytePtr, Encoding.ASCII);
-            this.encoding = StrUtils.GetEncoding(charSet);
+            this.CharSet = StrUtils.GetString(bytePtr, Encoding.ASCII);
             bytePtr += 32;
 
             this.da.Open(bytePtr, (int)dSize);
@@ -144,15 +138,16 @@ namespace NMeCab.Core
             uint fSize = reader.ReadUInt32();
             reader.ReadUInt32(); //dummy
 
-            string charSet = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
-            this.encoding = StrUtils.GetEncoding(charSet);
+            this.CharSet = StrUtils.GetString(reader.ReadBytes(32), 0, Encoding.ASCII);
 
             this.da.Open(reader, (int)dSize);
 
             this.tokens = new Token[tSize / sizeof(Token)];
             for (int i = 0; i < this.tokens.Length; i++)
-                this.tokens[i] = Token.Create(reader);
+                this.tokens[i] = new Token(reader);
 
+            this.featuresIntPtr = Marshal.AllocCoTaskMem((int)fSize);
+            this.features = (byte*)this.featuresIntPtr.ToPointer();
             this.features = reader.ReadBytes((int)fSize);
         }
 
@@ -163,49 +158,15 @@ namespace NMeCab.Core
         #region Search
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe DoubleArray.ResultPair ExactMatchSearch(string key)
+        public unsafe DoubleArray.ResultPair ExactMatchSearch(byte* key, int len, int nodePos = 0)
         {
-            fixed (char* pKey = key)
-                return this.ExactMatchSearch(pKey, key.Length, 0);
+            return this.da.ExactMatchSearch(key, len, nodePos);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe DoubleArray.ResultPair ExactMatchSearch(char* key, int len, int nodePos = 0)
+        public unsafe int CommonPrefixSearch(byte* key, int len, DoubleArray.ResultPair* result, int rLen)
         {
-            //if (this.encoding == Encoding.Unicode)
-            //    return this.da.ExactMatchSearch((byte*)key, len, nodePos);
-
-            //エンコード
-            int maxByteCount = this.encoding.GetMaxByteCount(len);
-            byte* bytes = stackalloc byte[maxByteCount];
-            int bytesLen = this.encoding.GetBytes(key, len, bytes, maxByteCount);
-
-            var result = this.da.ExactMatchSearch(bytes, bytesLen, nodePos);
-
-            //文字数をデコードしたものに変換
-            result.Length = this.encoding.GetCharCount(bytes, result.Length);
-
-            return result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe int CommonPrefixSearch(char* key, int len, DoubleArray.ResultPair* result, int rLen)
-        {
-            //if (this.encoding == Encoding.Unicode)
-            //    return this.da.CommonPrefixSearch((byte*)key, result, rLen, len);
-
-            //エンコード
-            int maxByteLen = this.encoding.GetMaxByteCount(len);
-            byte* bytes = stackalloc byte[maxByteLen];
-            int bytesLen = this.encoding.GetBytes(key, len, bytes, maxByteLen);
-
-            int n = this.da.CommonPrefixSearch(bytes, result, rLen, bytesLen);
-
-            //文字数をデコードしたものに変換
-            for (int i = 0; i < n; i++)
-                result[i].Length = this.encoding.GetCharCount(bytes, result[i].Length);
-
-            return n;
+            return this.da.CommonPrefixSearch(key, result, rLen, len);
         }
 
         #endregion
@@ -244,6 +205,12 @@ namespace NMeCab.Core
 
             return ret;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe byte* GetFeature(uint featurePos)
+        {
+            return this.features + featurePos;
+        }
 #else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ArraySegment<Token> GetTokens(int value)
@@ -258,14 +225,13 @@ namespace NMeCab.Core
             Array.Copy(this.tokens, this.GetTokenPos(value), ret, 0, ret.Length);
             return ret;
         }
-#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe string GetFeature(uint featurePos)
-        {
-            return StrUtils.GetString(this.features, (long)featurePos, this.encoding);
-        }
-
+            public unsafe string GetFeature(uint featurePos)
+            {
+                return StrUtils.GetString(this.features, (long)featurePos, this.encoding);
+            }
+#endif
         #endregion
 
         #region etc.

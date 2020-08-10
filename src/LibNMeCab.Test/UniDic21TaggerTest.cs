@@ -1,17 +1,17 @@
-﻿using NMeCab;
+﻿using NMeCab.Specialized;
 using System;
 using Xunit;
 
-namespace LibNMeCabTest
+namespace LibNMeCab.Test
 {
-    public class UniDic22TaggerTest
+    public class UniDic21TaggerTest
     {
         [Fact]
         public void NodeProperty()
         {
-            var node = new MeCabUniDic22Node()
+            var node = new MeCabUniDic21Node()
             {
-                Feature = "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28"
+                Feature = "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25"
             };
 
             Assert.Equal("0", node.Pos1);
@@ -31,26 +31,23 @@ namespace LibNMeCabTest
             Assert.Equal("14", node.IForm);
             Assert.Equal("15", node.FType);
             Assert.Equal("16", node.FForm);
-            Assert.Equal("17", node.IConType);
-            Assert.Equal("18", node.FConType);
-            Assert.Equal("19", node.LType);
-            Assert.Equal("20", node.Kana);
-            Assert.Equal("21", node.KanaBase);
-            Assert.Equal("22", node.Form);
-            Assert.Equal("23", node.FormBase);
-            Assert.Equal("24", node.AType);
-            Assert.Equal("25", node.AConType);
-            Assert.Equal("26", node.AModType);
-            Assert.Equal("27", node.LId);
-            Assert.Equal("28", node.LemmaId);
+            Assert.Equal("17", node.Kana);
+            Assert.Equal("18", node.KanaBase);
+            Assert.Equal("19", node.Form);
+            Assert.Equal("20", node.FormBase);
+            Assert.Equal("21", node.IConType);
+            Assert.Equal("22", node.FConType);
+            Assert.Equal("23", node.AType);
+            Assert.Equal("24", node.AConType);
+            Assert.Equal("25", node.AModType);
         }
 
-        [Fact(Skip = "Execute only when the unidic-cwj-2.2.0 is prepared")]
+        [Fact(Skip = "Execute only when the unidic-2.1.2 is prepared")]
         public void ParseTest()
         {
-            const string dicDir = "../../../../../dic/unidic-cwj-2.2.0";
+            const string dicDir = "../../../../../dic/unidic-2.1.2";
 
-            using (var tagger = MeCabUniDic22Tagger.Create(dicDir))
+            using (var tagger = MeCabUniDic21Tagger.Create(dicDir))
             {
                 var nodes = tagger.Parse("こおりつけ！");
 

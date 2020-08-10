@@ -1,6 +1,4 @@
-﻿using NMeCab.Core;
-
-namespace NMeCab
+﻿namespace NMeCab.Specialized
 {
     /// <summary>
     /// UniDic（ver2.1.0以後）形式の辞書を使用する場合の形態素ノードです。
@@ -8,23 +6,6 @@ namespace NMeCab
     /// </summary>
     public class MeCabUniDic21Node : MeCabNodeBase<MeCabUniDic21Node>
     {
-        private string[] features = null;
-
-        private string GetFeatureAt(int index)
-        {
-            if (this.features == null)
-            {
-                var featureCsv = this.Feature;
-                if (featureCsv == null) return "";
-                this.features = StrUtils.SplitCsvRow(featureCsv, 26, 16);
-            }
-
-            if (index >= this.features.Length)
-                return "";
-
-            return this.features[index];
-        }
-
         /// <summary>
         /// 品詞大分類を取得
         /// </summary>

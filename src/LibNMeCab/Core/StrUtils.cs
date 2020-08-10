@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CS1591
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,18 +14,21 @@ namespace NMeCab.Core
         private const byte Nul = (byte)0;
 
         /// <summary>
-        /// バイト配列の中から終端が\0で表された文字列を取り出す。
+        /// 終端が\0で表されたバイト配列の長さを取得する
         /// </summary>
-        /// <remarks>
-        /// バイト配列の長さはInt32.MaxValueを超えていても良い。
-        /// </remarks>
-        /// <param name="bytes">バイト配列</param>
-        /// <param name="enc">文字エンコーディング</param>
-        /// <returns>文字列（\0は含まない）</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string GetString(byte[] bytes, Encoding enc)
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static unsafe int GetLength(byte* bytes)
         {
-            return StrUtils.GetString(bytes, 0L, enc);
+            int len = 0;
+
+            while (bytes[len] != Nul) // 終端\0に到達するまでシーク
+            {
+                checked { len++; } // Int32.MaxValueを超えたならエラー
+            }
+
+            return len;
         }
 
         /// <summary>
@@ -71,14 +76,8 @@ namespace NMeCab.Core
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe static string GetString(byte* bytes, Encoding enc)
         {
-            //バイト長のカウント
-            int byteCount = 0;
-            while (bytes[byteCount] != Nul) //終端\0に到達するまでシーク
-                checked { byteCount++; } //文字列のバイト長がInt32.MaxValueを超えたならエラー
-
-            if (byteCount == 0) return "";
-
-            return enc.GetString(bytes, byteCount);
+            int len = GetLength(bytes);
+            return enc.GetString(bytes, len);
         }
 
         /// <summary>

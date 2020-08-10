@@ -2,11 +2,13 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+
+#pragma warning disable CS1591
+
 using System.Runtime.CompilerServices;
 #if !MMF_DIC
 using System.IO;
 #endif
-
 namespace NMeCab.Core
 {
     /// <summary>
@@ -16,12 +18,16 @@ namespace NMeCab.Core
     {
         #region Array
 
-        private struct Unit
+        private readonly struct Unit
         {
-#pragma warning disable 0649
-            public int Base;
-            public uint Check;
-#pragma warning restore 0649
+            public readonly int Base;
+            public readonly uint Check;
+
+            public Unit(int @base, uint check)
+            {
+                Base = @base;
+                Check = check;
+            }
         }
 
         public const int UnitSize = sizeof(int) + sizeof(uint);
@@ -59,6 +65,7 @@ namespace NMeCab.Core
 
 #if MMF_DIC
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Open(byte* ptr, int size)
         {
             this.array = (Unit*)ptr;
@@ -73,11 +80,7 @@ namespace NMeCab.Core
 
             for (int i = 0; i < array.Length; i++)
             {
-                this.array[i] = new Unit()
-                {
-                    Base = reader.ReadInt32(),
-                    Check = reader.ReadUInt32()
-                };
+                this.array[i] = new Unit(reader.ReadInt32(), reader.ReadUInt32());
             }
         }
 
@@ -87,10 +90,16 @@ namespace NMeCab.Core
 
         #region Search
 
-        public struct ResultPair
+        public readonly struct ResultPair
         {
-            public int Value;
-            public int Length;
+            public readonly int Value;
+            public readonly int Length;
+
+            public ResultPair(int value, int length)
+            {
+                Value = value;
+                Length = length;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -108,7 +117,7 @@ namespace NMeCab.Core
                 }
                 else
                 {
-                    return new ResultPair() { Value = -1, Length = 0 };
+                    return new ResultPair(-1, 0);
                 }
             }
 
@@ -116,10 +125,10 @@ namespace NMeCab.Core
             int n = this.array[b].Base;
             if (b == this.array[p].Check && n < 0)
             {
-                return new ResultPair() { Value = -n - 1, Length = 0 };
+                return new ResultPair(-n - 1, 0);
             }
 
-            return new ResultPair() { Value = -1, Length = 0 };
+            return new ResultPair(-1, 0);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -138,7 +147,7 @@ namespace NMeCab.Core
                 if (b == this.array[p].Check && n < 0)
                 {
                     if (num < resultLen)
-                        result[num] = new ResultPair() { Value = -n - 1, Length = i };
+                        result[num] = new ResultPair(-n - 1, i);
                     num++;
                 }
 
@@ -159,7 +168,7 @@ namespace NMeCab.Core
             if (b == this.array[p].Check && n < 0)
             {
                 if (num < resultLen)
-                    result[num] = new ResultPair() { Value = -n - 1, Length = len };
+                    result[num] = new ResultPair(-n - 1, len);
                 num++;
             }
 

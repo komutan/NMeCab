@@ -5,6 +5,9 @@
 using NMeCab.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace NMeCab
 {
@@ -17,11 +20,7 @@ namespace NMeCab
     {
         private readonly Viterbi<TNode> viterbi = new Viterbi<TNode>();
 
-        /// <summary>
-        /// 形態素ノードインスタンス生成メソッドです。（内部用）
-        /// </summary>
-        /// <returns>形態素ノード</returns>
-        protected abstract TNode CreateNewNode();
+        private Func<TNode> nodeAllocator;
 
         #region Static Create
 
@@ -31,21 +30,24 @@ namespace NMeCab
         /// <typeparam name="TTagger">作成する形態素解析処理の起点の具象型</typeparam>
         /// <param name="dicDir">使用する辞書のディレクトリへのパス</param>
         /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
-        /// <param name="allocator">Taggetインスタンス生成メソッド</param>
+        /// <param name="taggerAllocator">Taggetインスタンス生成メソッド</param>
+        /// <param name="nodeAllocator">Nodeインスタンス生成メソッド</param>
+        /// <param name="defaultDicDirName">使用する辞書のディレクトリへのパスが無いときに使用するディレクトリ名の初期値</param>
         /// <returns>形態素解析処理の起点</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static TTagger Create<TTagger>(string dicDir,
                                                  IEnumerable<string> userDics,
-                                                 Func<TTagger> allocator)
+                                                 Func<TTagger> taggerAllocator,
+                                                 Func<TNode> nodeAllocator,
+                                                 string defaultDicDirName)
             where TTagger : MeCabTaggerBase<TNode>
         {
-            if (dicDir == null) throw new ArgumentNullException(nameof(dicDir));
-            if (allocator == null) throw new ArgumentNullException(nameof(allocator));
-
             TTagger tagger = null;
             try
             {
-                tagger = allocator();
-                tagger.viterbi.Open(dicDir, ToNullTrimedArray(userDics));
+                tagger = taggerAllocator();
+                tagger.nodeAllocator = nodeAllocator;
+                tagger.viterbi.Open(GetTrimedDicDir(), GetTirmedUserDics());
                 return tagger;
             }
             catch (Exception)
@@ -54,16 +56,21 @@ namespace NMeCab
                 throw;
             }
 
-            string[] ToNullTrimedArray(IEnumerable<string> target)
+            string GetTrimedDicDir()
             {
-                if (target == null)
+                return dicDir ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, defaultDicDirName);
+            }
+
+            string[] GetTirmedUserDics()
+            {
+                if (userDics == null)
                     return Array.Empty<string>();
-                else if (target is string[] ary)
+                else if (userDics is string[] ary)
                     return ary;
-                else if (target is List<string> list)
+                else if (userDics is List<string> list)
                     return list.ToArray();
                 else
-                    return (new List<string>(target)).ToArray();
+                    return (new List<string>(userDics)).ToArray();
             }
         }
 
@@ -197,7 +204,7 @@ namespace NMeCab
             this.ThrowIfDisposed();
             if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
 
-            var lattice = new MeCabLattice<TNode>(this.CreateNewNode, param, length);
+            var lattice = new MeCabLattice<TNode>(this.nodeAllocator, param, length);
             this.viterbi.Analyze(sentence, length, lattice);
             return lattice;
         }
@@ -241,6 +248,7 @@ namespace NMeCab
             this.Dispose(false);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ThrowIfDisposed()
         {
             if (this.disposed)

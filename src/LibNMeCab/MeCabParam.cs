@@ -21,8 +21,13 @@
         public float Theta { get; set; } = DefaltTheta;
 
         /// <summary>
+        /// 未知語の文字数の最大値の初期値
+        /// </summary>
+        public const int DefaltMaxGroupingSize = 24;
+
+        /// <summary>
         /// 未知語の文字数の最大値
         /// </summary>
-        public int MaxGroupingSize { get; set; } = 24;
+        public int MaxGroupingSize { get; set; } = DefaltMaxGroupingSize;
     }
 }

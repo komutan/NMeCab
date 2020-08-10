@@ -2,9 +2,11 @@
 //
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
+
+#pragma warning disable CS1591
+
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace NMeCab.Core
 {
@@ -14,7 +16,7 @@ namespace NMeCab.Core
 
         private const string CharPropertyFile = "char.bin";
 
-        private string[] cList;
+        private byte[][] cList;
 
         private readonly CharInfo[] charInfoList = new CharInfo[0xFFFF];
 
@@ -27,6 +29,7 @@ namespace NMeCab.Core
 
         #region Open
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Open(string dicDir)
         {
             string fileName = Path.Combine(dicDir, CharPropertyFile);
@@ -38,6 +41,7 @@ namespace NMeCab.Core
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Open(BinaryReader reader, string fileName = null)
         {
             uint cSize = reader.ReadUInt32();
@@ -49,10 +53,10 @@ namespace NMeCab.Core
                     throw new InvalidDataException($"invalid file size. {fileName ?? ""}");
             }
 
-            this.cList = new string[cSize];
+            this.cList = new byte[cSize][];
             for (int i = 0; i < this.cList.Length; i++)
             {
-                this.cList[i] = StrUtils.GetString(reader.ReadBytes(32), Encoding.ASCII);
+                this.cList[i] = reader.ReadBytes(32);
             }
 
             for (int i = 0; i < this.charInfoList.Length; i++)
@@ -66,7 +70,7 @@ namespace NMeCab.Core
         #region Get Infometion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string Name(int i)
+        public byte[] Name(int i)
         {
             return this.cList[i];
         }

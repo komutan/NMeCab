@@ -22,18 +22,14 @@ namespace NMeCab
         /// <param name="dicDir">使用する辞書のディレクトリへのパス</param>
         /// <param name="userDics">使用するユーザー辞書のファイル名のコレクション</param>
         /// <returns>形態素解析処理の起点</returns>
-        public static MeCabTagger Create(string dicDir, string[] userDics = null)
+        public static MeCabTagger Create(string dicDir = null,
+                                         string[] userDics = null)
         {
-            return Create(dicDir, userDics, () => new MeCabTagger());
-        }
-
-        /// <summary>
-        /// 形態素ノードインスタンス生成メソッドです。
-        /// </summary>
-        /// <returns>形態素ノード</returns>
-        protected override MeCabNode CreateNewNode()
-        {
-            return new MeCabNode();
+            return Create(dicDir,
+                          userDics,
+                          () => new MeCabTagger(),
+                          () => new MeCabNode(),
+                          "IpaDic");
         }
     }
 }
