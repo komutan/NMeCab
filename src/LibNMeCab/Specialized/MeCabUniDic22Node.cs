@@ -7,7 +7,7 @@
     public class MeCabUniDic22Node : MeCabNodeBase<MeCabUniDic22Node>
     {
         /// <summary>
-        /// 品詞大分類を取得
+        /// 品詞大分類
         /// </summary>
         public string Pos1
         {
@@ -15,7 +15,7 @@
         }
 
         /// <summary>
-        /// 品詞中分類を取得
+        /// 品詞中分類
         /// </summary>
         public string Pos2
         {
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// 品詞小分類を取得
+        /// 品詞小分類
         /// </summary>
         public string Pos3
         {
@@ -31,7 +31,7 @@
         }
 
         /// <summary>
-        /// 品詞細分類を取得
+        /// 品詞細分類
         /// </summary>
         public string Pos4
         {
@@ -39,7 +39,7 @@
         }
 
         /// <summary>
-        /// 活用型を取得
+        /// 活用型
         /// </summary>
         public string CType
         {
@@ -47,7 +47,7 @@
         }
 
         /// <summary>
-        /// 活用形を取得
+        /// 活用形
         /// </summary>
         public string CForm
         {
@@ -55,7 +55,7 @@
         }
 
         /// <summary>
-        /// 語彙素読みを取得
+        /// 語彙素読み
         /// </summary>
         public string LForm
         {
@@ -63,7 +63,7 @@
         }
 
         /// <summary>
-        /// 語彙素（語彙素表記＋語彙素細分類）を取得
+        /// 語彙素（語彙素表記＋語彙素細分類）
         /// </summary>
         public string Lemma
         {
@@ -71,7 +71,7 @@
         }
 
         /// <summary>
-        /// 書字形出現形を取得
+        /// 書字形出現形
         /// </summary>
         public string Orth
         {
@@ -79,7 +79,7 @@
         }
 
         /// <summary>
-        /// 発音形出現形を取得
+        /// 発音形出現形
         /// </summary>
         public string Pron
         {
@@ -87,7 +87,7 @@
         }
 
         /// <summary>
-        /// 書字形基本形を取得
+        /// 書字形基本形
         /// </summary>
         public string OrthBase
         {
@@ -95,7 +95,7 @@
         }
 
         /// <summary>
-        /// 発音形基本形を取得
+        /// 発音形基本形
         /// </summary>
         public string PronBase
         {
@@ -103,7 +103,7 @@
         }
 
         /// <summary>
-        /// 語種を取得
+        /// 語種
         /// </summary>
         public string Goshu
         {
@@ -111,7 +111,7 @@
         }
 
         /// <summary>
-        /// 語頭変化型を取得
+        /// 語頭変化型
         /// </summary>
         public string IType
         {
@@ -119,7 +119,7 @@
         }
 
         /// <summary>
-        /// 語頭変化形を取得
+        /// 語頭変化形
         /// </summary>
         public string IForm
         {
@@ -127,7 +127,7 @@
         }
 
         /// <summary>
-        /// 語末変化型を取得
+        /// 語末変化型
         /// </summary>
         public string FType
         {
@@ -135,7 +135,7 @@
         }
 
         /// <summary>
-        /// 語末変化形を取得
+        /// 語末変化形
         /// </summary>
         public string FForm
         {
@@ -143,7 +143,7 @@
         }
 
         /// <summary>
-        /// 語頭変化結合形を取得
+        /// 語頭変化結合形
         /// </summary>
         public string IConType
         {
@@ -151,7 +151,7 @@
         }
 
         /// <summary>
-        /// 語末変化結合形を取得
+        /// 語末変化結合形
         /// </summary>
         public string FConType
         {
@@ -159,7 +159,7 @@
         }
 
         /// <summary>
-        /// 語彙素類を取得
+        /// 語彙素類
         /// </summary>
         /// <remarks>
         /// この項目の「英語」の名前は、
@@ -172,7 +172,7 @@
         }
 
         /// <summary>
-        /// 仮名形出現形を取得
+        /// 仮名形出現形
         /// </summary>
         public string Kana
         {
@@ -180,7 +180,7 @@
         }
 
         /// <summary>
-        /// 仮名形基本形を取得
+        /// 仮名形基本形
         /// </summary>
         public string KanaBase
         {
@@ -188,7 +188,7 @@
         }
 
         /// <summary>
-        /// 語形出現形を取得
+        /// 語形出現形
         /// </summary>
         public string Form
         {
@@ -196,7 +196,7 @@
         }
 
         /// <summary>
-        /// 語形基本形を取得
+        /// 語形基本形
         /// </summary>
         public string FormBase
         {
@@ -204,7 +204,7 @@
         }
 
         /// <summary>
-        /// アクセント型を取得
+        /// アクセント型
         /// </summary>
         public string AType
         {
@@ -212,7 +212,7 @@
         }
 
         /// <summary>
-        /// アクセント結合型を取得
+        /// アクセント結合型
         /// </summary>
         public string AConType
         {
@@ -220,7 +220,7 @@
         }
 
         /// <summary>
-        /// アクセント修飾型を取得
+        /// アクセント修飾型
         /// </summary>
         public string AModType
         {
@@ -228,7 +228,7 @@
         }
 
         /// <summary>
-        /// 語彙表IDを取得
+        /// 語彙表ID
         /// </summary>
         public string LId
         {
@@ -236,7 +236,7 @@
         }
 
         /// <summary>
-        /// 語彙素IDを取得
+        /// 語彙素ID
         /// </summary>
         public string LemmaId
         {

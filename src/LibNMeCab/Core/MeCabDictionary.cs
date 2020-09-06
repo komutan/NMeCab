@@ -19,14 +19,9 @@ namespace NMeCab.Core
         private const uint DictionaryMagicID = 0xEF718F77u;
         private const uint DicVersion = 102u;
 
-#if MMF_DIC
         private readonly MemoryMappedFileLoader mmfLoader = new MemoryMappedFileLoader();
         private unsafe Token* tokens;
         private unsafe byte* features;
-#else
-        private Token[] tokens;
-        private byte[] features;
-#endif
 
         private readonly DoubleArray da = new DoubleArray();
 
@@ -66,8 +61,6 @@ namespace NMeCab.Core
 
         #region Open
 
-#if MMF_DIC
-
         public unsafe void Open(string fileName)
         {
             this.FileName = fileName;
@@ -105,54 +98,6 @@ namespace NMeCab.Core
             this.features = bytePtr;
         }
 
-#else
-
-        public void Open(string fileName)
-        {
-            this.FileName = fileName;
-
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (BinaryReader reader = new BinaryReader(fileStream))
-            {
-                this.Open(reader);
-            }
-        }
-
-        public unsafe void Open(BinaryReader reader)
-        {
-            uint magic = reader.ReadUInt32();
-            //CanSeekの時のみストリーム長のチェック
-            if (reader.BaseStream.CanSeek && reader.BaseStream.Length != (magic ^ DictionaryMagicID))
-                throw new InvalidDataException($"dictionary file is broken. {this.FileName}");
-
-            this.Version = reader.ReadUInt32();
-            if (this.Version != DicVersion)
-                throw new InvalidDataException($"incompatible version dictionaly. {this.FileName}");
-
-            this.Type = (DictionaryType)reader.ReadUInt32();
-            this.LexSize = reader.ReadUInt32();
-            this.LSize = reader.ReadUInt32();
-            this.RSize = reader.ReadUInt32();
-            uint dSize = reader.ReadUInt32();
-            uint tSize = reader.ReadUInt32();
-            uint fSize = reader.ReadUInt32();
-            reader.ReadUInt32(); //dummy
-
-            this.CharSet = StrUtils.GetString(reader.ReadBytes(32), 0, Encoding.ASCII);
-
-            this.da.Open(reader, (int)dSize);
-
-            this.tokens = new Token[tSize / sizeof(Token)];
-            for (int i = 0; i < this.tokens.Length; i++)
-                this.tokens[i] = new Token(reader);
-
-            this.featuresIntPtr = Marshal.AllocCoTaskMem((int)fSize);
-            this.features = (byte*)this.featuresIntPtr.ToPointer();
-            this.features = reader.ReadBytes((int)fSize);
-        }
-
-#endif
-
         #endregion
 
         #region Search
@@ -185,7 +130,6 @@ namespace NMeCab.Core
             return value >> 8;
         }
 
-#if MMF_DIC
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Token* GetTokens(int value)
         {
@@ -211,27 +155,7 @@ namespace NMeCab.Core
         {
             return this.features + featurePos;
         }
-#else
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ArraySegment<Token> GetTokens(int value)
-        {
-            return new ArraySegment<Token>(this.tokens, this.GetTokenPos(value), this.GetTokenSize(value));
-        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Token[] GetTokensArray(int value)
-        {
-            var ret = new Token[this.GetTokenSize(value)];
-            Array.Copy(this.tokens, this.GetTokenPos(value), ret, 0, ret.Length);
-            return ret;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public unsafe string GetFeature(uint featurePos)
-            {
-                return StrUtils.GetString(this.features, (long)featurePos, this.encoding);
-            }
-#endif
         #endregion
 
         #region etc.
@@ -266,9 +190,7 @@ namespace NMeCab.Core
 
             if (disposing)
             {
-#if MMF_DIC
                 this.mmfLoader.Dispose();
-#endif
             }
 
             this.disposed = true;

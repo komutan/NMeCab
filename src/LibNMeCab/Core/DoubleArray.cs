@@ -6,9 +6,8 @@
 #pragma warning disable CS1591
 
 using System.Runtime.CompilerServices;
-#if !MMF_DIC
-using System.IO;
-#endif
+using System.Runtime.InteropServices;
+
 namespace NMeCab.Core
 {
     /// <summary>
@@ -18,6 +17,7 @@ namespace NMeCab.Core
     {
         #region Array
 
+        [StructLayout(LayoutKind.Sequential)]
         private readonly struct Unit
         {
             public readonly int Base;
@@ -32,8 +32,6 @@ namespace NMeCab.Core
 
         public const int UnitSize = sizeof(int) + sizeof(uint);
 
-#if MMF_DIC
-
         private unsafe Unit* array;
 
         public int Size
@@ -43,27 +41,9 @@ namespace NMeCab.Core
 
         public int TotalSize { get; private set; }
 
-#else
-
-        private Unit[] array;
-
-        public int Size
-        {
-            get { return this.array.Length; }
-        }
-
-        public int TotalSize
-        {
-            get { return this.Size * UnitSize; }
-        }
-
-#endif
-
         #endregion
 
         #region Open
-
-#if MMF_DIC
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Open(byte* ptr, int size)
@@ -71,20 +51,6 @@ namespace NMeCab.Core
             this.array = (Unit*)ptr;
             this.TotalSize = size;
         }
-
-#else
-
-        public void Open(BinaryReader reader, int size)
-        {
-            this.array = new Unit[size / UnitSize];
-
-            for (int i = 0; i < array.Length; i++)
-            {
-                this.array[i] = new Unit(reader.ReadInt32(), reader.ReadUInt32());
-            }
-        }
-
-#endif
 
         #endregion
 
