@@ -8,8 +8,6 @@
 using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-#if MMF_MTX
-#endif
 
 namespace NMeCab.Core
 {
@@ -20,12 +18,8 @@ namespace NMeCab.Core
 
         private const string MatrixFile = "matrix.bin";
 
-#if MMF_MTX
         private readonly MemoryMappedFileLoader mmfLoader = new MemoryMappedFileLoader();
         private unsafe short* matrix;
-#else
-        private short[] matrix;
-#endif
 
         public ushort LSize { get; private set; }
         public ushort RSize { get; private set; }
@@ -39,7 +33,6 @@ namespace NMeCab.Core
         {
             string fileName = Path.Combine(dicDir, MatrixFile);
 
-#if MMF_MTX
             ushort* ptr = (ushort*)this.mmfLoader.Invoke(fileName);
 
             this.LSize = *ptr++;
@@ -50,23 +43,6 @@ namespace NMeCab.Core
                 throw new InvalidDataException($"File size is invalid. {fileName}");
 
             this.matrix = (short*)ptr;
-#else
-            using (var stream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (var reader = new BinaryReader(stream))
-            {
-                this.LSize = reader.ReadUInt16();
-                this.RSize = reader.ReadUInt16();
-
-                this.matrix = new short[this.LSize * this.RSize];
-                for (int i = 0; i < this.matrix.Length; i++)
-                {
-                    this.matrix[i] = reader.ReadInt16();
-                }
-
-                if (reader.BaseStream.ReadByte() != -1)
-                    throw new InvalidDataException($"File size is invalid. {fileName}");
-            }
-#endif
         }
 
         #endregion
@@ -101,9 +77,7 @@ namespace NMeCab.Core
 
             if (disposing)
             {
-#if MMF_MTX
                 this.mmfLoader.Dispose();
-#endif
             }
 
             this.disposed = true;

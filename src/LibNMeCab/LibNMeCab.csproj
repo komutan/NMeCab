@@ -4,34 +4,41 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
     <Authors>Tsuyoshi Komuta</Authors>
-    <Product>NMeCab (Original) liblary</Product>
-    <Title>NMeCab (Original) liblary</Title>
+    <Product>NMeCab liblary</Product>
+    <Title>NMeCab liblary</Title>
     <Description>This package is Japanese morphological analysis library NMeCab. It was developed on .NET (C#), with reference to MeCab (developed in C++). This does not include a binary dictionary, so you need preparing it sepalatary.</Description>
     <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
     <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
-    <PackageIcon>NMeCab-icon-100.png</PackageIcon>
-    <Version>0.10.0-RC2</Version>
+    <PackageIcon>NMeCab-icon-512.png</PackageIcon>
     <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;NETSTANDARD;NETSTANDARD2_0;MMF_MTX;MMF_DIC</DefineConstants>
+    <DefineConstants>TRACE;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
     <DocumentationFile>LibNMeCab.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0;MMF_MTX;MMF_DIC</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD;NETSTANDARD2_0</DefineConstants>
     <DocumentationFile>LibNMeCab.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\icon\NMeCab-icon-100.png">
+    <None Include="..\..\icon\NMeCab-icon-512.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CenterCLR.RelaxVersioner" Version="1.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

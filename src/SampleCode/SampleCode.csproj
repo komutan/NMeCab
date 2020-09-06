@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibNMeCab.IpaDicBin\LibNMeCab.IpaDicBin.csproj" />
-    <ProjectReference Include="..\LibNMeCab\LibNMeCab.csproj" />
   </ItemGroup>
 
 </Project>

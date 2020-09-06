@@ -51,14 +51,10 @@ namespace NMeCab
         /// <summary>
         /// インスタンスの文字列表現を返します。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>文字列表現</returns>
         public override string ToString()
         {
-            return string.Format("[Cost:{0}][Prob:{1}][LNode:{2}][RNode;{3}]",
-                                 this.Cost,
-                                 this.Prob,
-                                 this.LNode,
-                                 this.RNode);
+            return $"[Cost:{this.Cost}][Prob:{this.Prob}][LNode:{this.LNode}][RNode;{this.RNode}]";
         }
 
         #endregion

@@ -6,9 +6,11 @@
 #pragma warning disable CS1591
 
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace NMeCab.Core
 {
+    [StructLayout(LayoutKind.Sequential)]
     public readonly struct Token
     {
         #region  Const/Field/Property

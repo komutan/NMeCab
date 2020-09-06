@@ -3,12 +3,15 @@
 //  Copyright(C) 2001-2006 Taku Kudo <taku@chasen.org>
 //  Copyright(C) 2004-2006 Nippon Telegraph and Telephone Corporation
 
-#pragma warning disable CS1591
-
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace NMeCab.Core
 {
+    /// <summary>
+    /// 文字種情報
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
     public readonly struct CharInfo
     {
         #region Const/Field/Property
@@ -74,6 +77,10 @@ namespace NMeCab.Core
 
         #region Constractor
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="bits">ビット列</param>
         public CharInfo(uint bits)
         {
             this.bits = bits;
@@ -87,13 +94,20 @@ namespace NMeCab.Core
         /// 互換カテゴリ判定
         /// </summary>
         /// <param name="c"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// true: 互換
+        /// false: 非互換
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKindOf(CharInfo c)
         {
             return BitUtils.CompareAnd(this.bits, c.bits, 0, 18);
         }
 
+        /// <summary>
+        /// インスタンスの文字列表現を返します。
+        /// </summary>
+        /// <returns>文字列表現</returns>
         public override string ToString()
         {
             return string.Format("[Type:{0}][DefaultType:{1}][Length:{2}][Group:{3}][Invoke:{4}]",
