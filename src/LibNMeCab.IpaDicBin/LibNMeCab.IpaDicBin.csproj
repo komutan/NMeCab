@@ -4,20 +4,21 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>NMeCab</RootNamespace>
     <Authors>Tsuyoshi Komuta</Authors>
-    <Product>NMeCab (Original) liblary with IPAdic binary</Product>
-    <Title>NMeCab (Original) liblary with IPAdic binary</Title>
-    <Description>This package is Japanese morphological analysis library NMeCab, with binary compiled dictionary data IPAdic. You can use this without preparing a sepalatary dictionary.</Description>
+    <Product>IPAdic binary for NMeCab liblary</Product>
+    <Title>IPAdic binary for NMeCab liblary</Title>
+    <Description>This package is binary compiled dictionary data IPAdic for Japanese morphological analysis library NMeCab.</Description>
     <Copyright>NMeCab - Tsuyoshi Komuta. MeCab - Taku Kudo, and Nippon Telegraph and Telephone Corporation.</Copyright>
-    <PackageLicenseExpression>GPL-2.0-or-later OR LGPL-2.1-or-later</PackageLicenseExpression>
+    <PackageLicenseExpression>GPL-2.0 OR LGPL-2.1</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/komutan/NMeCab</RepositoryUrl>
     <PackageTags>morphological-analysis, part-of-speech-tagger, japanese-nlp, mecab</PackageTags>
-    <PackageIcon>NMeCab-icon-100.png</PackageIcon>
-    <Version>0.10.0-RC2</Version>
+    <PackageIcon>NMeCab-icon-512.png</PackageIcon>
     <PackageProjectUrl>https://github.com/komutan/NMeCab</PackageProjectUrl>
+    <Version>0.10.0</Version>
   </PropertyGroup>
 
-
   <ItemGroup>
+    <Content Include="..\..\dic\ipadic\AUTHORS" Link="IpaDic\AUTHORS" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
+    <Content Include="..\..\dic\ipadic\COPYING" Link="IpaDic\COPYING" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
     <Content Include="..\..\dic\ipadic\char.bin" Link="IpaDic\char.bin" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
     <Content Include="..\..\dic\ipadic\matrix.bin" Link="IpaDic\matrix.bin" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
     <Content Include="..\..\dic\ipadic\sys.dic" Link="IpaDic\sys.dic" CopyToOutputDirectory="PreserveNewest" PackagePath="content/IpaDic/" />
@@ -30,14 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\icon\NMeCab-icon-100.png">
+    <None Include="..\..\icon\NMeCab-icon-512.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibNMeCab" Version="0.10.0-RC2" />
+    <PackageReference Include="LibNMeCab" Version="[0.10.0,0.11.0)" />
   </ItemGroup>
 
 </Project>

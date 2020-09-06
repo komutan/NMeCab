@@ -1,6 +1,42 @@
-NMeCab was ported from MeCab by Tsuyoshi Komuta, and is released under
-any of the GPL (see the file GPL) or the LGPL (see the file LGPL).
+# NMeCab (this software)
+
+NMeCab is copyrighted free software by Tsuyoshi Komuta, and is
+released under any of the GPL (see the file GPL) or the LGPL (see the
+file LGPL).
+
+
+# MeCab
+
+NMeCab was ported and modified from MeCab, under GPL and LGPL.
 
 MeCab is copyrighted free software by Taku Kudo <taku@chasen.org> and
-Nippon Telegraph and Telephone Corporation, and is released under
-any of the GPL, the LGPL, or the BSD License.
+Nippon Telegraph and Telephone Corporation, and is released under any
+of the GPL, the LGPL, or the BSD License.
+
+
+# MeCab.DotNet
+
+NMeCab use part of MeCab.DotNet source code, under GPL and LGPL.
+
+MeCab.DotNet was ported from NMeCab by Kouji Matsui (@kozy_kekyo,
+@kekyo2) and is released under any of the GPL or the LGPL.
+
+
+# IPAdic
+
+Copyright 2000, 2001, 2002, 2003 Nara Institute of Science
+and Technology.  All Rights Reserved.
+
+Use, reproduction, and distribution of this software is permitted.
+Any copy of this software, whether in its original form or modified,
+must include both the above copyright notice and the following
+paragraphs.
+
+Nara Institute of Science and Technology (NAIST),
+the copyright holders, disclaims all warranties with regard to this
+software, including all implied warranties of merchantability and
+fitness, in no event shall NAIST be liable for
+any special, indirect or consequential damages or any damages
+whatsoever resulting from loss of use, data or profits, whether in an
+action of contract, negligence or other tortuous action, arising out
+of or in connection with the use or performance of this software.

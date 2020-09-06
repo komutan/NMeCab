@@ -114,30 +114,20 @@ namespace NMeCab.Core
                 {
                     int length = this.Encoding.GetCharCount(bytesBegin2, daResults->Length);
                     int rLength = (int)(begin2 - begin) + length;
-#if MMF_DIC
                     var tokenSize = it.GetTokenSize(daResults->Value);
                     var tokens = it.GetTokens(daResults->Value);
                     for (int j = 0; j < tokenSize; j++)
-#else
-                    var seg = it.GetTokens(daResults->Value);
-                    var tokens = seg.Array;
-                    for (int j = seg.Offset; j < seg.Offset + seg.Count; j++)
-#endif
                     {
                         var newNode = nodeAllocator();
                         newNode.Surface = new string(begin2, 0, length);
                         newNode.Length = length;
                         newNode.RLength = rLength;
-#if MMF_DIC
                         newNode.LCAttr = tokens->LcAttr;
                         newNode.RCAttr = tokens->RcAttr;
                         newNode.PosId = tokens->PosId;
                         newNode.WCost = tokens->WCost;
                         newNode.PFeature = it.GetFeature(tokens->Feature);
                         tokens++;
-#else
-                        newNode.SetTokenInfo(in tokens[j], it);
-#endif
                         newNode.Encoding = this.Encoding;
                         newNode.Stat = MeCabNodeStat.Nor;
                         newNode.CharType = cInfo.DefaultType;

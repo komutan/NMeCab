@@ -39,6 +39,11 @@
             <param name="len">ビット長</param>
             <returns>比較結果</returns>
         </member>
+        <member name="T:NMeCab.Core.CharInfo">
+            <summary>
+            文字種情報
+            </summary>
+        </member>
         <member name="P:NMeCab.Core.CharInfo.Type">
             <summary>
             互換カテゴリ
@@ -79,12 +84,27 @@
             false: 既知語がある場合は, 未知語処理を動作させない
             </value>
         </member>
+        <member name="M:NMeCab.Core.CharInfo.#ctor(System.UInt32)">
+            <summary>
+            コンストラクタ
+            </summary>
+            <param name="bits">ビット列</param>
+        </member>
         <member name="M:NMeCab.Core.CharInfo.IsKindOf(NMeCab.Core.CharInfo)">
             <summary>
             互換カテゴリ判定
             </summary>
             <param name="c"></param>
-            <returns></returns>
+            <returns>
+            true: 互換
+            false: 非互換
+            </returns>
+        </member>
+        <member name="M:NMeCab.Core.CharInfo.ToString">
+            <summary>
+            インスタンスの文字列表現を返します。
+            </summary>
+            <returns>文字列表現</returns>
         </member>
         <member name="M:NMeCab.Core.Connector`1.Dispose">
             <summary>
@@ -137,16 +157,21 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
+        <member name="T:NMeCab.Core.StrUtils">
+            <summary>
+            文字列関係操作ユーティリティ
+            </summary>
+        </member>
         <member name="M:NMeCab.Core.StrUtils.GetLength(System.Byte*)">
             <summary>
             終端が\0で表されたバイト配列の長さを取得する
             </summary>
-            <param name="bytes"></param>
-            <returns></returns>
+            <param name="bytes">終端が\0で表されたバイト配列の開始位置のポインタ</param>
+            <returns>バイト配列の長さ長さ</returns>
         </member>
         <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte[],System.Int64,System.Text.Encoding)">
             <summary>
-            バイト配列の中から終端が\0で表された文字列を取り出す。
+            \0で区切られたバイト配列から文字列を取り出す。
             </summary>
             <remarks>
             バイト配列の長さはInt32.MaxValueを超えていても良い。
@@ -158,19 +183,19 @@
         </member>
         <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte*,System.Int64,System.Text.Encoding)">
             <summary>
-            バイト配列の中から終端が\0で表された文字列を取り出す。
+            \0で区切られたバイト配列から文字列を取り出す。
             </summary>
             <remarks>
             バイト配列の長さはInt32.MaxValueを超えていても良い。
             </remarks>
-            <param name="bytes">デコードするバイトへのポインタ</param>
+            <param name="bytes">終端が\0で表されたバイト配列の開始位置のポインタ</param>
             <param name="offset">オフセット位置</param>
             <param name="enc">文字エンコーディング</param>
             <returns>文字列（\0は含まない）</returns>
         </member>
         <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte*,System.Text.Encoding)">
             <summary>
-            バイト配列の中から終端が\0で表された文字列を取り出す。
+            \0で区切られたバイト配列から文字列を取り出す。
             </summary>
             <remarks>
             バイト配列の長さはInt32.MaxValueを超えていても良い。
@@ -183,8 +208,8 @@
             <summary>
             指定の名前に対応するエンコーディングを取得する（.NET FWが対応していない名前にもアドホックに対応）
             </summary>
-            <param name="name"></param>
-            <returns></returns>
+            <param name="name">エンコーディング名</param>
+            <returns>エンコーディング</returns>
         </member>
         <member name="M:NMeCab.Core.StrUtils.SplitCsvRow(System.String,System.Int32,System.Int32)">
             <summary>
@@ -581,7 +606,7 @@
             <summary>
             インスタンスの文字列表現を返します。
             </summary>
-            <returns></returns>
+            <returns>文字列表現</returns>
         </member>
         <member name="T:NMeCab.MeCabTagger">
             <summary>
@@ -794,132 +819,132 @@
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos1">
             <summary>
-            品詞大分類を取得
+            品詞大分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos2">
             <summary>
-            品詞中分類を取得
+            品詞中分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos3">
             <summary>
-            品詞小分類を取得
+            品詞小分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pos4">
             <summary>
-            品詞細分類を取得
+            品詞細分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.CType">
             <summary>
-            活用型を取得
+            活用型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.CForm">
             <summary>
-            活用形を取得
+            活用形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.LForm">
             <summary>
-            語彙素読みを取得
+            語彙素読み
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Lemma">
             <summary>
-            語彙素（語彙素表記+ 語彙素細分類）を取得
+            語彙素（語彙素表記＋語彙素細分類）
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Orth">
             <summary>
-            書字形出現形を取得
+            書字形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Pron">
             <summary>
-            発音形出現形を取得
+            発音形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.OrthBase">
             <summary>
-            書字形基本形を取得
+            書字形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.PronBase">
             <summary>
-            発音形基本形を取得
+            発音形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Goshu">
             <summary>
-            語種を取得
+            語種
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.IType">
             <summary>
-            語頭変化型を取得
+            語頭変化型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.IForm">
             <summary>
-            語頭変化形を取得
+            語頭変化形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FType">
             <summary>
-            語末変化型を取得
+            語末変化型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FForm">
             <summary>
-            語末変化形を取得
+            語末変化形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Kana">
             <summary>
-            仮名形出現形を取得
+            仮名形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.KanaBase">
             <summary>
-            仮名形基本形を取得
+            仮名形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.Form">
             <summary>
-            語形出現形を取得
+            語形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FormBase">
             <summary>
-            語形基本形を取得
+            語形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.IConType">
             <summary>
-            語頭変化結合形を取得
+            語頭変化結合形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.FConType">
             <summary>
-            語末変化結合形を取得
+            語末変化結合形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.AType">
             <summary>
-            アクセント型を取得
+            アクセント型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.AConType">
             <summary>
-            アクセント結合型を取得
+            アクセント結合型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic21Node.AModType">
             <summary>
-            アクセント修飾型を取得
+            アクセント修飾型
             </summary>
         </member>
         <member name="T:NMeCab.Specialized.MeCabUniDic21Tagger">
@@ -948,102 +973,102 @@
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos1">
             <summary>
-            品詞大分類を取得
+            品詞大分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos2">
             <summary>
-            品詞中分類を取得
+            品詞中分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos3">
             <summary>
-            品詞小分類を取得
+            品詞小分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pos4">
             <summary>
-            品詞細分類を取得
+            品詞細分類
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.CType">
             <summary>
-            活用型を取得
+            活用型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.CForm">
             <summary>
-            活用形を取得
+            活用形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LForm">
             <summary>
-            語彙素読みを取得
+            語彙素読み
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Lemma">
             <summary>
-            語彙素（語彙素表記＋語彙素細分類）を取得
+            語彙素（語彙素表記＋語彙素細分類）
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Orth">
             <summary>
-            書字形出現形を取得
+            書字形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Pron">
             <summary>
-            発音形出現形を取得
+            発音形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.OrthBase">
             <summary>
-            書字形基本形を取得
+            書字形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.PronBase">
             <summary>
-            発音形基本形を取得
+            発音形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Goshu">
             <summary>
-            語種を取得
+            語種
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.IType">
             <summary>
-            語頭変化型を取得
+            語頭変化型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.IForm">
             <summary>
-            語頭変化形を取得
+            語頭変化形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FType">
             <summary>
-            語末変化型を取得
+            語末変化型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FForm">
             <summary>
-            語末変化形を取得
+            語末変化形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.IConType">
             <summary>
-            語頭変化結合形を取得
+            語頭変化結合形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FConType">
             <summary>
-            語末変化結合形を取得
+            語末変化結合形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LType">
             <summary>
-            語彙素類を取得
+            語彙素類
             </summary>
             <remarks>
             この項目の「英語」の名前は、
@@ -1053,47 +1078,47 @@
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Kana">
             <summary>
-            仮名形出現形を取得
+            仮名形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.KanaBase">
             <summary>
-            仮名形基本形を取得
+            仮名形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.Form">
             <summary>
-            語形出現形を取得
+            語形出現形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.FormBase">
             <summary>
-            語形基本形を取得
+            語形基本形
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.AType">
             <summary>
-            アクセント型を取得
+            アクセント型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.AConType">
             <summary>
-            アクセント結合型を取得
+            アクセント結合型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.AModType">
             <summary>
-            アクセント修飾型を取得
+            アクセント修飾型
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LId">
             <summary>
-            語彙表IDを取得
+            語彙表ID
             </summary>
         </member>
         <member name="P:NMeCab.Specialized.MeCabUniDic22Node.LemmaId">
             <summary>
-            語彙素IDを取得
+            語彙素ID
             </summary>
         </member>
         <member name="T:NMeCab.Specialized.MeCabUniDic22Tagger">

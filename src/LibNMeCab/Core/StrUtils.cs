@@ -1,14 +1,15 @@
-﻿#pragma warning disable CS1591
+﻿#pragma warning disable IDE0059
 
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
-#if MMF_DIC
-#endif
 
 namespace NMeCab.Core
 {
+    /// <summary>
+    /// 文字列関係操作ユーティリティ
+    /// </summary>
     public static class StrUtils
     {
         private const byte Nul = (byte)0;
@@ -16,8 +17,8 @@ namespace NMeCab.Core
         /// <summary>
         /// 終端が\0で表されたバイト配列の長さを取得する
         /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
+        /// <param name="bytes">終端が\0で表されたバイト配列の開始位置のポインタ</param>
+        /// <returns>バイト配列の長さ長さ</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static unsafe int GetLength(byte* bytes)
         {
@@ -32,7 +33,7 @@ namespace NMeCab.Core
         }
 
         /// <summary>
-        /// バイト配列の中から終端が\0で表された文字列を取り出す。
+        /// \0で区切られたバイト配列から文字列を取り出す。
         /// </summary>
         /// <remarks>
         /// バイト配列の長さはInt32.MaxValueを超えていても良い。
@@ -49,12 +50,12 @@ namespace NMeCab.Core
         }
 
         /// <summary>
-        /// バイト配列の中から終端が\0で表された文字列を取り出す。
+        /// \0で区切られたバイト配列から文字列を取り出す。
         /// </summary>
         /// <remarks>
         /// バイト配列の長さはInt32.MaxValueを超えていても良い。
         /// </remarks>
-        /// <param name="bytes">デコードするバイトへのポインタ</param>
+        /// <param name="bytes">終端が\0で表されたバイト配列の開始位置のポインタ</param>
         /// <param name="offset">オフセット位置</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
@@ -65,7 +66,7 @@ namespace NMeCab.Core
         }
 
         /// <summary>
-        /// バイト配列の中から終端が\0で表された文字列を取り出す。
+        /// \0で区切られたバイト配列から文字列を取り出す。
         /// </summary>
         /// <remarks>
         /// バイト配列の長さはInt32.MaxValueを超えていても良い。
@@ -83,8 +84,8 @@ namespace NMeCab.Core
         /// <summary>
         /// 指定の名前に対応するエンコーディングを取得する（.NET FWが対応していない名前にもアドホックに対応）
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">エンコーディング名</param>
+        /// <returns>エンコーディング</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Encoding GetEncoding(string name)
         {

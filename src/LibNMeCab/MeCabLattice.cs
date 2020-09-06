@@ -23,7 +23,7 @@ namespace NMeCab
         /// <summary>
         /// 解析パラメータ
         /// </summary>
-        public MeCabParam Param { get; }
+        internal MeCabParam Param { get; }
 
         /// <summary>
         /// 開始位置をインデックスとした形態素ノード配列
@@ -129,7 +129,6 @@ namespace NMeCab
                 }
             }
 
-            // 全ての周辺確率の算出が終わってから返却する
             return list.ToArray();
         }
     }

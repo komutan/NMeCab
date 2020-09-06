@@ -23,9 +23,10 @@
         - [ソフトわかち書き](#ソフトわかち書き)
         - [ラティス出力](#ラティス出力)
         - [新しい素性フォーマットへの対応](#新しい素性フォーマットへの対応)
-            - [MeCabNode](#mecabnode)
-            - [MeCabTagger](#mecabtagger)
+            - [MeCabNodeBase継承クラス](#mecabnodebase継承クラス)
+            - [MeCabTaggerBase継承クラス](#mecabtaggerbase継承クラス)
             - [使う！](#使う)
+    - [ライセンス](#ライセンス)
     - [謝辞](#謝辞)
     - [スター！](#スター)
 
@@ -44,16 +45,16 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 
 ## そもそも形態素解析とは？
 
-自然言語の文章を形態素（日本語では単語と同じ）に分割し、品詞・読み・活用型などの素性情報も付与することです。
+自然言語の文章を形態素（日本語では単語と同じ）に分割し、品詞・読み・活用型などの素性情報の付与も行うことです。
 
 ## NuGet
 
 | パッケージ | NuGet ID |  NuGet Status |
 | --- | --- | --- |
-| NMeCabライブラリ単体パッケージ | [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) |
-| IPA辞書パッケージ | [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) |
+| NMeCabライブラリ | [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) |
+| IPA辞書 | [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) |
 
-辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリ単体パッケージも同時にインストールされます。
+辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリパッケージも同時にインストールされます。
 
 ## 使い方
 
@@ -91,7 +92,7 @@ class Program
 
 次に `MeCabIpaDicTagger.Create()` により、形態素解析処理の起点となるTaggerインスタンス（MeCabTaggerBase継承クラスのインスタンス）を生成します。
 
-このTaggerインスタンスはIDisposableを実装しているので、使用後に必ず `Dispose()` メソッドを呼び出す必要があります。
+このTaggerインスタンスはIDisposableインターフェースを実装しているので、使用後に必ず `Dispose()` メソッドを呼び出す必要があります。
 そのため、このサンプルでは `using` ステートメントを記述しています。
 - 補足
   - Taggerインスタンスは生成時に辞書リソースを確保しており、 `Dispose()` メソッドによりそれが解放されます。
@@ -153,7 +154,8 @@ NMeCabで使う辞書ファイルは、MeCabの `mecab-dict-index` コマンド�
 
 #### Taggerクラスの一覧
 
-NMeCabでは辞書の素性フォーマット別にTaggerクラスを用意してあります。それぞれ異なる形態素ノードクラスを使用し、異なる素性情報プロパティにアクセスできます。
+NMeCabでは辞書の素性フォーマット別にTaggerクラスを用意してあります。
+それぞれ異なる形態素ノードクラスを使用し、異なる素性情報プロパティにアクセスできます。
 
 | 素性フォーマット | 名前空間 | Taggarクラス | デフォルトの辞書ディレクトリ |
 | --- | --- | --- | --- |
@@ -294,14 +296,6 @@ class Program
 
 Taggerインスタンスの `ParseSoftWakachi(string sentence, float theta)` メソッドでは、その文章に含まれる可能性がある形態素を洗いざらい取得できます。
 また取得した形態素ノードの `Prob` プロパティにより「その形態素の含まれる確率＝周辺確率」も取得できます。
-
-引数 `theta` は、周辺確率のなめらかさを指定する温度パラメータです。
-温度パラメータを大きな値にすると、最も確からしい解の形態素の周辺確率が1または∞、その他は全て0となります。温度パラメータを0に近付けると、中間の周辺確率値も現れます。
-
-- 補足
-  - 日本語の性質上、形態素解析の正解は一意でなく曖昧なケースがあります。またもちろん形態素解析エンジンの精度の限界もあります。そのために考案された手法がソフトわかち書きです。検索エンジンのインデクシングや将来のNLPなどに応用できるはずです。
-  - 下のサンプルの温度パラメータには「辞書のコストファクター＝800」の逆数の半分を指定していますが、どんな値が良いかを知るには試行錯誤が必要です。
-
 下のサンプルでは、周辺確率の大きな形態素だけを抽出して表示しています。
 
 サンプルコード：
@@ -363,6 +357,13 @@ class Program
 
 上位ワード：本部,長,部長,本,部
 ```
+
+引数 `theta` は、周辺確率のなめらかさを指定する温度パラメータです。
+温度パラメータを大きな値にすると、最も確からしい解の形態素の周辺確率が1または∞、その他は全て0となります。温度パラメータを0に近付けると、中間の周辺確率値も現れます。
+
+- 補足
+  - 日本語の性質上、形態素解析の正解は一つでなく曖昧なケースがあります。またもちろん形態素解析エンジンの精度の限界もあります。そのために考案された手法がソフトわかち書きです。検索エンジンのインデクシングや将来のNLPなどに応用できるはずです。
+  - 上のサンプルの温度パラメータには「辞書のコストファクター＝800」の逆数の半分を指定していますが、どんな値が良いかを知るには試行錯誤が必要です。
 
 ### ラティス出力
 
@@ -476,7 +477,7 @@ class Program
 `MeCabNodeBase` 、 `MeCabTaggerBase` を継承した独自のクラスをコーディングします。
 ただし、シンプルなポリモーフィズムだけで進めるとキャスト処理やリフレクション（new T）が必要になるので、それらを排除し実行パフォーマンスを向上させる目的から、やや変わって見えるかもしれないコードを必要とします。
 
-#### MeCabNode
+#### MeCabNodeBase継承クラス
 
 `MeCabNodeBase` を継承した形態素ノードクラスをコーディングします。この継承時には型引数で自クラスを指定してください。
 そして、各々の素性情報の名称のプロパティをコーディングし、CSVである素性情報文字列の任意の列の値を、 `GetFeatureAt(1)` のように継承元クラスのメソッドで取得するようにしてください。
@@ -507,7 +508,7 @@ public class MyDicNode : MeCabNodeBase<MyDicNode>
 }
 ```
 
-#### MeCabTagger
+#### MeCabTaggerBase継承クラス
 
 `MeCabTaggerBase` を継承したTaggerクラスをコーディングします。
 これは定型的なコードとなります。
@@ -571,10 +572,19 @@ class Program
 }
 ```
 
+## ライセンス
+
+NMeCabは [GPL v2](/GPL) / [LGPL v2.1](/LGPL) のデュアルライセンスです。
+2つのどちらか片方もしくは両方に基づいて使用できます。
+
+- 補足
+  - ごく簡単かつ実用的に言うと「NMeCabをNuGetやDLL参照によりLGPLライセンスで使用するなら、個人・企業、商用・非商用、オープンソース・プロプライエタリ、ライセンス種別、どれにも関わらず無償（ただし無保証）で使用できる」ということです。（少なくともNMeCab開発者個人はこの見解です）
+  - NMeCab自体がGPL/LGPLのデュアルライセンスに基づいてMeCabを移植・改変しており、そのことを[COPYINGファイル](/COPYING)に記載しています。できるだけ、なんらかの形で、ここの文章を転載してください。あなたがNMeCab/MeCabをどのライセンスで使用するのかも表明するようお願いします。
+
 ## 謝辞
 
 Kouji Matsui (＠kekyo) 氏の素晴らしい情報とコードの公開に感謝いたします。
-LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo 氏のオープンソースをほぼそのまま使用させて頂いたものです。
+LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo氏によるGPL/LGPLデュアルライセンスのオープンソースをほぼそのまま使用させて頂いたものです。
 
 ## スター！
 

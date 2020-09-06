@@ -138,7 +138,7 @@ namespace NMeCab
 
         #endregion
 
-        #region AllMophs
+        #region SoftWakachi
 
         /// <summary>
         /// 形態素解析を行い、可能性があるすべての形態素を周辺確率付きで取得します。
