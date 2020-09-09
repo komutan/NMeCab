@@ -584,7 +584,7 @@ NMeCabは [GPL v2](/GPL) / [LGPL v2.1](/LGPL) のデュアルライセンスで�
 
 ## 謝辞
 
-Taku Kudo (taku910) 氏のMeCabという素晴らしいソフトウェアの公開に感謝します。
+Taku Kudo (@taku910) 氏のMeCabという素晴らしいソフトウェアの公開に感謝いたします。
 
 Kouji Matsui (＠kekyo) 氏の素晴らしい情報とコードの公開に感謝いたします。
 LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo氏によるGPL/LGPLデュアルライセンスのオープンソースをほぼそのまま使用させて頂いたものです。
@@ -608,7 +608,7 @@ LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは�
   - NBest解の出力速度を向上させた。(PriorityQueueをPairingHeapで実装)
   - その他、微修正。
 - ～ 中略 ～
-- v 0.01 (2011-05-15)
+- v0.01 (2011-05-15)
   - 初公開
 
 ## スター！
