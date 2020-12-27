@@ -592,7 +592,7 @@ LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは�
 ## リリースノート
 
 - v0.10.0 or later
- - https://github.com/komutan/NMeCab/releases
+  - https://github.com/komutan/NMeCab/releases
 - v0.7.0 (2015-07-07)
   - 辞書ファイルヘッダーに埋め込まれた文字コード名が.NET標準ライブラリの仕様(IANA等が定義するもの)と異なる場合に、ある程度対応した。(utf-8ではなくutf8やUTF8でも対応可能にした)
   - 素性情報(csv)の任意の項目を簡単に取得できる拡張メソッドを追加した。(.NET3.5以降対応)
