@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -18,7 +19,7 @@ namespace NMeCab.Core
         /// 終端が\0で表されたバイト配列の長さを取得する
         /// </summary>
         /// <param name="bytes">終端が\0で表されたバイト配列の開始位置のポインタ</param>
-        /// <returns>バイト配列の長さ長さ</returns>
+        /// <returns>バイト配列の長さ</returns>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static unsafe int GetLength(byte* bytes)
         {
@@ -82,20 +83,25 @@ namespace NMeCab.Core
         }
 
         /// <summary>
-        /// 指定の名前に対応するエンコーディングを取得する（.NET FWが対応していない名前にもアドホックに対応）
+        /// 大文字・小文字・区切り記号有無の異なる名称が指定されても、該当するであろうエンコーディングを取得する
         /// </summary>
         /// <param name="name">エンコーディング名</param>
         /// <returns>エンコーディング</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Encoding GetEncoding(string name)
+        public static Encoding GetEncodingOrNull(this string name)
         {
-            switch (name.ToUpper())
+            var cmpInf = CultureInfo.InvariantCulture.CompareInfo;
+            var opt = CompareOptions.IgnoreCase | CompareOptions.IgnoreSymbols;
+
+            foreach (var encInf in Encoding.GetEncodings())
             {
-                case "UTF8":
-                    return Encoding.UTF8;
-                default:
-                    return Encoding.GetEncoding(name);
+                if (cmpInf.Compare(encInf.Name, name, opt) == 0)
+                {
+                    return encInf.GetEncoding();
+                }
             }
+
+            return null;
         }
 
         /// <summary>

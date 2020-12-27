@@ -80,7 +80,7 @@ namespace NMeCab.Core
 
             this.space = this.property.GetCharInfo(' ');
 
-            this.Encoding = StrUtils.GetEncoding(sysDic.CharSet);
+            this.Encoding = sysDic.Encoding;
         }
 
         #endregion
