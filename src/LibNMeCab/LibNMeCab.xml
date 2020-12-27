@@ -167,7 +167,7 @@
             終端が\0で表されたバイト配列の長さを取得する
             </summary>
             <param name="bytes">終端が\0で表されたバイト配列の開始位置のポインタ</param>
-            <returns>バイト配列の長さ長さ</returns>
+            <returns>バイト配列の長さ</returns>
         </member>
         <member name="M:NMeCab.Core.StrUtils.GetString(System.Byte[],System.Int64,System.Text.Encoding)">
             <summary>

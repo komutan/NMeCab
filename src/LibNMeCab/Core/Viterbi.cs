@@ -101,13 +101,13 @@ namespace NMeCab.Core
         {
             for (; rNode != null; rNode = rNode.BNext)
             {
-                long bestCost = int.MaxValue; // 2147483647
+                long bestCost = long.MaxValue;
                 TNode bestNode = null;
 
                 for (var lNode = endNodeList[pos]; lNode != null; lNode = lNode.ENext)
                 {
                     int localCost = this.connector.Cost(lNode, rNode);
-                    long cost = lNode.Cost + localCost;
+                    long cost = Math.Min(lNode.Cost + localCost, long.MaxValue - int.MaxValue); // オーバーフロー対策のため最大値を制限
 
                     if (cost < bestCost)
                     {
@@ -131,7 +131,7 @@ namespace NMeCab.Core
                     }
                 }
 
-                rNode.Prev = bestNode ?? throw new ArgumentException("too long sentence.");
+                rNode.Prev = bestNode;
                 rNode.Cost = bestCost;
 
                 rNode.BPos = pos;
