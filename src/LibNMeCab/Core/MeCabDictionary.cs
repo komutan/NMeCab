@@ -28,7 +28,7 @@ namespace NMeCab.Core
         /// <summary>
         /// 辞書の文字コード
         /// </summary>
-        public string CharSet { get; private set; }
+        public Encoding Encoding { get; private set; }
 
         /// <summary>
         /// バージョン
@@ -86,7 +86,9 @@ namespace NMeCab.Core
 
             byte* bytePtr = (byte*)uintPtr;
 
-            this.CharSet = StrUtils.GetString(bytePtr, Encoding.ASCII);
+            var encName = StrUtils.GetString(bytePtr, Encoding.ASCII);
+            this.Encoding = encName.GetEncodingOrNull()
+                            ?? throw new Exception($"not supported encoding dictionary. {encName} {fileName}");
             bytePtr += 32;
 
             this.da.Open(bytePtr, (int)dSize);
@@ -166,7 +168,7 @@ namespace NMeCab.Core
             return (this.Version == d.Version &&
                     this.LSize == d.LSize &&
                     this.RSize == d.RSize &&
-                    this.CharSet == d.CharSet);
+                    this.Encoding.CodePage == d.Encoding.CodePage);
         }
 
         #endregion
