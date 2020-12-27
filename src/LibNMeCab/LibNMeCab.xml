@@ -116,7 +116,7 @@
             Double-Array Trie の実装
             </summary>
         </member>
-        <member name="P:NMeCab.Core.MeCabDictionary.CharSet">
+        <member name="P:NMeCab.Core.MeCabDictionary.Encoding">
             <summary>
             辞書の文字コード
             </summary>
@@ -204,9 +204,9 @@
             <param name="enc">文字エンコーディング</param>
             <returns>文字列（\0は含まない）</returns>
         </member>
-        <member name="M:NMeCab.Core.StrUtils.GetEncoding(System.String)">
+        <member name="M:NMeCab.Core.StrUtils.GetEncodingOrNull(System.String)">
             <summary>
-            指定の名前に対応するエンコーディングを取得する（.NET FWが対応していない名前にもアドホックに対応）
+            大文字・小文字・区切り記号有無の異なる名称が指定されても、該当するであろうエンコーディングを取得する
             </summary>
             <param name="name">エンコーディング名</param>
             <returns>エンコーディング</returns>
