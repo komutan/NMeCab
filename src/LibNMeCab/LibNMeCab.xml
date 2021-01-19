@@ -220,6 +220,15 @@
             <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
             <returns>変換後の文字列配列</returns>
         </member>
+        <member name="M:NMeCab.Core.StrUtils.SplitCsvRow(System.Char*,System.Int32,System.Int32)">
+            <summary>
+            単一行のCSV形式の文字列を配列に変換する
+            </summary>
+            <param name="csvRow">単一行のCSV形式の文字列</param>
+            <param name="defaltColumnBuffSize">配列の内部バッファの初期値</param>
+            <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
+            <returns>変換後の文字列配列</returns>
+        </member>
         <member name="F:NMeCab.Core.Token.LcAttr">
             <summary>
             右文脈 id

@@ -112,89 +112,84 @@ namespace NMeCab.Core
         /// <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
         /// <returns>変換後の文字列配列</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string[] SplitCsvRow(string csvRowString,
-                                           int defaltColumnBuffSize,
-                                           int defaltStringBuffSize)
+        public static unsafe string[] SplitCsvRow(string csvRowString,
+                                                  int defaltColumnBuffSize,
+                                                  int defaltStringBuffSize)
         {
+            fixed(char* c = csvRowString)
+                return SplitCsvRow(c, defaltColumnBuffSize, defaltStringBuffSize);
+        }
+
+        /// <summary>
+        /// 単一行のCSV形式の文字列を配列に変換する
+        /// </summary>
+        /// <param name="csvRow">単一行のCSV形式の文字列</param>
+        /// <param name="defaltColumnBuffSize">配列の内部バッファの初期値</param>
+        /// <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
+        /// <returns>変換後の文字列配列</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static unsafe string[] SplitCsvRow(char* csvRow,
+                                                  int defaltColumnBuffSize,
+                                                  int defaltStringBuffSize)
+        {
+            const char Nul = (char)0;
             var ret = new List<string>(defaltColumnBuffSize);
             var stb = new StringBuilder(defaltStringBuffSize);
-            Action<char> action = Normal;
 
-            foreach (var c in csvRowString)
-                action(c);
+            while (*csvRow != Nul)
+            {
+                if (*csvRow == ',')
+                {
+                    ret.Add(stb.ToString());
+                    stb.Clear();
+                    csvRow++;
+                    continue;
+                }
+
+                if (*csvRow == '"')
+                {
+                    csvRow++;
+                    if (*csvRow == Nul) break;
+
+                    stb.Append(*csvRow);
+                    if (*csvRow == '"')
+                    {
+                        csvRow++;
+                        continue;
+                    }
+
+                    csvRow++;
+                    while (*csvRow != Nul)
+                    {
+                        if (*csvRow == '"')
+                        {
+                            csvRow++;
+                            if (*csvRow == Nul) break;
+
+                            if (*csvRow == ',')
+                            {
+                                ret.Add(stb.ToString());
+                                stb.Clear();
+                                csvRow++;
+                                break;
+                            }
+
+                            stb.Append('"');
+                        }
+
+                        stb.Append(*csvRow);
+                        csvRow++;
+                    }
+
+                    continue;
+                }
+
+                stb.Append(*csvRow);
+                csvRow++;
+            }
 
             ret.Add(stb.ToString());
-
             return ret.ToArray();
-
-            #region Inner methods
-
-            void Normal(char c)
-            {
-                switch (c)
-                {
-                    case ',':
-                        ret.Add(stb.ToString());
-                        stb.Clear();
-                        break;
-                    case '"':
-                        action = AfterLeftWQuote;
-                        break;
-                    default:
-                        stb.Append(c);
-                        break;
-                }
-            }
-
-            void AfterLeftWQuote(char c)
-            {
-                switch (c)
-                {
-                    case '"':
-                        stb.Append(c);
-                        action = Normal;
-                        break;
-                    default:
-                        stb.Append(c);
-                        action = InsideWQuote;
-                        break;
-                }
-            }
-
-            void InsideWQuote(char c)
-            {
-                switch (c)
-                {
-                    case '"':
-                        action = AfterRightWQuote;
-                        break;
-                    default:
-                        stb.Append(c);
-                        break;
-                }
-            }
-
-            void AfterRightWQuote(char c)
-            {
-                switch (c)
-                {
-                    case ',':
-                        ret.Add(stb.ToString());
-                        stb.Clear();
-                        action = Normal;
-                        break;
-                    case '"':
-                        stb.Append(c);
-                        action = InsideWQuote;
-                        break;
-                    default:
-                        stb.Append(c);
-                        action = Normal;
-                        break;
-                }
-            }
-
-            #endregion
         }
     }
 }
