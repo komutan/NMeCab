@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net20;net35;net40-client;net45;netstandard1.3;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
+    <RootNamespace>MeCab</RootNamespace>
+
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Platforms>AnyCPU</Platforms>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <NoWarn>1591,1572,1573</NoWarn>
+    <RepositoryUrl>https://github.com/kekyo/MeCab.DotNet.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+    <PackageId>MeCab.DotNet</PackageId>
+    <AssemblyTitle>MeCab.DotNet - Morphological analysis engine for .NET 5, .NET Core 1/2/3 and .NET Frameworks managed library.</AssemblyTitle>
+    <Product>MeCab.DotNet</Product>
+    <Trademark>MeCab.DotNet</Trademark>
+    <Copyright>Copyright (c) 2001-2008, Taku Kudo; Copyright (c) 2004-2008, Nippon Telegraph and Telephone Corporation; Copyright (c) 2015 Tsuyoshi Komuta; Portions Copyright (c) 2019-2021 Kouji Matsui</Copyright>
+    <Description>MeCab.DotNet - Morphological analysis engine for .NET 5, .NET Core 1/2/3 and .NET Frameworks managed library.</Description>
+    <Company>Nippon Telegraph and Telephone Corporation</Company>
+    <Authors>Taku Kudo; Tsuyoshi Komuta; Kouji Matsui (@kozy_kekyo)</Authors>
+    <PackageLicenseExpression>GPL-2.0-only OR LGPL-2.1-only</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/kekyo/MeCab.DotNet.git</PackageProjectUrl>
+    <PackageIcon>MeCab.DotNet-100.png</PackageIcon>
+    <PackageTags>mecab;morphological;analysis</PackageTags>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
+    <PackageReference Include="jnm2.ReferenceAssemblies.net35" Version="1.0.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' != 'net35'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RelaxVersioner" Version="2.1.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="dic\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="dic\*.*" CopyToOutputDirectory="PreserveNewest" PackagePath="content/dic/" />
+    <None Include="..\Images\MeCab.DotNet-100.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\*.*" CopyToOutputDirectory="Never" PackagePath="build/" />
+    <Content Include="buildMultiTargeting\*.*" CopyToOutputDirectory="Never" PackagePath="buildMultiTargeting/" />
+    <None Include="InPackage" Pack="true" PackagePath="lib/" />
+  </ItemGroup>
+
+</Project>
