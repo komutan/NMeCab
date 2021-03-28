@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net45;netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <!--<TargetFrameworks>net45;netcoreapp3.1;net5.0-windows</TargetFrameworks>-->
+    <TargetFrameworks>net46;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
 
     <DebugType>portable</DebugType>

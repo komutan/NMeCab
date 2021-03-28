@@ -115,7 +115,7 @@ namespace MeCab.Core
                     os.Append("\t").Append(node.Prob.ToString(FloatFormat));
                     os.AppendLine();
                 }
-                for (MeCabPath path = node.LPath; path != null; path = path.LNext)
+                for (NMeCab.MeCabPath<MeCabNode> path = node.LPath; path != null; path = path.LNext)
                 {
                     if (path.Prob >= MinProb)
                     {
@@ -157,7 +157,7 @@ namespace MeCab.Core
                 os.Append(" ").Append(node.Prob.ToString(FloatFormat));
                 os.Append(" ").Append(node.Cost);
 
-                for (MeCabPath path = node.LPath; path != null; path = path.LNext)
+                for (NMeCab.MeCabPath<MeCabNode> path = node.LPath; path != null; path = path.LNext)
                 {
 #if NeedId
                     os.Append(" ").Append(path.LNode.Id);
@@ -227,7 +227,7 @@ namespace MeCab.Core
                                         char sep = *++p;
                                         if (sep == '\\') sep = this.GetEscapedChar(*++p);
                                         if (node.LPath == null) throw new InvalidOperationException("no path information, use -l option");
-                                        for (MeCabPath path = node.LPath; path != null; path = path.LNext)
+                                        for (NMeCab.MeCabPath<MeCabNode> path = node.LPath; path != null; path = path.LNext)
                                         {
                                             if (path != node.LPath) os.Append(sep);
                                             switch (mode)

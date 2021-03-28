@@ -9,20 +9,23 @@ using MeCab.Core;
 
 namespace MeCab
 {
+    [Obsolete]
     public class MeCabTagger : IDisposable
     {
-        private readonly Viterbi viterbi = new Viterbi();
+        private readonly NMeCab.Core.Viterbi<MeCabNode> viterbi = new NMeCab.Core.Viterbi<MeCabNode>();
         private readonly Writer writer = new Writer();
 
         #region Mode
+
+        private NMeCab.MeCabParam param = new NMeCab.MeCabParam();
 
         /// <summary>
         /// 部分解析モード
         /// </summary>
         public bool Partial
         {
-            get { this.ThrowIfDisposed(); return this.viterbi.Partial; }
-            set { this.ThrowIfDisposed(); this.viterbi.Partial = value; }
+            get { return false; }
+            set { if (value) throw new NotSupportedException(); }
         }
 
         /// <summary>
@@ -30,8 +33,8 @@ namespace MeCab
         /// </summary>
         public float Theta
         {
-            get { this.ThrowIfDisposed(); return this.viterbi.Theta; }
-            set { this.ThrowIfDisposed(); this.viterbi.Theta = value; }
+            get { this.ThrowIfDisposed(); return this.param.Theta; }
+            set { this.ThrowIfDisposed(); this.param.Theta = value; }
         }
 
         /// <summary>
@@ -44,9 +47,11 @@ namespace MeCab
         /// </value>
         public MeCabLatticeLevel LatticeLevel
         {
-            get { this.ThrowIfDisposed(); return this.viterbi.LatticeLevel; }
-            set { this.ThrowIfDisposed(); this.viterbi.LatticeLevel = value; }
+            get { this.ThrowIfDisposed(); return (MeCabLatticeLevel)this.param.LatticeLevel; }
+            set { this.ThrowIfDisposed(); this.param.LatticeLevel = (NMeCab.MeCabLatticeLevel)value; }
         }
+
+        private bool allMorphs;
 
         /// <summary>
         /// 全出力モード
@@ -57,8 +62,8 @@ namespace MeCab
         /// </value>
         public bool AllMorphs
         {
-            get { this.ThrowIfDisposed(); return this.viterbi.AllMorphs; }
-            set { this.ThrowIfDisposed(); this.viterbi.AllMorphs = value; }
+            get { this.ThrowIfDisposed(); return allMorphs; }
+            set { this.ThrowIfDisposed(); allMorphs = value; }
         }
 
         /// <summary>
@@ -91,7 +96,14 @@ namespace MeCab
         /// <param name="param">初期化パラメーター</param>
         private void Open(MeCabParam param)
         {
-            this.viterbi.Open(param);
+            if (param.Partial) throw new NotSupportedException();
+
+            this.param.Theta = param.Theta;
+            this.param.LatticeLevel = (NMeCab.MeCabLatticeLevel)param.LatticeLevel;
+            this.param.MaxGroupingSize = param.MaxGroupingSize;
+            this.allMorphs = param.AllMorphs;
+
+            this.viterbi.Open(param.DicDir, param.UserDic);
 
             this.writer.Open(param);
         }
@@ -122,6 +134,11 @@ namespace MeCab
         #endregion
 
         #region Parse
+
+        private MeCabNode GetNode()
+        {
+            return new MeCabNode();
+        }
 
         /// <summary>
         /// 解析を行う
@@ -172,7 +189,25 @@ namespace MeCab
         {
             this.ThrowIfDisposed();
 
-            return this.viterbi.Analyze(str, len);
+            NMeCab.MeCabLattice<MeCabNode> lattice = new NMeCab.MeCabLattice<MeCabNode>(GetNode, this.param, len);
+            this.viterbi.Analyze(str, len, lattice);
+
+            if (this.allMorphs)
+            {
+                MeCabNode prev = lattice.BosNode;
+
+                foreach (var current in lattice.GetAllNodes())
+                {
+                    prev.Next = current;
+                    current.Prev = prev;
+                    prev = current;
+                }
+
+                prev.Next = lattice.EosNode;
+                lattice.EosNode.Prev = prev;
+            }
+
+            return lattice.BosNode;
         }
 
         /// <summary>
@@ -214,10 +249,18 @@ namespace MeCab
             if (this.LatticeLevel == 0)
                 throw new InvalidOperationException("Please set one or more to LatticeLevel.");
 
-            MeCabNode n = this.ParseToNode(str, len);
-            NBestGenerator nBest = new NBestGenerator();
-            nBest.Set(n);
-            return nBest.GetEnumerator();
+            NMeCab.MeCabLattice<MeCabNode> lattice = new NMeCab.MeCabLattice<MeCabNode>(GetNode, this.param, len);
+            this.viterbi.Analyze(str, len, lattice);
+
+            return SelectBosNodes(lattice.GetNBestResults());
+
+            IEnumerable<MeCabNode> SelectBosNodes(IEnumerable<MeCabNode[]> results)
+            {
+                foreach (var nodes in results)
+                {
+                    yield return nodes[0];
+                }
+            }
         }
 
         /// <summary>
