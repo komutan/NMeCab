@@ -200,8 +200,6 @@ namespace NMeCab.Core
                 current = prev;
                 prev = current.Prev;
             }
-
-            bos.Next = current;
         }
 
         #endregion
