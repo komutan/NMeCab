@@ -34,105 +34,103 @@ namespace LibNMeCab.Test
         public void OneBest()
         {
             Parallel.For(0, 999, i =>
-             {
-                 var nodes = this.tagger.Parse("すもももももももものうち");
+            {
+                var nodes = this.tagger.Parse("すもももももももものうち");
 
-                 Assert.Equal(7, nodes.Length);
+                Assert.Equal(7, nodes.Length);
 
-                 var node = nodes[0];
-                 Assert.Equal("すもも", node.Surface);
-                 Assert.Equal("名詞,一般,*,*,*,*,すもも,スモモ,スモモ", node.Feature);
-                 Assert.Equal(0, node.BPos);
-                 Assert.Equal(3, node.RLength);
-                 Assert.Equal(3, node.Length);
-                 Assert.Equal(3, node.EPos);
+                var node = nodes[0];
+                Assert.Equal("すもも", node.Surface);
+                Assert.Equal("名詞,一般,*,*,*,*,すもも,スモモ,スモモ", node.Feature);
+                Assert.Equal(0, node.BPos);
+                Assert.Equal(3, node.RLength);
+                Assert.Equal(3, node.Length);
+                Assert.Equal(3, node.EPos);
 
-                 node = nodes[1];
-                 Assert.Equal("も", node.Surface);
-                 Assert.Equal("助詞,係助詞,*,*,*,*,も,モ,モ", node.Feature);
-                 Assert.Equal(3, node.BPos);
-                 Assert.Equal(1, node.RLength);
-                 Assert.Equal(1, node.Length);
-                 Assert.Equal(4, node.EPos);
+                node = nodes[1];
+                Assert.Equal("も", node.Surface);
+                Assert.Equal("助詞,係助詞,*,*,*,*,も,モ,モ", node.Feature);
+                Assert.Equal(3, node.BPos);
+                Assert.Equal(1, node.RLength);
+                Assert.Equal(1, node.Length);
+                Assert.Equal(4, node.EPos);
 
-                 node = nodes[2];
-                 Assert.Equal("もも", node.Surface);
-                 Assert.Equal("名詞,一般,*,*,*,*,もも,モモ,モモ", node.Feature);
-                 Assert.Equal(4, node.BPos);
-                 Assert.Equal(2, node.RLength);
-                 Assert.Equal(2, node.Length);
-                 Assert.Equal(6, node.EPos);
+                node = nodes[2];
+                Assert.Equal("もも", node.Surface);
+                Assert.Equal("名詞,一般,*,*,*,*,もも,モモ,モモ", node.Feature);
+                Assert.Equal(4, node.BPos);
+                Assert.Equal(2, node.RLength);
+                Assert.Equal(2, node.Length);
+                Assert.Equal(6, node.EPos);
 
-                 node = nodes[3];
-                 Assert.Equal("も", node.Surface);
-                 Assert.Equal("助詞,係助詞,*,*,*,*,も,モ,モ", node.Feature);
-                 Assert.Equal(6, node.BPos);
-                 Assert.Equal(1, node.RLength);
-                 Assert.Equal(1, node.Length);
-                 Assert.Equal(7, node.EPos);
+                node = nodes[3];
+                Assert.Equal("も", node.Surface);
+                Assert.Equal("助詞,係助詞,*,*,*,*,も,モ,モ", node.Feature);
+                Assert.Equal(6, node.BPos);
+                Assert.Equal(1, node.RLength);
+                Assert.Equal(1, node.Length);
+                Assert.Equal(7, node.EPos);
 
-                 node = nodes[4];
-                 Assert.Equal("もも", node.Surface);
-                 Assert.Equal("名詞,一般,*,*,*,*,もも,モモ,モモ", node.Feature);
-                 Assert.Equal(7, node.BPos);
-                 Assert.Equal(2, node.RLength);
-                 Assert.Equal(2, node.Length);
-                 Assert.Equal(9, node.EPos);
+                node = nodes[4];
+                Assert.Equal("もも", node.Surface);
+                Assert.Equal("名詞,一般,*,*,*,*,もも,モモ,モモ", node.Feature);
+                Assert.Equal(7, node.BPos);
+                Assert.Equal(2, node.RLength);
+                Assert.Equal(2, node.Length);
+                Assert.Equal(9, node.EPos);
 
-                 node = nodes[5];
-                 Assert.Equal("の", node.Surface);
-                 Assert.Equal("助詞,連体化,*,*,*,*,の,ノ,ノ", node.Feature);
-                 Assert.Equal(9, node.BPos);
-                 Assert.Equal(1, node.RLength);
-                 Assert.Equal(1, node.Length);
-                 Assert.Equal(10, node.EPos);
+                node = nodes[5];
+                Assert.Equal("の", node.Surface);
+                Assert.Equal("助詞,連体化,*,*,*,*,の,ノ,ノ", node.Feature);
+                Assert.Equal(9, node.BPos);
+                Assert.Equal(1, node.RLength);
+                Assert.Equal(1, node.Length);
+                Assert.Equal(10, node.EPos);
 
-                 node = nodes[6];
-                 Assert.Equal("うち", node.Surface);
-                 Assert.Equal("名詞,非自立,副詞可能,*,*,*,うち,ウチ,ウチ", node.Feature);
-                 Assert.Equal(10, node.BPos);
-                 Assert.Equal(2, node.RLength);
-                 Assert.Equal(2, node.Length);
-                 Assert.Equal(12, node.EPos);
+                node = nodes[6];
+                Assert.Equal("うち", node.Surface);
+                Assert.Equal("名詞,非自立,副詞可能,*,*,*,うち,ウチ,ウチ", node.Feature);
+                Assert.Equal(10, node.BPos);
+                Assert.Equal(2, node.RLength);
+                Assert.Equal(2, node.Length);
+                Assert.Equal(12, node.EPos);
 
-                 Assert.True(nodes[0].Prev.IsBest);
-                 Assert.True(nodes[1].IsBest);
-                 Assert.True(nodes[2].IsBest);
-                 Assert.True(nodes[3].IsBest);
-                 Assert.True(nodes[4].IsBest);
-                 Assert.True(nodes[5].IsBest);
-                 Assert.True(nodes[6].IsBest);
-                 Assert.True(nodes[6].Next.IsBest);
+                Assert.True(nodes[0].Prev.IsBest);
+                Assert.True(nodes[1].IsBest);
+                Assert.True(nodes[2].IsBest);
+                Assert.True(nodes[3].IsBest);
+                Assert.True(nodes[4].IsBest);
+                Assert.True(nodes[5].IsBest);
+                Assert.True(nodes[6].IsBest);
+                Assert.True(nodes[6].Next.IsBest);
 
-                 Assert.Equal(MeCabNodeStat.Bos, nodes[0].Prev.Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[0].Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[1].Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[2].Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[3].Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[4].Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[5].Stat);
-                 Assert.Equal(MeCabNodeStat.Nor, nodes[6].Stat);
-                 Assert.Equal(MeCabNodeStat.Eos, nodes[6].Next.Stat);
+                Assert.Equal(MeCabNodeStat.Bos, nodes[0].Prev.Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[0].Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[1].Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[2].Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[3].Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[4].Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[5].Stat);
+                Assert.Equal(MeCabNodeStat.Nor, nodes[6].Stat);
+                Assert.Equal(MeCabNodeStat.Eos, nodes[6].Next.Stat);
 
-                 node = nodes[0].Next;
-                 Assert.Same(nodes[1], node);
-                 Assert.Same(nodes[0], node.Prev);
-                 node = node.Next;
-                 Assert.Same(nodes[2], node);
-                 Assert.Same(nodes[1], node.Prev);
-                 node = node.Next;
-                 Assert.Same(nodes[3], node);
-                 Assert.Same(nodes[2], node.Prev);
-                 node = node.Next;
-                 Assert.Same(nodes[4], node);
-                 Assert.Same(nodes[3], node.Prev);
-                 node = node.Next;
-                 Assert.Same(nodes[5], node);
-                 Assert.Same(nodes[4], node.Prev);
-                 node = node.Next;
-                 Assert.Same(nodes[6], node);
-                 Assert.Same(nodes[5], node.Prev);
-             });
+                Assert.Same(nodes[1], nodes[0].Next);
+                Assert.Same(nodes[2], nodes[1].Next);
+                Assert.Same(nodes[3], nodes[2].Next);
+                Assert.Same(nodes[4], nodes[3].Next);
+                Assert.Same(nodes[5], nodes[4].Next);
+                Assert.Same(nodes[6], nodes[5].Next);
+
+                Assert.Same(nodes[0], nodes[1].Prev);
+                Assert.Same(nodes[1], nodes[2].Prev);
+                Assert.Same(nodes[2], nodes[3].Prev);
+                Assert.Same(nodes[3], nodes[4].Prev);
+                Assert.Same(nodes[4], nodes[5].Prev);
+                Assert.Same(nodes[5], nodes[6].Prev);
+
+                Assert.Same(nodes[0], nodes[0].Prev.Next);
+                Assert.Same(nodes[6], nodes[6].Next.Prev);
+            });
         }
 
         [Fact]
