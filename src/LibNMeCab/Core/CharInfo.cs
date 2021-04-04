@@ -98,7 +98,7 @@ namespace NMeCab.Core
         /// true: 互換
         /// false: 非互換
         /// </returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public bool IsKindOf(CharInfo c)
         {
             return BitUtils.CompareAnd(this.bits, c.bits, 0, 18);

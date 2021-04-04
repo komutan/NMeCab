@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--<TargetFrameworks>net20;net35;net40-client;net45;netstandard1.3;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>-->
-    <TargetFrameworks>net46;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>net20;net35;net40-client;net45;netstandard1.3;netstandard2.0;netstandard2.1;net5.0</TargetFrameworks>
     <RootNamespace>MeCab</RootNamespace>
 
     <DebugType>portable</DebugType>
@@ -55,44 +54,11 @@
   <ItemGroup>
     <Content Include="build\*.*" CopyToOutputDirectory="Never" PackagePath="build/" />
     <Content Include="buildMultiTargeting\*.*" CopyToOutputDirectory="Never" PackagePath="buildMultiTargeting/" />
-    <Compile Remove="Core\BitUtils.cs" />
-    <Compile Remove="Core\CharInfo.cs" />
-    <Compile Remove="Core\CharProperty.cs" />
-    <Compile Remove="Core\Connector.cs" />
-    <Compile Remove="Core\DoubleArray.cs" />
-    <Compile Remove="Core\MeCabDictionary.cs" />
-    <Compile Remove="Core\MeCabPath.cs" />
-    <Compile Remove="Core\NBestGenerator.cs" />
-    <Compile Remove="Core\PriorityQueue.cs" />
-    <Compile Remove="Core\StrUtils.cs" />
-    <Compile Remove="Core\Token.cs" />
-    <Compile Remove="Core\Tokenizer.cs" />
-    <Compile Remove="Core\Utils.cs" />
-    <Compile Remove="Core\Viterbi.cs" />
-    <Compile Include="..\LibNMeCab\MeCabDictionaryType.cs" Link="NMeCab\MeCabDictionaryType.cs" />
-    <Compile Include="..\LibNMeCab\MeCabLattice.cs" Link="NMeCab\MeCabLattice.cs" />
-    <Compile Include="..\LibNMeCab\MeCabLatticeLevel.cs" Link="NMeCab\MeCabLatticeLevel.cs" />
-    <Compile Include="..\LibNMeCab\MeCabNode.cs" Link="NMeCab\MeCabNode.cs" />
-    <Compile Include="..\LibNMeCab\MeCabNodeBase.cs" Link="NMeCab\MeCabNodeBase.cs" />
-    <Compile Include="..\LibNMeCab\MeCabNodeStat.cs" Link="NMeCab\MeCabNodeStat.cs" />
-    <Compile Include="..\LibNMeCab\MeCabParam.cs" Link="NMeCab\MeCabParam.cs" />
-    <Compile Include="..\LibNMeCab\MeCabPath.cs" Link="NMeCab\MeCabPath.cs" />
-    <Compile Include="..\LibNMeCab\MeCabTagger.cs" Link="NMeCab\MeCabTagger.cs" />
-    <Compile Include="..\LibNMeCab\MeCabTaggerBase.cs" Link="NMeCab\MeCabTaggerBase.cs" />
-    <Compile Include="..\LibNMeCab\NBestGenerator.cs" Link="NMeCab\NBestGenerator.cs" />
-    <Compile Include="..\LibNMeCab\Core\BitUtils.cs" Link="NMeCab\Core\BitUtils.cs" />
-    <Compile Include="..\LibNMeCab\Core\CharInfo.cs" Link="NMeCab\Core\CharInfo.cs" />
-    <Compile Include="..\LibNMeCab\Core\CharProperty.cs" Link="NMeCab\Core\CharProperty.cs" />
-    <Compile Include="..\LibNMeCab\Core\Connector.cs" Link="NMeCab\Core\Connector.cs" />
-    <Compile Include="..\LibNMeCab\Core\DoubleArray.cs" Link="NMeCab\Core\DoubleArray.cs" />
-    <Compile Include="..\LibNMeCab\Core\MeCabDictionary.cs" Link="NMeCab\Core\MeCabDictionary.cs" />
-    <Compile Include="..\LibNMeCab\Core\PriorityQueue.cs" Link="NMeCab\Core\PriorityQueue.cs" />
-    <Compile Include="..\LibNMeCab\Core\StrUtils.cs" Link="NMeCab\Core\StrUtils.cs" />
-    <Compile Include="..\LibNMeCab\Core\Token.cs" Link="NMeCab\Core\Token.cs" />
-    <Compile Include="..\LibNMeCab\Core\Tokenizer.cs" Link="NMeCab\Core\Tokenizer.cs" />
-    <Compile Include="..\LibNMeCab\Core\Utils.cs" Link="NMeCab\Core\Utils.cs" />
-    <Compile Include="..\LibNMeCab\Core\Viterbi.cs" Link="NMeCab\Core\Viterbi.cs" />
     <None Include="InPackage" Pack="true" PackagePath="lib/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibNMeCab\LibNMeCab.csproj" />
   </ItemGroup>
 
 </Project>

@@ -104,13 +104,13 @@ namespace NMeCab.Core
 
         #region Search
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe DoubleArray.ResultPair ExactMatchSearch(byte* key, int len, int nodePos = 0)
         {
             return this.da.ExactMatchSearch(key, len, nodePos);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe int CommonPrefixSearch(byte* key, int len, DoubleArray.ResultPair* result, int rLen)
         {
             return this.da.CommonPrefixSearch(key, result, rLen, len);
@@ -120,25 +120,25 @@ namespace NMeCab.Core
 
         #region Get Infomation
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public int GetTokenSize(int value)
         {
             return 0xFF & value;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public int GetTokenPos(int value)
         {
             return value >> 8;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe Token* GetTokens(int value)
         {
             return this.tokens + this.GetTokenPos(value);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe Token[] GetTokensArray(int value)
         {
             var ret = new Token[this.GetTokenSize(value)];
@@ -152,7 +152,7 @@ namespace NMeCab.Core
             return ret;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe byte* GetFeature(uint featurePos)
         {
             return this.features + featurePos;
@@ -162,7 +162,7 @@ namespace NMeCab.Core
 
         #region etc.
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public bool IsCompatible(MeCabDictionary d)
         {
             return (this.Version == d.Version &&

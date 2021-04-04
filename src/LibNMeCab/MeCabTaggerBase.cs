@@ -5,7 +5,6 @@
 using NMeCab.Core;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -34,7 +33,7 @@ namespace NMeCab
         /// <param name="nodeAllocator">Nodeインスタンス生成メソッド</param>
         /// <param name="defaultDicDirName">使用する辞書のディレクトリへのパスが無いときに使用するディレクトリ名の初期値</param>
         /// <returns>形態素解析処理の起点</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         protected static TTagger Create<TTagger>(string dicDir,
                                                  IEnumerable<string> userDics,
                                                  Func<TTagger> taggerAllocator,
@@ -64,7 +63,7 @@ namespace NMeCab
             string[] GetTirmedUserDics()
             {
                 if (userDics == null)
-                    return Array.Empty<string>();
+                    return Utils.EmptyStringArray;
                 else if (userDics is string[] ary)
                     return ary;
                 else if (userDics is List<string> list)
@@ -248,7 +247,7 @@ namespace NMeCab
             this.Dispose(false);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private void ThrowIfDisposed()
         {
             if (this.disposed)
