@@ -9,7 +9,7 @@ using MeCab.Core;
 
 namespace MeCab
 {
-    [Obsolete]
+    [Obsolete("EN: MeCab.DotNet and NMeCab have been merged, so please use NMeCab (LibNMeCab). / JP: MeCab.DotNetとNMeCabが統合されたため、NMeCab(LibNMeCab)を使用してください。")]
     public class MeCabTagger : IDisposable
     {
         private readonly NMeCab.Core.Viterbi<MeCabNode> viterbi = new NMeCab.Core.Viterbi<MeCabNode>();
@@ -252,14 +252,13 @@ namespace MeCab
             NMeCab.MeCabLattice<MeCabNode> lattice = new NMeCab.MeCabLattice<MeCabNode>(GetNode, this.param, len);
             this.viterbi.Analyze(str, len, lattice);
 
-            return SelectBosNodes(lattice.GetNBestResults());
+            return SelectFirstNodes(lattice.GetNBestResults(), len);
 
-            IEnumerable<MeCabNode> SelectBosNodes(IEnumerable<MeCabNode[]> results)
+            IEnumerable<MeCabNode> SelectFirstNodes(IEnumerable<MeCabNode[]> results, int len)
             {
-                foreach (var nodes in results)
-                {
-                    yield return nodes[0];
-                }
+                IEnumerator<MeCabNode[]> itr = results.GetEnumerator();
+                for (int i = 0; i < len && itr.MoveNext(); i++)
+                    yield return itr.Current[0];
             }
         }
 

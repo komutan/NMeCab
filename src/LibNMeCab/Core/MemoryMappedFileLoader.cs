@@ -24,7 +24,7 @@ namespace NMeCab.Core
             using (var source = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 this.FileSize = source.Length;
-                this.ptr = Marshal.AllocCoTaskMem((int)this.FileSize);
+                this.ptr = Marshal.AllocCoTaskMem((int)source.Length);
 
                 byte* wrkPtr = (byte*)this.ptr;
                 byte[] buff = new byte[4096];
@@ -33,7 +33,7 @@ namespace NMeCab.Core
                     while (true)
                     {
                         int len = source.Read(buff, 0, buff.Length);
-                        if (len == 0) return (byte*)this.ptr;
+                        if (len == 0) return (wrkPtr - source.Length);
 
                         for (int i = 0; i < len; i++)
                             *wrkPtr++ = pBuff[i];
@@ -92,22 +92,15 @@ namespace NMeCab.Core
 
             this.fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
 
+            this.mmf = MemoryMappedFile.CreateFromFile(fileStream,
+                                                       null,
+                                                       0L,
+                                                       MemoryMappedFileAccess.Read,
 #if NET40 || NET45
-            this.mmf = MemoryMappedFile.CreateFromFile(fileStream,
                                                        null,
-                                                       0L,
-                                                       MemoryMappedFileAccess.Read,
-                                                       null,
-                                                       HandleInheritability.None,
-                                                       false);
-#else
-            this.mmf = MemoryMappedFile.CreateFromFile(fileStream,
-                                                       null,
-                                                       0L,
-                                                       MemoryMappedFileAccess.Read,
-                                                       HandleInheritability.None,
-                                                       false);
 #endif
+                                                       HandleInheritability.None,
+                                                       false);
 
             this.mmva = mmf.CreateViewAccessor(0L, 0L, MemoryMappedFileAccess.Read);
 
