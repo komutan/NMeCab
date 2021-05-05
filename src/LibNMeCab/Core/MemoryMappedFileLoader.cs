@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS1591
 
-#if NET20 || NET35 || NETSTANDARD1_3
+#if NET20 || NET30 || NET35 || NETSTANDARD1_3
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -96,7 +96,7 @@ namespace NMeCab.Core
                                                        null,
                                                        0L,
                                                        MemoryMappedFileAccess.Read,
-#if NET40 || NET45
+#if NET40 || NET45 || NET451 || NET452
                                                        null,
 #endif
                                                        HandleInheritability.None,

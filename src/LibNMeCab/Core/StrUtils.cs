@@ -79,7 +79,7 @@ namespace NMeCab.Core
         public unsafe static string GetString(byte* bytes, Encoding enc)
         {
             int len = GetLength(bytes);
-#if NET20 || NET35 || NET40 || NET45
+#if NET20 || NET30 || NET35 || NET40 || NET45 || NET451 || NET452
             var chars = new char[enc.GetCharCount(bytes, len)];
             fixed (char* pChars = chars)
                 enc.GetChars(bytes, len, pChars, chars.Length);

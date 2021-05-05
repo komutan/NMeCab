@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS1591
+﻿#if NET20 || NET30 || NET35 || NETSTANDARD1_3
+#pragma warning disable CS1591
+#endif
 
 #if NET20
 namespace NMeCab.Core
@@ -15,7 +17,7 @@ namespace System.Runtime.CompilerServices
 }
 #endif
 
-#if NET20 || NET35
+#if NET20 || NET30 || NET35
 namespace NMeCab.Core
 {
     public static class AlternativeExtentions

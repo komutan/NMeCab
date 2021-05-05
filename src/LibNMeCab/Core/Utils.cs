@@ -12,7 +12,7 @@ namespace NMeCab.Core
 {
     public static class Utils
     {
-#if NET20 || NET35 || NET40
+#if NET20 || NET30 || NET35 || NET40
         public const MethodImplOptions DefaultMethodImplOption = 0;
 #else
         public const MethodImplOptions DefaultMethodImplOption = MethodImplOptions.AggressiveInlining;

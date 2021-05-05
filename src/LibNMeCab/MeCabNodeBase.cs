@@ -189,7 +189,7 @@ namespace NMeCab
             {
                 var featureCsv = this.Feature;
                 if (featureCsv == null)
-                    this.features = new string[0];
+                    this.features = Utils.EmptyStringArray;
                 else
                     this.features = StrUtils.SplitCsvRow(featureCsv, 32, 16);
             }
