@@ -37,7 +37,7 @@ namespace NMeCab.Core
 
         #region Open/Clear
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe void Open(string dicDir, string[] userDics)
         {
             this.property.Open(dicDir);
@@ -87,7 +87,7 @@ namespace NMeCab.Core
 
         #region Lookup
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe TNode Lookup(char* begin,
                                    char* end,
                                    byte* bytesBegin,
@@ -170,7 +170,7 @@ namespace NMeCab.Core
             return resultNode;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private unsafe void AddUnknown(ref TNode resultNode, CharInfo cInfo,
                                        char* begin, char* begin2, char* begin3,
                                        Func<TNode> nodeAllocator)

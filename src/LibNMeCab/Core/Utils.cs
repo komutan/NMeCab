@@ -12,7 +12,16 @@ namespace NMeCab.Core
 {
     public static class Utils
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#if NET20 || NET30 || NET35 || NET40
+        public const MethodImplOptions DefaultMethodImplOption = 0;
+#else
+        public const MethodImplOptions DefaultMethodImplOption = MethodImplOptions.AggressiveInlining;
+#endif
+
+        public static readonly string[] EmptyStringArray = new string[0];
+
+
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public static double LogSumExp(double x, double y, bool flg)
         {
             const double MinusLogEpsilon = 50.0;

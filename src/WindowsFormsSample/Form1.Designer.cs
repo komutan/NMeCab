@@ -315,6 +315,7 @@
             // PartialCheckBox
             // 
             this.PartialCheckBox.AutoSize = true;
+            this.PartialCheckBox.Enabled = false;
             this.PartialCheckBox.Location = new System.Drawing.Point(540, 3);
             this.PartialCheckBox.Name = "PartialCheckBox";
             this.PartialCheckBox.Size = new System.Drawing.Size(57, 16);

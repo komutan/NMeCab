@@ -28,7 +28,7 @@ namespace NMeCab.Core
 
         #region Open
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe void Open(string dicDir)
         {
             string fileName = Path.Combine(dicDir, MatrixFile);
@@ -49,7 +49,7 @@ namespace NMeCab.Core
 
         #region Cost
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe int Cost(TNode lNode, TNode rNode)
         {
             int pos = lNode.RCAttr + this.LSize * rNode.LCAttr;

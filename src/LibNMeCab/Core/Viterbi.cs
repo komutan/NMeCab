@@ -24,7 +24,7 @@ namespace NMeCab.Core
 
         #region Open/Clear
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public void Open(string dicDir, string[] userDics)
         {
             this.tokenizer.Open(dicDir, userDics);
@@ -35,7 +35,7 @@ namespace NMeCab.Core
 
         #region Analyze
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe void Analyze(char* str, int len, MeCabLattice<TNode> lattice)
         {
             switch (lattice.Param.LatticeLevel)
@@ -57,7 +57,7 @@ namespace NMeCab.Core
             BuildBestLattice(lattice.BosNode, lattice.EosNode, lattice.BestResultStack);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private unsafe void DoViterbi(char* str, int len, MeCabLattice<TNode> lattice, bool withAllPath)
         {
             var enc = this.tokenizer.Encoding;
@@ -96,7 +96,7 @@ namespace NMeCab.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private void Connect(int pos, TNode rNode, TNode[] endNodeList, bool withAllPath)
         {
             for (; rNode != null; rNode = rNode.BNext)
@@ -144,7 +144,7 @@ namespace NMeCab.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private static unsafe void ForwardBackward(MeCabLattice<TNode> lattice)
         {
             for (int pos = 0; pos < lattice.BeginNodeList.Length; pos++)
@@ -180,7 +180,7 @@ namespace NMeCab.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private static void BuildBestLattice(TNode bos, TNode eos, Stack<TNode> stack)
         {
             var current = eos;

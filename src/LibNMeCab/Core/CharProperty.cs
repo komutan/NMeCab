@@ -29,7 +29,7 @@ namespace NMeCab.Core
 
         #region Open
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public void Open(string dicDir)
         {
             string fileName = Path.Combine(dicDir, CharPropertyFile);
@@ -41,7 +41,7 @@ namespace NMeCab.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public void Open(BinaryReader reader, string fileName = null)
         {
             uint cSize = reader.ReadUInt32();
@@ -69,13 +69,13 @@ namespace NMeCab.Core
 
         #region Get Infometion
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public byte[] Name(int i)
         {
             return this.cList[i];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe char* SeekToOtherType(char* begin, char* end, CharInfo c, CharInfo* fail, int* cLen)
         {
             char* p = begin;
@@ -95,7 +95,7 @@ namespace NMeCab.Core
             return p;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public CharInfo GetCharInfo(char c)
         {
             return this.charInfoList[c];

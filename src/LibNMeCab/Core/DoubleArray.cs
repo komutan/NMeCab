@@ -45,7 +45,7 @@ namespace NMeCab.Core
 
         #region Open
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe void Open(byte* ptr, int size)
         {
             this.array = (Unit*)ptr;
@@ -68,7 +68,7 @@ namespace NMeCab.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe ResultPair ExactMatchSearch(byte* key, int len, int nodePos)
         {
             int b = this.array[nodePos].Base;
@@ -97,7 +97,7 @@ namespace NMeCab.Core
             return new ResultPair(-1, 0);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe int CommonPrefixSearch(byte* key, ResultPair* result, int resultLen, int len, int nodePos = 0)
         {
             int b = this.array[nodePos].Base;

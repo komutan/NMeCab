@@ -89,7 +89,7 @@ namespace NMeCab.Core
             return ret;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private HeapNode MergeNodes(HeapNode l, HeapNode r)
         {
             if (l == null) return r;
@@ -107,7 +107,7 @@ namespace NMeCab.Core
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         private HeapNode UnifyChildNodes(HeapNode node)
         {
             HeapNode[] tmp = new HeapNode[node.ChildsCount / 2]; //必要な要素数が明らかなのでStackではなく配列
