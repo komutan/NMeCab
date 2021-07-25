@@ -10,18 +10,18 @@
 <defs>
 </defs>
 <g>
-	<circle fill="#29ABE2" cx="12.8" cy="12.8" r="12.8"/>
-	<circle fill="#158ECF" cx="42.8" cy="12.8" r="12.8"/>
-	<circle fill="#0071BC" cx="72.8" cy="12.8" r="12.8"/>
+	<circle fill="#29ABE2" cx="12.8" cy="72.8" r="12.8"/>
+	<circle fill="#158ECF" cx="12.8" cy="42.8" r="12.8"/>
+	<circle fill="#0071BC" cx="12.8" cy="12.8" r="12.8"/>
 </g>
 <g>
-	<circle fill="#00687A" cx="12.8" cy="42.8" r="12.8"/>
+	<circle fill="#00687A" cx="42.8" cy="72.8" r="12.8"/>
 	<circle fill="#00898C" cx="42.8" cy="42.8" r="12.8"/>
-	<circle fill="#00A99D" cx="72.8" cy="42.8" r="12.8"/>
+	<circle fill="#00A99D" cx="42.8" cy="12.8" r="12.8"/>
 </g>
 <g>
-	<circle fill="#29ABE2" cx="72.8" cy="72.8" r="12.8"/>
-	<circle fill="#158ECF" cx="42.8" cy="72.8" r="12.8"/>
-	<circle fill="#0071BC" cx="12.8" cy="72.8" r="12.8"/>
+	<circle fill="#29ABE2" cx="72.8" cy="12.8" r="12.8"/>
+	<circle fill="#158ECF" cx="72.8" cy="42.8" r="12.8"/>
+	<circle fill="#0071BC" cx="72.8" cy="72.8" r="12.8"/>
 </g>
 </svg>
