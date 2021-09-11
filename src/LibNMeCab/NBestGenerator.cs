@@ -29,7 +29,7 @@ namespace NMeCab
             }
         }
 
-        private readonly PriorityQueue<QueueElement> agenda = new PriorityQueue<QueueElement>();
+        private readonly QueueElement eos;
 
         /// <summary>
         /// コンストラクタ
@@ -37,13 +37,13 @@ namespace NMeCab
         /// <param name="eos">末尾の形態素ノード</param>
         public NBestGenerator(TNode eos)
         {
-            this.agenda.Push(new QueueElement()
+            this.eos = new QueueElement()
             {
                 Node = eos,
                 Next = null,
                 Fx = 0,
                 Gx = 0
-            });
+            };
         }
 
         /// <summary>
@@ -52,9 +52,12 @@ namespace NMeCab
         /// <returns>形態素列の列挙子</returns>
         public IEnumerator<TNode[]> GetEnumerator()
         {
-            while (this.agenda.Count != 0)
+            var agenda = new PriorityQueue<QueueElement>();
+            agenda.Push(this.eos);
+
+            do
             {
-                var top = this.agenda.Pop();
+                var top = agenda.Pop();
                 var rNode = top.Node;
 
                 if (rNode.Stat == MeCabNodeStat.Bos)
@@ -71,7 +74,7 @@ namespace NMeCab
 
                 for (var path = rNode.LPath; path != null; path = path.LNext)
                 {
-                    this.agenda.Push(
+                    agenda.Push(
                         new QueueElement()
                         {
                             Node = path.LNode,
@@ -80,9 +83,13 @@ namespace NMeCab
                             Next = top
                         });
                 }
-            }
+            } while (agenda.Count != 0);
         }
 
+        /// <summary>
+        /// 形態素列の列挙子を返します。
+        /// </summary>
+        /// <returns>形態素列の列挙子</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();

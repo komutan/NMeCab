@@ -742,6 +742,12 @@
             </summary>
             <returns>形態素列の列挙子</returns>
         </member>
+        <member name="M:NMeCab.NBestGenerator`1.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            形態素列の列挙子を返します。
+            </summary>
+            <returns>形態素列の列挙子</returns>
+        </member>
         <member name="T:NMeCab.Specialized.MeCabIpaDicNode">
             <summary>
             IPA形式の辞書を使用する場合の形態素ノードです。
