@@ -17,8 +17,10 @@ namespace MeCab
         [Test]
         public void CreateMulti()
         {
+#pragma warning disable CS0618 // 型またはメンバーが旧型式です
             using var tagger1 = MeCabTagger.Create();
             using var tagger2 = MeCabTagger.Create();
+#pragma warning restore CS0618 // 型またはメンバーが旧型式です
 
             GC.KeepAlive(tagger1);
             GC.KeepAlive(tagger2);
@@ -27,7 +29,9 @@ namespace MeCab
         [Test]
         public void OneBest()
         {
+#pragma warning disable CS0618 // 型またはメンバーが旧型式です
             using var tagger = MeCabTagger.Create();
+#pragma warning restore CS0618 // 型またはメンバーが旧型式です
 
             var nodes = tagger.ParseToNodes("すもももももももものうち").ToArray();
 
