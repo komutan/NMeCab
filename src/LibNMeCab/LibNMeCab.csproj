@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net48;net461;net452;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net48;net461;</TargetFrameworks>
     <RootNamespace>NMeCab</RootNamespace>
     <Authors>Tsuyoshi Komuta</Authors>
     <Product>NMeCab library</Product>
@@ -36,6 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RelaxVersioner" Version="2.3.2" PrivateAssets="All" />
+    <PackageReference Include="RelaxVersioner" Version="2.5.1" PrivateAssets="All" />
   </ItemGroup>
 </Project>
