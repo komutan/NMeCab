@@ -112,15 +112,15 @@ namespace NMeCab.Core
                 int n = it.CommonPrefixSearch(bytesBegin2, (int)(bytesEnd - bytesBegin2), daResults, DAResultSize);
                 for (int i = 0; i < n; i++)
                 {
-                    int length = this.Encoding.GetCharCount(bytesBegin2, daResults->Length);
-                    int rLength = (int)(begin2 - begin) + length;
-                    var tokenSize = it.GetTokenSize(daResults->Value);
+                    var surface = this.Encoding.GetString(bytesBegin2, daResults->Length);
+                    int rLength = (int)(begin2 - begin) + surface.Length;
+                    int tokenSize = it.GetTokenSize(daResults->Value);
                     var tokens = it.GetTokens(daResults->Value);
                     for (int j = 0; j < tokenSize; j++)
                     {
                         var newNode = nodeAllocator();
-                        newNode.Surface = new string(begin2, 0, length);
-                        newNode.Length = length;
+                        newNode.Surface = surface;
+                        newNode.Length = surface.Length;
                         newNode.RLength = rLength;
                         newNode.LCAttr = tokens->LcAttr;
                         newNode.RCAttr = tokens->RcAttr;
@@ -175,32 +175,25 @@ namespace NMeCab.Core
                                        char* begin, char* begin2, char* begin3,
                                        Func<TNode> nodeAllocator)
         {
-            var tokens = this.unkTokens[cInfo.DefaultType];
-            fixed (Token* fpTokens = tokens)
+            var length = (int)(begin3 - begin2);
+            var rLength = (int)(begin3 - begin);
+            var surface = new string(begin2, 0, length);
+            foreach (var token in this.unkTokens[cInfo.DefaultType])
             {
-                Token* pTokens = fpTokens;
-                var length = (int)(begin3 - begin2);
-                var rLength = (int)(begin3 - begin);
-                var surface = new string(begin2, 0, length);
-
-                for (int i = 0; i < tokens.Length; i++)
-                {
-                    var newNode = nodeAllocator();
-                    newNode.Surface = surface;
-                    newNode.Length = length;
-                    newNode.RLength = rLength;
-                    newNode.LCAttr = pTokens->LcAttr;
-                    newNode.RCAttr = pTokens->RcAttr;
-                    newNode.PosId = pTokens->PosId;
-                    newNode.WCost = pTokens->WCost;
-                    newNode.PFeature = this.unkDic.GetFeature(pTokens->Feature);
-                    newNode.Encoding = this.Encoding;
-                    newNode.CharType = cInfo.DefaultType;
-                    newNode.Stat = MeCabNodeStat.Unk;
-                    newNode.BNext = resultNode;
-                    resultNode = newNode;
-                    pTokens++;
-                }
+                var newNode = nodeAllocator();
+                newNode.Surface = surface;
+                newNode.Length = length;
+                newNode.RLength = rLength;
+                newNode.LCAttr = token.LcAttr;
+                newNode.RCAttr = token.RcAttr;
+                newNode.PosId = token.PosId;
+                newNode.WCost = token.WCost;
+                newNode.PFeature = this.unkDic.GetFeature(token.Feature);
+                newNode.Encoding = this.Encoding;
+                newNode.CharType = cInfo.DefaultType;
+                newNode.Stat = MeCabNodeStat.Unk;
+                newNode.BNext = resultNode;
+                resultNode = newNode;
             }
         }
 
