@@ -1,4 +1,4 @@
-# 形態素解析エンジンNMeCab
+# .NET形態素解析ライブラリNMeCab
 
 <img src="icon/NMeCab-icon.svg">
 
@@ -6,9 +6,8 @@
 
 <!-- TOC -->
 
-- [形態素解析エンジンNMeCab](#形態素解析エンジンnmecab)
+- [.NET形態素解析ライブラリNMeCab](#net形態素解析ライブラリnmecab)
     - [目次](#目次)
-    - [リポジトリ移転について](#リポジトリ移転について)
     - [これは何？](#これは何)
     - [そもそも形態素解析とは？](#そもそも形態素解析とは)
     - [NuGet](#nuget)
@@ -26,23 +25,20 @@
             - [MeCabNodeBase継承クラス](#mecabnodebase継承クラス)
             - [MeCabTaggerBase継承クラス](#mecabtaggerbase継承クラス)
             - [使う！](#使う)
-    - [ライセンス](#ライセンス)
+    - [MeCab.DotNetについて](#mecabdotnetについて)
     - [謝辞](#謝辞)
     - [リリースノート](#リリースノート)
+    - [ライセンス](#ライセンス)
     - [スター！](#スター)
 
 <!-- /TOC -->
 
-## リポジトリ移転について
-
-2010年から[OSDN](https://ja.osdn.net/projects/nmecab)で開発し公開してきたNMeCabですが、バージョン0.10.0からは、こちらGitHubで開発し公開していきます。
-
 ## これは何？
 
-NMeCabは.NETで開発した日本語形態素解析エンジンです。  
-その名の通り、元々はMeCabというOSSの日本語形態素解析エンジンをC++からC#へ移植したものですが、独自の機能追加も行っています。  
+NMeCabは.NETで開発した日本語形態素解析ライブラリです。  
+その名の通り、元々はMeCabというOSSの日本語形態素解析ライブラリをC++からC#へ移植したものですが、独自の機能追加も行っています。  
 辞書データはMeCabに対応したものをそのまま使用できます。  
-NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあります。（これに対応するランタイムは、.NET 5 以上、.NET Core 2.0 以上、.NET Framework 4.6.1 以上、などです）
+NMeCabバージョン0.10.0からは、.NET Standard 2.0ライブラリにしてあります。（これに対応するランタイムは、.NET 5 以上、.NET Core 2.0 以上、.NET Framework 4.6.1 以上、などです）
 
 ## そもそも形態素解析とは？
 
@@ -54,8 +50,6 @@ NMeCabバージョン0.10.0では、.NET Standard 2.0ライブラリにしてあ
 | --- | --- | --- |
 | NMeCabライブラリ | [LibNMeCab](https://www.nuget.org/packages/LibNMeCab) | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.svg)](https://www.nuget.org/packages/LibNMeCab) |
 | IPA辞書 | [LibNMeCab.IpaDicBin](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) | [![Stat](https://img.shields.io/nuget/v/LibNMeCab.IpaDicBin.svg)](https://www.nuget.org/packages/LibNMeCab.IpaDicBin) |
-
-辞書パッケージをNuGetでインストールすると、依存するNMeCabライブラリパッケージも同時にインストールされます。
 
 ## 使い方
 
@@ -573,6 +567,118 @@ class Program
 }
 ```
 
+## MeCab.DotNetについて
+
+MeCab.DotNetという @kekyo 氏によってNMeCab v0.07からフォークして開発されたライブラリがあります。
+- @kekyo氏のご提案があり、MeCab.DotNetとNMeCabとは統合することになりました。
+- MeCab.DotNetの内部処理は、NMeCabと同一にしました。
+- リポジトリも一本化していきます。
+- まだMeCab.DotNetは使用可能ですが、Obsoleteしていきます。
+- （[謝辞](#謝辞)に記載のように、元々、NMeCabの側でもMeCab.DotNetのコードを流用しています。）
+
+MeCab.DotNetの使用方法を、こちらに転載します。
+
+導入の方法:
+1. [NuGetから"MeCab.DotNet"をインストール](https://www.nuget.org/packages/MeCab.DotNet).
+2. 大抵の場合、デフォルトのIPADICという辞書（自動的に`dic`フォルダに追加されます）を使って、無難な解析を行うことが出来ます（つまり、辞書ファイルについて何もしなくてもOK）。しかし、もしカスタムの辞書を使いたい場合は、csproj内の`PropertyGroup`に、`MeCabUseDefaultDictionary`を追加してその値を`False`にしてください。カスタム辞書を`dic`フォルダに追加して使用できるようになります。
+3. ビルドして実行します！
+
+サンプルコード：
+
+C#
+```csharp
+using System;
+using MeCab;
+
+namespace ConsoleApp
+{
+    public static class Program
+    {
+        public static void Main(string[] args)
+        {
+            var sentence = "行く川のながれは絶えずして、しかももとの水にあらず。";
+
+            var parameter = new MeCabParam();
+            var tagger = MeCabTagger.Create(parameter);
+
+            foreach (var node in tagger.ParseToNodes(sentence))
+            {
+                if (node.CharType > 0)
+                {
+                    var features = node.Feature.Split(',');
+                    var displayFeatures = string.Join(", ", features);
+
+                    Console.WriteLine($"{node.Surface}\t{displayFeatures}");
+                }
+            }
+        }
+    }
+}
+```
+
+F#
+```fsharp
+open MeCab
+
+[<EntryPoint>]
+let main argv =
+    let sentence = "行く川のながれは絶えずして、しかももとの水にあらず。"
+
+    let parameter = new MeCabParam()
+    let tagger = MeCabTagger.Create parameter
+
+    let isCharType (node:MeCabNode) = node.CharType > 0u
+    sentence
+        |> tagger.ParseToNodes
+        |> Seq.filter isCharType
+        |> Seq.iter (fun node ->
+            let features = node.Feature.Split ','
+            let displayFeatures = System.String.Join(", ", features)
+            printfn "%s\t%s" node.Surface displayFeatures)
+    0
+```
+
+結果：
+```
+行く    動詞, 自立, *, *, 五段・カ行促音便, 基本形, 行く, イク, イク
+川      名詞, 一般, *, *, *, *, 川, カワ, カワ
+の      助詞, 連体化, *, *, *, *, の, ノ, ノ
+ながれ  動詞, 自立, *, *, 一段, 連用形, ながれる, ナガレ, ナガレ
+は      助詞, 係助詞, *, *, *, *, は, ハ, ワ
+絶えず  副詞, 一般, *, *, *, *, 絶えず, タエズ, タエズ
+し      動詞, 自立, *, *, サ変・スル, 連用形, する, シ, シ
+て      助詞, 接続助詞, *, *, *, *, て, テ, テ
+、      記号, 読点, *, *, *, *, 、, 、, 、
+しかも  接続詞, *, *, *, *, *, しかも, シカモ, シカモ
+もと    名詞, 一般, *, *, *, *, もと, モト, モト
+の      助詞, 連体化, *, *, *, *, の, ノ, ノ
+水      名詞, 一般, *, *, *, *, 水, ミズ, ミズ
+に      助詞, 格助詞, 一般, *, *, *, に, ニ, ニ
+あら    動詞, 自立, *, *, 五段・ラ行, 未然形, ある, アラ, アラ
+ず      助動詞, *, *, *, 特殊・ヌ, 連用ニ接続, ぬ, ズ, ズ
+。      記号, 句点, *, *, *, *, 。, 。, 。
+```
+
+## 謝辞
+
+Taku Kudo (@taku910) 氏のMeCabという素晴らしいソフトウェアの公開に感謝いたします。
+
+Kouji Matsui (@kekyo) 氏の素晴らしい情報とコードの公開に感謝いたします。
+LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは、 @kekyo氏によるGPL/LGPLデュアルライセンスのオープンソースをほぼそのまま使用させて頂いたものです。
+
+## リリースノート
+
+- v0.10 (2020-09-06) 以後
+  - GitHubにリポジトリを移し、NuGetでも公開。
+  - 詳細 https://github.com/komutan/NMeCab/releases
+- v0.08 から v0.09 まで
+  - 大きな変更を行ったことと、しばらく間が空いたことから、スキップ。
+- v0.01 (2011-05-15) から v0.07 (2015-07-07) まで
+  - [OSDN](https://ja.osdn.net/projects/nmecab)のリポジトリを使用し、パッケージもそこで公開。
+  - 詳細 https://ja.osdn.net/projects/nmecab/releases
+
+メジャーバージョン番号を今でも0にしているのは、参考にしたMeCabのバージョン番号を超えないようにするためとなります。
+
 ## ライセンス
 
 NMeCabは [GPL v2](/GPL) / [LGPL v2.1](/LGPL) のデュアルライセンスです。
@@ -582,29 +688,7 @@ NMeCabは [GPL v2](/GPL) / [LGPL v2.1](/LGPL) のデュアルライセンスで�
   - ごく簡単かつ実用的に言うと「NMeCabをNuGetやDLL参照によりLGPLライセンスで使用するなら、個人・企業、商用・非商用、オープンソース・プロプライエタリ、ライセンス種別、どれにも関わらず無償（ただし無保証）で使用できる」ということです。（少なくともNMeCab開発者個人はこの見解です）
   - NMeCab自体がGPL/LGPLのデュアルライセンスに基づいてMeCabを移植・改変しており、そのことを[COPYINGファイル](/COPYING)に記載しています。できるだけ、なんらかの形で、ここの文章を転載してください。あなたがNMeCab/MeCabをどのライセンスで使用するのかも表明するようお願いします。
 
-## 謝辞
-
-Taku Kudo (@taku910) 氏のMeCabという素晴らしいソフトウェアの公開に感謝いたします。
-
-Kouji Matsui (＠kekyo) 氏の素晴らしい情報とコードの公開に感謝いたします。
-LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは、 ＠kekyo氏によるGPL/LGPLデュアルライセンスのオープンソースをほぼそのまま使用させて頂いたものです。
-
-## リリースノート
-
-- v0.10.0 or later
-  - https://github.com/komutan/NMeCab/releases
-- v0.7.0 (2015-07-07)
-  - 辞書ファイルヘッダーに埋め込まれた文字コード名が.NET標準ライブラリの仕様(IANA等が定義するもの)と異なる場合に、ある程度対応した。(utf-8ではなくutf8やUTF8でも対応可能にした)
-  - 素性情報(csv)の任意の項目を簡単に取得できる拡張メソッドを追加した。(.NET3.5以降対応)
-  - アセンブリを3種類(.NET2.0 / .NET3.5 / .NET4.0 MMF)用意するようにした。
-  - NBest解の出力速度を向上させた。(PriorityQueueをPairingHeapで実装)
-  - その他、微修正。
-- ～ 中略 ～
-- v0.01 (2011-05-15)
-  - 初公開
-
 ## スター！
 
-スターを頂ければ励みになりますので、よろしくお願いいたします。
-
-実は、2020年5月中旬になにげなくリポジトリをプライベート設定にしたのですが、そのために、それまで頂いていたいたスターが全て消えてしまいました。申し訳ありませんでした。もう一度スターを頂けたらありがたいです。
+NMeCabは無償で開発を行っています。
+スターが増えると励みになりますので、よろしくお願いいたします。
