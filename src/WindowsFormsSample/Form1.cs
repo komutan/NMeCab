@@ -4,14 +4,16 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using NMeCab;
+using MeCab;
 using System.Diagnostics;
 
 namespace WindowsFormsSample
 {
     public partial class Form1 : Form
     {
+#pragma warning disable CS0618 // 型またはメンバーが旧型式です
         MeCabTagger tagger;
+#pragma warning restore CS0618 // 型またはメンバーが旧型式です
 
         private MeCabLatticeLevel LatticeLevel
         {
@@ -89,7 +91,9 @@ namespace WindowsFormsSample
             {
                 Stopwatch sw = Stopwatch.StartNew();
 
+#pragma warning disable CS0618 // 型またはメンバーが旧型式です
                 this.tagger = MeCabTagger.Create();
+#pragma warning restore CS0618 // 型またはメンバーが旧型式です
 
                 sw.Stop();
                 this.toolStripStatusLabel1.Text = string.Format("startup end ({0:0.000}sec)",

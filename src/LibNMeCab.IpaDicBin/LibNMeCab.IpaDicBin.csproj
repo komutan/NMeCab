@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net48;net461;</TargetFrameworks>
     <RootNamespace>NMeCab</RootNamespace>
     <Authors>Tsuyoshi Komuta</Authors>
     <Product>IPAdic binary for NMeCab liblary</Product>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibNMeCab" Version="[0.10.0,0.11.0)" />
+    <PackageReference Include="LibNMeCab" Version="[0.11.0,0.12.0)" />
   </ItemGroup>
 
 </Project>

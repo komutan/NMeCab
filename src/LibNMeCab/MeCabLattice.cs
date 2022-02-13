@@ -61,7 +61,7 @@ namespace NMeCab
         /// <param name="nodeAllocator">形態素ノード生成関数</param>
         /// <param name="param">形態素解析処理のパラメータ</param>
         /// <param name="length">解析対象の文字列の長さ</param>
-        internal MeCabLattice(Func<TNode> nodeAllocator, MeCabParam param, int length)
+        public MeCabLattice(Func<TNode> nodeAllocator, MeCabParam param, int length)
         {
             uint nextNodeId = 0;
             this.nodeAllocator = () =>

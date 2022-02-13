@@ -43,7 +43,7 @@ namespace NMeCab.Core
         /// <param name="offset">オフセット位置</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe static string GetString(byte[] bytes, long offset, Encoding enc)
         {
             fixed (byte* pBytes = bytes)
@@ -60,7 +60,7 @@ namespace NMeCab.Core
         /// <param name="offset">オフセット位置</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe static string GetString(byte* bytes, long offset, Encoding enc)
         {
             return StrUtils.GetString(bytes + offset, enc);
@@ -75,11 +75,18 @@ namespace NMeCab.Core
         /// <param name="bytes">デコードする最初のバイトへのポインタ</param>
         /// <param name="enc">文字エンコーディング</param>
         /// <returns>文字列（\0は含まない）</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public unsafe static string GetString(byte* bytes, Encoding enc)
         {
             int len = GetLength(bytes);
+#if NET20 || NET30 || NET35 || NET40 || NET45 || NET451 || NET452
+            var chars = new char[enc.GetCharCount(bytes, len)];
+            fixed (char* pChars = chars)
+                enc.GetChars(bytes, len, pChars, chars.Length);
+            return new string(chars);
+#else
             return enc.GetString(bytes, len);
+#endif
         }
 
         /// <summary>
@@ -87,11 +94,20 @@ namespace NMeCab.Core
         /// </summary>
         /// <param name="name">エンコーディング名</param>
         /// <returns>エンコーディング</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public static Encoding GetEncodingOrNull(this string name)
         {
+#if NETSTANDARD1_3
+            switch (name.ToUpper())
+            {
+                case "UTF8":
+                    return Encoding.UTF8;
+                default:
+                    return Encoding.GetEncoding(name);
+            }
+#else
             var cmpInf = CultureInfo.InvariantCulture.CompareInfo;
-            var opt = CompareOptions.IgnoreCase | CompareOptions.IgnoreSymbols;
+            const CompareOptions opt = CompareOptions.IgnoreCase | CompareOptions.IgnoreSymbols;
 
             foreach (var encInf in Encoding.GetEncodings())
             {
@@ -102,6 +118,7 @@ namespace NMeCab.Core
             }
 
             return null;
+#endif
         }
 
         /// <summary>
@@ -111,7 +128,7 @@ namespace NMeCab.Core
         /// <param name="defaltColumnBuffSize">配列の内部バッファの初期値</param>
         /// <param name="defaltStringBuffSize">配列内の文字列の内部バッファの初期値</param>
         /// <returns>変換後の文字列配列</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(Utils.DefaultMethodImplOption)]
         public static string[] SplitCsvRow(string csvRowString,
                                            int defaltColumnBuffSize,
                                            int defaltStringBuffSize)

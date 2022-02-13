@@ -1,5 +1,70 @@
 ﻿#pragma warning disable CS1591
 
+#if NET20 || NET30 || NET35 || NETSTANDARD1_3
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+
+namespace NMeCab.Core
+{
+    public class MemoryMappedFileLoader
+    {
+        private bool invoked = false;
+        private bool disposed = false;
+        private IntPtr ptr = IntPtr.Zero;
+
+        public long FileSize { get; private set; }
+
+        public unsafe byte* Invoke(string file)
+        {
+            if (this.invoked) throw new InvalidOperationException();
+
+            this.invoked = true;
+
+            using (var source = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                this.FileSize = source.Length;
+                this.ptr = Marshal.AllocCoTaskMem((int)source.Length);
+
+                byte* wrkPtr = (byte*)this.ptr;
+                byte[] buff = new byte[4096];
+                fixed (byte* pBuff = buff)
+                {
+                    while (true)
+                    {
+                        int len = source.Read(buff, 0, buff.Length);
+                        if (len == 0) return (wrkPtr - source.Length);
+
+                        for (int i = 0; i < len; i++)
+                            *wrkPtr++ = pBuff[i];
+                    }
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed) return;
+
+            if (this.ptr != IntPtr.Zero)
+                Marshal.FreeCoTaskMem(this.ptr);
+
+            disposed = true;
+        }
+
+        ~MemoryMappedFileLoader()
+        {
+            this.Dispose(false);
+        }
+    }
+}
+#else
 using System;
 using System.IO;
 using System.IO.MemoryMappedFiles;
@@ -31,6 +96,9 @@ namespace NMeCab.Core
                                                        null,
                                                        0L,
                                                        MemoryMappedFileAccess.Read,
+#if NET40 || NET45 || NET451 || NET452
+                                                       null,
+#endif
                                                        HandleInheritability.None,
                                                        false);
 
@@ -74,3 +142,4 @@ namespace NMeCab.Core
         }
     }
 }
+#endif
