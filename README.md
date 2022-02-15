@@ -57,7 +57,8 @@ NMeCabバージョン0.10.0からは、.NET Standard 2.0ライブラリにして
 
 ### 最も簡単な使い方
 
-`LibNMeCab.IpaDicBin` をNuGetでインストールするだけで、必要なライブラリと辞書ファイルが一括でプロジェクトに追加され、NMeCabを使う準備が整います。
+`LibNMeCab.IpaDicBin` をNuGetでインストールします。
+すると、依存関係にある `LibNMeCab` も同時にインストールされるので、これだけでライブラリと辞書の準備が整います。
 
 サンプルコード:
 ```csharp
@@ -569,8 +570,8 @@ class Program
 
 ## MeCab.DotNetについて
 
-MeCab.DotNetという @kekyo 氏によってNMeCab v0.07からフォークして開発されたライブラリがあります。
-- @kekyo氏のご提案があり、MeCab.DotNetとNMeCabとは統合することになりました。
+MeCab.DotNetは @kekyo 氏によってNMeCab v0.07からフォークして開発されたライブラリです。
+- @kekyo氏のご提案があり、MeCab.DotNetとNMeCabは統合することになりました。
 - MeCab.DotNetの内部処理は、NMeCabと同一にしました。
 - リポジトリも一本化していきます。
 - まだMeCab.DotNetは使用可能ですが、Obsoleteしていきます。
@@ -677,7 +678,7 @@ LibNMeCab.IpaDicBin の辞書ファイルをNuGet/MSBuildで扱うコードは�
   - [OSDN](https://ja.osdn.net/projects/nmecab)のリポジトリを使用し、パッケージもそこで公開。
   - 詳細 https://ja.osdn.net/projects/nmecab/releases
 
-メジャーバージョン番号を今でも0にしているのは、参考にしたMeCabのバージョン番号を超えないようにするためとなります。
+メジャーバージョン番号を今でも0にしているのは、参考にしたMeCabのバージョン番号を超えないようにするためです。
 
 ## ライセンス
 
