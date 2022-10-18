@@ -104,7 +104,7 @@ let main argv =
 
     sentence
     |> tagger.Parse
-    |> Seq.iter (fun node -> printfn "表層形：%s\n読み：%s\n品詞：%s\n" node.Surface node.Reading node.PartsOfSpeech)
+    |> Seq.iter (fun node -> printfn "表層形：%s\n読み  ：%s\n品詞  ：%s\n" node.Surface node.Reading node.PartsOfSpeech)
 
     0
 
