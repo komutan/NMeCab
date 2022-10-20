@@ -112,6 +112,8 @@ let main argv =
     0
 ```
 
+サンプルコード（C#）の説明:
+
 まず `using NMeCab.Specialized;` により、NMeCab.Specialized名前空間を参照します。
 
 次に `MeCabIpaDicTagger.Create()` により、形態素解析処理の起点となるTaggerインスタンス（MeCabTaggerBase継承クラスのインスタンス）を生成します。
