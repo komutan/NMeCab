@@ -68,7 +68,7 @@ MeCab／NMeCabの手法は、事前にコーパス（言語学的にまとめら
 
 `LibNMeCab.IpaDicBin` をNuGetでインストールするだけで、必要なライブラリと辞書ファイルが一括でプロジェクトに追加され、NMeCabを使う準備が整います。
 
-サンプルコード:
+サンプルコード（C#）:
 ```csharp
 using System;
 using NMeCab.Specialized;
@@ -90,6 +90,26 @@ class Program
         }
     }
 }
+```
+
+
+サンプルコード（F#）:
+```fsharp
+open NMeCab.Specialized
+
+[<EntryPoint>]
+let main argv =
+    let sentence = "皇帝の新しい心"
+    use tagger = MeCabIpaDicTagger.Create()
+
+    sentence
+    |> tagger.Parse
+    |> Seq.iter (fun node ->
+        printfn $"表層形：{node.Surface}"
+        printfn $"読み  ：{node.Reading}"
+        printfn $"品詞  ：{node.PartsOfSpeech}"
+        printfn "")
+    0
 ```
 
 まず `using NMeCab.Specialized;` により、NMeCab.Specialized名前空間を参照します。
