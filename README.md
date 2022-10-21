@@ -106,8 +106,8 @@ let main argv =
     |> tagger.Parse
     |> Seq.iter (fun node ->
         printfn $"表層形：{node.Surface}"
-        printfn $"読み  ：{node.Reading}"
-        printfn $"品詞  ：{node.PartsOfSpeech}"
+        printfn $"読み　：{node.Reading}"
+        printfn $"品詞　：{node.PartsOfSpeech}"
         printfn "")
     0
 ```
@@ -198,7 +198,7 @@ NMeCabでは辞書の素性フォーマット別にTaggerクラスを用意し�
 
 まずは、汎用のTaggerインスタンスを生成して使うサンプルを示します。
 
-サンプルコード：
+サンプルコード（C#）：
 ```csharp
 using System;
 using NMeCab;
@@ -233,7 +233,7 @@ class Program
 
 次にIPA辞書用のTaggarインスタンスを生成して使うサンプルを示します。
 
-サンプルコード:
+サンプルコード（C#）:
 ``` csharp
 using System;
 using NMeCab.Specialized;
@@ -270,7 +270,7 @@ class Program
 複数のユーザー辞書を使用することも可能です。
 文字コードと素性フォーマットはシステム辞書と同一にしてください。
 
-サンプルコード:
+サンプルコード（C#）:
 ``` csharp
         var dicDir = @"C:\Program Files (x86)\MeCab\dic\ipadic"; // 辞書のパス
         var userDics = new[] { "usr1.dic", "usr2.dic" }; // ユーザー辞書ファイル名の一覧
@@ -288,7 +288,7 @@ Taggerインスタンスの `ParseNBest(string sentence)` メソッドを使う�
 結果はイテレータで、内部の取得処理は遅延実行されます。
 下のサンプルでは、LinqのTakeにより上位5件の結果を取得し表示しています。
 
-サンプルコード:
+サンプルコード（C#）:
 ``` csharp
 using System;
 using System.Linq;
@@ -324,7 +324,7 @@ Taggerインスタンスの `ParseSoftWakachi(string sentence, float theta)` メ
 また取得した形態素ノードの `Prob` プロパティにより「その形態素の含まれる確率＝周辺確率」も取得できます。
 下のサンプルでは、周辺確率の大きな形態素だけを抽出して表示しています。
 
-サンプルコード：
+サンプルコード（C#）：
 ```csharp
 using System;
 using System.Linq;
@@ -395,7 +395,7 @@ class Program
 
 Taggerインスタンスの `ParseToLattice(string sentence)` メソッドでは、「解析情報の束＝ラティス」のインスタンスを取得できます。
 
-サンプルコード：
+サンプルコード（C#）：
 ```csharp
 using System;
 using System.Linq;
